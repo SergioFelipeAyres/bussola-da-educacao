@@ -187,6 +187,97 @@
     <p class="tg-take dash-skeleton" id="tg-take">—</p>
   </header>
 
+  <details class="tg-guide tg-dash-only" id="como-ler">
+    <summary class="tg-guide-sum">
+      <span class="tg-guide-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg></span>
+      <span class="tg-guide-txt"><span class="tg-guide-title">Como ler este painel</span><span class="tg-guide-sub">Seis ideias para entender qualquer gráfico daqui: percentual, base, margem de erro e mais.</span></span>
+      <span class="tg-guide-act"><span class="tg-guide-open">Abrir guia</span><span class="tg-guide-close">Fechar</span><svg class="tg-ic tg-guide-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+    </summary>
+    <div class="tg-guide-body">
+      <p class="tg-guide-note">Os números dos desenhos são só exemplos.</p>
+      <div class="tg-learn" id="card-leitura">
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <span class="tg-lesson-ex">exemplo</span>
+            <svg class="tg-iso10" viewBox="0 0 240 26">
+              <defs><g id="lp"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></g></defs>
+              <use href="#lp" x="0" y="1" class="tg-c" style="--i:0;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="24" y="1" class="tg-c" style="--i:1;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="48" y="1" class="tg-c" style="--i:2;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="72" y="1" class="tg-c" style="--i:3;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="96" y="1" class="tg-c" style="--i:4;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="120" y="1" class="tg-c" style="--i:5;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="144" y="1" class="tg-c" style="--i:6;fill:var(--cds-chart-categorical-1)"/>
+              <use href="#lp" x="168" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="192" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="216" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/>
+            </svg>
+            <div class="tg-lesson-eq"><b>70%</b><span>≈</span><b>7 em cada 10</b></div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">1</span>Percentual em figuras</h3>
+          <p>Um percentual diz quantos, a cada 100, estão numa situação. Para facilitar, arredondamos para frases como <b>"7 em cada 10"</b> e mostramos figuras acesas.</p>
+        </article>
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <span class="tg-lesson-ex">exemplo</span>
+            <div class="tg-nest"><span>Todos os gestores</span>
+              <div class="tg-nest"><span>de escolas com internet</span>
+                <div class="tg-nest tg-nest-on"><span>que usam IA</span></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">2</span>Base: de quem estamos falando</h3>
+          <p>Todo percentual se refere a um grupo, a <b>base</b>. Ela aparece no rodapé de cada cartão e muda entre os gráficos: "metade de quem tem internet" não é o mesmo que "metade de todos".</p>
+        </article>
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <span class="tg-lesson-ex">exemplo</span>
+            <div class="tg-lesson-bar">
+              <div class="tg-track"><div class="tg-fill" style="width:62%;background:var(--cds-chart-categorical-1)"></div><div class="tg-moe" style="left:57%;width:10%"></div></div>
+              <div class="tg-lesson-ann" style="--x:62%"><span>62%</span>o valor real deve estar entre 57% e 67%</div>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">3</span>Margem de erro</h3>
+          <p>A pesquisa entrevista uma amostra, não todas as escolas. Por isso cada número tem uma <b>margem de erro</b>: a faixa clara em volta do fim da barra. Passe o cursor ou toque numa barra para ver a margem.</p>
+        </article>
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <span class="tg-lesson-ex">exemplo</span>
+            <div class="tg-lesson-bar">
+              <div class="tg-lesson-row"><span>Nordeste</span><b>45%</b></div>
+              <div class="tg-track"><div class="tg-fill" style="width:45%;background:var(--cds-chart-categorical-1)"></div><div class="tg-ref" style="left:60%"></div></div>
+              <div class="tg-lesson-ann tg-lesson-br" style="--x:60%"><span class="tg-refkey"></span>Brasil: 60%</div>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">4</span>O traço do Brasil</h3>
+          <p>Ao escolher um recorte no filtro, como uma região, a barra mostra aquele grupo e o <b>traço escuro</b> marca o valor do Brasil. Assim dá para comparar de relance.</p>
+        </article>
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <div class="tg-lesson-who">
+              <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><path d="M12 2.5L2.5 8.5h19z"/><path d="M4.5 9.5h15V21h-5.5v-5h-4v5H4.5z"/></svg><span>Escolas</span></div>
+              <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></svg><span>Gestores</span></div>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">5</span>Pessoa ou prédio?</h3>
+          <p>A <b>figura de pessoa</b> representa gestores escolares; o <b>prédio</b> representa escolas. Sexo, cor ou raça e idade são características do gestor e só existem na aba Gestores.</p>
+        </article>
+
+        <article class="tg-card tg-lesson">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <span class="tg-lesson-ex">exemplo</span>
+            <div class="tg-lesson-cmp">
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:62%;width:20%;background:var(--color-positivo)"></span><span class="tg-dot" style="left:72%;background:var(--color-positivo)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>acima</span></div>
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:44%;width:24%;background:var(--cds-chart-muted)"></span><span class="tg-dot" style="left:56%;background:var(--cds-chart-muted)"></span></div><span class="tg-verdict">dentro da margem</span></div>
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:18%;width:20%;background:var(--color-negativo)"></span><span class="tg-dot" style="left:28%;background:var(--color-negativo)"></span></div><span class="tg-verdict tg-down"><span class="tg-arrow">▼</span>abaixo</span></div>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">6</span>Acima, abaixo ou empate</h3>
+          <p>Em <a href="#comparar">Compare grupos</a>, a linha vertical é o Brasil. Só dizemos que um grupo está acima ou abaixo quando a faixa da margem de erro <b>não toca</b> essa linha. Se toca, a diferença pode ser acaso.</p>
+        </article>
+      </div>
+      <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg><span>Respostas "Não respondeu" ficam fora do filtro de recorte. Recortes cruzados, como escolas particulares do Sudeste, não existem nas tabelas publicadas. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</span></p>
+      <p class="tg-how-more">Quer saber por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design aplicados</a>, na página Sobre.</p>
+    </div>
+  </details>
+
   <div class="tg-filter tg-dash-only" id="filtro">
     <label for="tg-recorte">Ver os dados de</label>
     <select id="tg-recorte" aria-label="Recorte dos dados"></select>
@@ -354,91 +445,7 @@
     </article>
   </section>
 
-  <section class="tg-sec tg-dash-only" id="como-ler">
-    <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>
-      <div><h2 class="tg-sec-title">Como ler este painel</h2><p class="tg-sec-sub">Seis ideias para entender qualquer gráfico daqui. Os números dos desenhos são só exemplos.</p></div></div>
-    <div class="tg-learn" id="card-leitura">
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <span class="tg-lesson-ex">exemplo</span>
-          <svg class="tg-iso10" viewBox="0 0 240 26">
-            <defs><g id="lp"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></g></defs>
-            <use href="#lp" x="0" y="1" class="tg-c" style="--i:0;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="24" y="1" class="tg-c" style="--i:1;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="48" y="1" class="tg-c" style="--i:2;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="72" y="1" class="tg-c" style="--i:3;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="96" y="1" class="tg-c" style="--i:4;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="120" y="1" class="tg-c" style="--i:5;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="144" y="1" class="tg-c" style="--i:6;fill:var(--cds-chart-categorical-1)"/>
-            <use href="#lp" x="168" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="192" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="216" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/>
-          </svg>
-          <div class="tg-lesson-eq"><b>70%</b><span>≈</span><b>7 em cada 10</b></div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">1</span>Percentual em figuras</h3>
-        <p>Um percentual diz quantos, a cada 100, estão numa situação. Para facilitar, arredondamos para frases como <b>"7 em cada 10"</b> e mostramos figuras acesas.</p>
-      </article>
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <span class="tg-lesson-ex">exemplo</span>
-          <div class="tg-nest"><span>Todos os gestores</span>
-            <div class="tg-nest"><span>de escolas com internet</span>
-              <div class="tg-nest tg-nest-on"><span>que usam IA</span></div>
-            </div>
-          </div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">2</span>Base: de quem estamos falando</h3>
-        <p>Todo percentual se refere a um grupo, a <b>base</b>. Ela aparece no rodapé de cada cartão e muda entre os gráficos: "metade de quem tem internet" não é o mesmo que "metade de todos".</p>
-      </article>
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <span class="tg-lesson-ex">exemplo</span>
-          <div class="tg-lesson-bar">
-            <div class="tg-track"><div class="tg-fill" style="width:62%;background:var(--cds-chart-categorical-1)"></div><div class="tg-moe" style="left:57%;width:10%"></div></div>
-            <div class="tg-lesson-ann" style="--x:62%"><span>62%</span>o valor real deve estar entre 57% e 67%</div>
-          </div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">3</span>Margem de erro</h3>
-        <p>A pesquisa entrevista uma amostra, não todas as escolas. Por isso cada número tem uma <b>margem de erro</b>: a faixa clara em volta do fim da barra. Passe o cursor ou toque numa barra para ver a margem.</p>
-      </article>
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <span class="tg-lesson-ex">exemplo</span>
-          <div class="tg-lesson-bar">
-            <div class="tg-lesson-row"><span>Nordeste</span><b>45%</b></div>
-            <div class="tg-track"><div class="tg-fill" style="width:45%;background:var(--cds-chart-categorical-1)"></div><div class="tg-ref" style="left:60%"></div></div>
-            <div class="tg-lesson-ann tg-lesson-br" style="--x:60%"><span class="tg-refkey"></span>Brasil: 60%</div>
-          </div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">4</span>O traço do Brasil</h3>
-        <p>Ao escolher um recorte no filtro, como uma região, a barra mostra aquele grupo e o <b>traço escuro</b> marca o valor do Brasil. Assim dá para comparar de relance.</p>
-      </article>
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <div class="tg-lesson-who">
-            <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><path d="M12 2.5L2.5 8.5h19z"/><path d="M4.5 9.5h15V21h-5.5v-5h-4v5H4.5z"/></svg><span>Escolas</span></div>
-            <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></svg><span>Gestores</span></div>
-          </div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">5</span>Pessoa ou prédio?</h3>
-        <p>A <b>figura de pessoa</b> representa gestores escolares; o <b>prédio</b> representa escolas. Sexo, cor ou raça e idade são características do gestor e só existem na aba Gestores.</p>
-      </article>
-
-      <article class="tg-card tg-lesson">
-        <div class="tg-lesson-vis" aria-hidden="true">
-          <span class="tg-lesson-ex">exemplo</span>
-          <div class="tg-lesson-cmp">
-            <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:62%;width:20%;background:var(--color-positivo)"></span><span class="tg-dot" style="left:72%;background:var(--color-positivo)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>acima</span></div>
-            <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:44%;width:24%;background:var(--cds-chart-muted)"></span><span class="tg-dot" style="left:56%;background:var(--cds-chart-muted)"></span></div><span class="tg-verdict">dentro da margem</span></div>
-            <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:18%;width:20%;background:var(--color-negativo)"></span><span class="tg-dot" style="left:28%;background:var(--color-negativo)"></span></div><span class="tg-verdict tg-down"><span class="tg-arrow">▼</span>abaixo</span></div>
-          </div>
-        </div>
-        <h3 class="tg-card-title"><span class="tg-lesson-n">6</span>Acima, abaixo ou empate</h3>
-        <p>Em <a href="#comparar">Compare grupos</a>, a linha vertical é o Brasil. Só dizemos que um grupo está acima ou abaixo quando a faixa da margem de erro <b>não toca</b> essa linha. Se toca, a diferença pode ser acaso.</p>
-      </article>
-    </div>
-    <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg>Respostas "Não respondeu" ficam fora do filtro de recorte. Recortes cruzados, como escolas particulares do Sudeste, não existem nas tabelas publicadas. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</p>
-    <p class="tg-how-more">Quer saber por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design aplicados</a>, na página Sobre.</p>
-    <p class="tg-base" style="border-top:none">Fonte: NIC.br/Cetic.br, Pesquisa TIC Educação 2025, tabelas de gestores escolares e de escolas (v1.0). Proporções, margens de erro e totais estimados.</p>
-  </section>
+  <p class="tg-base tg-dash-only tg-fonte">Fonte: NIC.br/Cetic.br, Pesquisa TIC Educação 2025, tabelas de gestores escolares e de escolas (v1.0). Proporções, margens de erro e totais estimados.</p>
 
   <div class="tg-tip" id="tg-tip" hidden></div>
 </div>

@@ -135,6 +135,30 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-empty{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-fail{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:inherit;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+/* ---------- Como ler este painel: área recolhível no topo das abas ---------- */
+.tg-guide{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);scroll-margin-top:5rem}
+.tg-guide[open]{border-color:var(--cds-chart-axis)}
+.tg-guide-sum{display:flex;align-items:center;gap:var(--cds-gap-md);padding:var(--cds-pad-md) var(--cds-pad-lg);cursor:pointer;list-style:none;border-radius:var(--cds-radius)}
+.tg-guide-sum::-webkit-details-marker{display:none}
+.tg-guide-sum:hover{background:var(--cds-chart-grid)}
+.tg-guide-sum:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.tg-guide-ic{display:grid;place-items:center;width:2.5rem;height:2.5rem;flex:none;border-radius:50%;background:var(--cds-chart-grid);color:var(--cds-chart-categorical-1)}
+.tg-guide-ic .tg-ic{width:1.3rem;height:1.3rem}
+.tg-guide-txt{display:flex;flex-direction:column;gap:.1rem;min-width:0;flex:1}
+.tg-guide-title{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium)}
+.tg-guide-sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-guide-act{display:inline-flex;align-items:center;gap:.35rem;flex:none;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);color:var(--cds-chart-categorical-1)}
+.tg-guide-chev{transition:transform var(--cds-dur-slow) var(--cds-ease-out)}
+.tg-guide[open] .tg-guide-chev{transform:rotate(180deg)}
+.tg-guide-close,.tg-guide[open] .tg-guide-open{display:none}
+.tg-guide[open] .tg-guide-close{display:inline}
+.tg-guide-body{display:flex;flex-direction:column;gap:var(--cds-gap-md);padding:0 var(--cds-pad-lg) var(--cds-pad-lg);border-top:1px solid var(--color-border-line);padding-top:var(--cds-pad-lg)}
+.tg-guide-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-guide .tg-lesson{background:var(--color-bg)}
+.tg-guide .tg-lesson-vis{background:var(--color-panel)}
+@media (max-width:520px){.tg-guide-sub{display:none}.tg-guide-sum{padding:var(--cds-pad-md)}.tg-guide-body{padding:var(--cds-pad-md)}}
+@media (prefers-reduced-motion:no-preference){.tg-guide[open] .tg-guide-body{animation:tg-rise .45s var(--tg-ease,ease-out) both}}
+.tg-fonte{border-top:none}
 /* ---------- Como ler este painel: guia visual ---------- */
 .tg-learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:var(--cds-gap-md)}
 .tg-lesson p{font-size:var(--cds-font-size-body);line-height:1.5;color:var(--color-fg-muted)}

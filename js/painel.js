@@ -511,11 +511,14 @@
     setTimeout(() => { b.textContent = 'Copiar'; }, 2000);
   }));
 
+  // links para o guia "Como ler este painel" (ou algo dentro dele) abrem a área recolhida
+  const openGuide = (el) => { const d = el.closest('details'); if (d) d.open = true; };
+
   window.addEventListener('hashchange', () => {
     const h = location.hash.slice(1);
     setView(viewFromHash());
     const el = !VIEWS.includes(h) && document.getElementById(h);
-    if (el) el.scrollIntoView(); else window.scrollTo(0, 0);
+    if (el) { openGuide(el); el.scrollIntoView(); } else window.scrollTo(0, 0);
   });
 
   // ---------- controls ----------
@@ -966,5 +969,5 @@
   dash.onData(draw);
 
   const named = document.getElementById(location.hash.slice(1));
-  if (named && !VIEWS.includes(named.id)) setTimeout(() => { named.scrollIntoView(); }, 400);
+  if (named && !VIEWS.includes(named.id)) setTimeout(() => { openGuide(named); named.scrollIntoView(); }, 400);
 })();
