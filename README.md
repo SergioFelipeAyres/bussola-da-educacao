@@ -1,4 +1,4 @@
-# EducaDados
+# Bússola da Educação
 
 Painel interativo com os dados de **gestores escolares** e **escolas** da pesquisa
 **TIC Educação 2025** (NIC.br/Cetic.br), feito como produto da dissertação

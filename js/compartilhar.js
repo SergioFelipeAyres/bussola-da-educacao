@@ -7,7 +7,7 @@
 (() => {
   const LIB = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
   const root = document.getElementById('painel');
-  const LOGO = '<svg class="nav-logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6"/><path d="M6 17h2.6v-5H6zM10.7 17h2.6V7h-2.6zM15.4 17H18v-7.5h-2.6z"/></svg>';
+  const LOGO = '<svg class="nav-logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6"/><path fill-rule="evenodd" d="M12 3.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 1 0 0-17zm0 1.7a6.8 6.8 0 1 1 0 13.6a6.8 6.8 0 1 1 0-13.6z"/><path d="M16.6 7.4l-3.2 6-2.8-2.8z"/><path d="M7.4 16.6l3.2-6 2.8 2.8z" opacity=".55"/></svg>';
   const ICON_SHARE = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4"/></svg>';
   const IC = {
     share: '<path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7.5h14V12"/>',
@@ -30,7 +30,7 @@
     const h = card.querySelector('.tg-card-title');
     if (h) return h.textContent.trim();
     const sec = card.closest('.tg-sec'); const t = sec && sec.querySelector('.tg-sec-title');
-    return t ? t.textContent.trim() : 'EducaDados';
+    return t ? t.textContent.trim() : 'Bússola da Educação';
   };
   const recorteOf = (card) => {
     if (!card.closest('#gestores, #escolas')) return '';
@@ -45,7 +45,7 @@
   const buildShot = (card) => {
     const shot = document.createElement('div'); shot.className = 'tg-shot';
     const head = document.createElement('div'); head.className = 'tg-shot-head';
-    head.innerHTML = '<span class="tg-shot-brand">' + LOGO + '<span>Educa<b>Dados</b></span></span>';
+    head.innerHTML = '<span class="tg-shot-brand">' + LOGO + '<span>Bússola da <b>Educação</b></span></span>';
     const rec = recorteOf(card);
     if (rec) { const r = document.createElement('span'); r.className = 'tg-shot-rec'; r.textContent = 'Recorte: ' + rec; head.append(r); }
     const clone = card.cloneNode(true);
@@ -98,8 +98,8 @@
     if (openBtn === btn) { close(); return; }
     close(); openBtn = btn; btn.setAttribute('aria-expanded', 'true');
     const title = titleOf(card), rec = recorteOf(card), url = linkOf(card);
-    const text = title + (rec && rec !== 'Brasil' ? ' (' + rec + ')' : '') + ' — dados da TIC Educação 2025 no EducaDados';
-    const file = 'educadados-' + slug(title) + (rec && rec !== 'Brasil' ? '-' + slug(rec) : '') + '.png';
+    const text = title + (rec && rec !== 'Brasil' ? ' (' + rec + ')' : '') + ' — dados da TIC Educação 2025 na Bússola da Educação';
+    const file = 'bussola-da-educacao-' + slug(title) + (rec && rec !== 'Brasil' ? '-' + slug(rec) : '') + '.png';
     const canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [new File([''], 'x.png', { type: 'image/png' })] }));
     const items = [];
     if (canShareFiles) items.push(['share', 'Compartilhar imagem', async () => {

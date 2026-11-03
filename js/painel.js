@@ -848,23 +848,6 @@
 
   const drawHome = () => {
     drawFact();
-    document.querySelectorAll('#inicio [data-calc]').forEach((el) => {
-      const t = dash.data(el.dataset.calc);
-      if (t.status !== 'ok') return;
-      const row = t.data.find((x) => x.recorte === TOTAL);
-      el.classList.remove('dash-skeleton');
-      el.textContent = row ? nfc.format(row.total) : '—';
-    });
-    document.querySelectorAll('#inicio .tg-door-stat').forEach((k, i) => {
-      const ds = k.dataset.ds;
-      if (dash.data(ds).status !== 'ok') return;
-      const row = get(k.dataset.ind, k.dataset.grupo, k.dataset.resp, TOTAL, ds);
-      const num = k.querySelector('.tg-kpi-num'), svg = k.querySelector('svg');
-      num.classList.remove('dash-skeleton');
-      if (!row) { num.textContent = '—'; svg.innerHTML = ''; return; }
-      num.textContent = pct(row.pct); markRow(num, row);
-      iso10(svg, row.pct, k.dataset.color || dash.colors[0], 'home' + i, ds === 'escolas' ? SCHOOL : P);
-    });
   };
 
   // ---------- main draw ----------
