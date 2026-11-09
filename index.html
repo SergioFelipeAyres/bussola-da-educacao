@@ -37,25 +37,32 @@
 <div class="tg" id="painel">
   <!-- ===================== INÍCIO ===================== -->
   <div class="tg-page" id="inicio" hidden>
-    <section class="tg-hero">
-      <span class="tg-eyebrow">TIC Educação 2025 · NIC.br/Cetic.br</span>
-      <h1 class="tg-hero-title">Bússola da <span>Educação</span></h1>
-      <p class="tg-hero-lead">A tecnologia nas escolas brasileiras, em linguagem simples.</p>
-      <p class="tg-hero-text">Os números da pesquisa TIC Educação 2025 sobre quem dirige as escolas e sobre como elas estão conectadas e equipadas, contados com pictogramas, frases curtas e margem de erro sempre visível.</p>
+    <section class="tg-hero tg-hero-home">
+      <div class="tg-hero-copy">
+        <span class="tg-eyebrow">TIC Educação 2025 · NIC.br/Cetic.br</span>
+        <h1 class="tg-hero-title">Bússola da <span>Educação</span></h1>
+        <p class="tg-hero-lead">A tecnologia nas escolas brasileiras, em linguagem simples.</p>
+        <p class="tg-hero-text">Os números da pesquisa TIC Educação 2025 sobre quem dirige as escolas e sobre como elas estão conectadas e equipadas, contados com pictogramas, frases curtas e margem de erro sempre visível.</p>
+      </div>
+      <section class="tg-fact" aria-labelledby="fato-titulo">
+        <div class="tg-fact-top"><span class="tg-fact-ic" id="fato-ic" aria-hidden="true"></span><h2 class="tg-fact-eyebrow" id="fato-titulo">Você sabia?</h2></div>
+        <div class="tg-fact-body">
+          <p class="tg-fact-txt dash-skeleton" id="fato-txt" aria-live="polite">—</p>
+          <svg class="tg-iso10" id="fato-iso" width="100%" viewBox="0 0 240 26" role="img"></svg>
+          <p class="tg-fact-meta" id="fato-meta"></p>
+          <div class="tg-fact-actions">
+            <button type="button" id="fato-outro"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg>Outro dado</button>
+            <a class="tg-fact-link" id="fato-link" href="#escolas">Ver no painel <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <section class="tg-fact" aria-labelledby="fato-titulo">
-      <span class="tg-fact-ic" id="fato-ic" aria-hidden="true"></span>
-      <div class="tg-fact-body">
-        <h2 class="tg-fact-eyebrow" id="fato-titulo">Você sabia?</h2>
-        <p class="tg-fact-txt dash-skeleton" id="fato-txt" aria-live="polite">—</p>
-        <svg class="tg-iso10" id="fato-iso" width="100%" viewBox="0 0 240 26" role="img"></svg>
-        <p class="tg-fact-meta" id="fato-meta"></p>
-        <div class="tg-fact-actions">
-          <button type="button" id="fato-outro"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg>Outro dado</button>
-          <a class="tg-fact-link" id="fato-link" href="#escolas">Ver no painel <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
+    <section class="tg-home-stats" aria-label="Números-chave da pesquisa">
+      <a class="tg-home-stat" href="#escolas"><b class="tg-home-num dash-skeleton" id="home-n-escolas">—</b><span>escolas representadas na pesquisa</span></a>
+      <a class="tg-home-stat" href="#card-camadas" style="--sec:var(--v-teal)"><b class="tg-home-num dash-skeleton" id="home-n-internet">—</b><span>das escolas têm acesso à internet</span></a>
+      <a class="tg-home-stat" href="#card-sexo" style="--sec:var(--v-blue)"><b class="tg-home-num dash-skeleton" id="home-n-mulheres">—</b><span>dos gestores escolares são mulheres</span></a>
+      <a class="tg-home-stat" href="#card-ia-adocao" style="--sec:var(--v-purple)"><b class="tg-home-num dash-skeleton" id="home-n-ia">—</b><span>dos gestores já usam IA na gestão</span></a>
     </section>
 
     <section class="tg-sec" aria-labelledby="home-como">

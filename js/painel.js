@@ -869,8 +869,17 @@
     drawFact();
   });
 
+  // números-chave da faixa abaixo do cabeçalho (sempre Brasil)
+  const HOME_NUMS = [['home-n-internet', 'escolas', 'A1', 'Sim'], ['home-n-mulheres', 'gestores', 'A1', 'Feminino'], ['home-n-ia', 'gestores', 'D9A', 'Sim']];
+  const setNum = (id, v) => { const el = document.getElementById(id); el.classList.remove('dash-skeleton'); if (el.textContent !== v) el.textContent = v; };
   const drawHome = () => {
     drawFact();
+    const tot = dash.data('total_escolas');
+    if (tot.status === 'ok') { const t = tot.data.find((x) => x.recorte === TOTAL); if (t) setNum('home-n-escolas', nfc.format(t.total)); }
+    for (const [id, ds, ind, resp] of HOME_NUMS) {
+      if (dash.data(ds).status !== 'ok') continue;
+      const row = get(ind, '', resp, TOTAL, ds); if (row) setNum(id, pct(row.pct));
+    }
   };
 
   // ---------- main draw ----------
