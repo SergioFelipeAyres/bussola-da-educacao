@@ -267,7 +267,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-tema:focus-visible,.nav-brand:focus-visible,.nav-link:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
 @media (max-width:520px){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.8125rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}.nav-tema{width:2rem;height:2rem}}
 @media (max-width:760px){.nav-link .tg-ic{display:none}}
-@media (max-width:560px){.nav-in{flex-wrap:wrap;row-gap:0;padding-top:.45rem}.nav-tema{margin-left:auto}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.4rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:7rem}}
+@media (max-width:560px){.nav-in{flex-wrap:wrap;row-gap:.65rem;padding-top:.6rem}.nav-tema{margin-left:auto}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.5rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8rem}}
 .tg-sec,.tg-kpis,.tg-card{scroll-margin-top:5rem}
 
 /* ---------- Compartilhar ---------- */
