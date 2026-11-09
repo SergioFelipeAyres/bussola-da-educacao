@@ -494,11 +494,55 @@ body:has(.tg-guide[open]){overflow:hidden}
 :root[data-theme="dark"] .tg .tg-hero-home #fato-outro{color:#0b1230}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg .tg-hero-home #fato-outro{color:#0b1230}}
 
-.tg-home-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--color-panel);border-radius:var(--cds-radius);box-shadow:var(--v-shadow);overflow:hidden}
-.tg-home-stat{--sec:var(--color-fg);display:flex;flex-direction:column;gap:.3rem;padding:1.25rem 1.4rem;color:inherit;text-decoration:none;border-left:1px solid var(--color-border-line);transition:background .15s ease}
-.tg-home-stat:first-child{border-left:0}
-.tg-home-stat:hover{background:color-mix(in srgb,var(--sec) 7%,var(--color-panel))}
-.tg-home-stat:focus-visible{outline:2px solid var(--color-fg);outline-offset:-2px}
-.tg .tg-home-num{width:fit-content;min-width:3ch;font-size:clamp(1.7rem,3.2vw,2.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--sec);font-variant-numeric:tabular-nums}
-.tg-home-stat span{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);line-height:1.35}
-@media (max-width:760px){.tg-home-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.tg-home-stat{padding:1rem 1.1rem}.tg-home-stat:nth-child(odd){border-left:0}.tg-home-stat:nth-child(n+3){border-top:1px solid var(--color-border-line)}}
+/* ---------- Início: mapa das cinco regiões ---------- */
+.tg-mapa-card{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(1.25rem,3vw,2.75rem);align-items:center;padding:clamp(1.15rem,2.5vw,2rem)}
+@media (min-width:860px){.tg-mapa-card{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
+.tg-mapa-fig{display:flex;flex-direction:column;align-items:center;gap:var(--cds-gap-md);min-width:0;padding:clamp(1rem,2.5vw,1.75rem);border-radius:calc(var(--cds-radius) * 1.1);background:color-mix(in srgb,var(--sec) 5%,var(--color-bg));transition:background .5s ease}
+.tg-mapa-svg{display:block;width:100%;max-width:27rem;height:auto;overflow:visible}
+.tg-mapa-reg{cursor:pointer;outline:none}
+.tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease}
+.tg-mapa-reg text{fill:#fff;pointer-events:none;transition:fill .3s ease}
+.tg-mapa-reg.tg-claro text{fill:#141a2e}
+.tg-mapa-nome{font-size:7.6px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
+.tg-mapa-val{font-size:13px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tg-mapa-reg:hover path{filter:brightness(1.08)}
+.tg-mapa-sel{fill:none;stroke:var(--color-fg);stroke-width:1.8;stroke-linejoin:round;pointer-events:none;filter:drop-shadow(0 3px 5px rgba(10,20,50,.35))}
+.tg-mapa-reg:focus-visible path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
+.tg-mapa-leg{display:flex;align-items:center;gap:.6rem;font-size:.75rem;letter-spacing:.04em;color:var(--color-fg-muted)}
+.tg-mapa-leg i{width:6.5rem;height:.4rem;border-radius:999px;background:linear-gradient(90deg,var(--seq-claro),var(--seq-escuro))}
+.tg-mapa-nota{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.75rem;font-size:var(--cds-font-size-body);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
+.tg-mapa-nota small{display:block;font-size:.6875rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.tg-mapa-nota b{color:var(--color-fg);font-weight:700}
+.tg-mapa-painel{display:flex;flex-direction:column;gap:var(--cds-gap-md);min-width:0}
+.tg-mapa-onde{display:flex;flex-wrap:wrap;align-items:center;gap:.1rem .9rem}
+.tg-mapa-onde .tg-eyebrow{flex-basis:100%;font-size:.6875rem;font-weight:600;letter-spacing:.1em}
+.tg-mapa-regiao{font-size:clamp(1.9rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.tg button.tg-mapa-reset{padding:.3rem .75rem;border-color:transparent;background:var(--cds-chart-grid);font-weight:500;color:var(--color-fg-muted)}
+.tg button.tg-mapa-reset:hover{color:var(--color-fg)}
+.tg-mapa-destaque{display:flex;flex-direction:column;gap:.7rem;padding:1.1rem 1.25rem;border-radius:var(--cds-radius);background:color-mix(in srgb,var(--sec) 8%,var(--color-panel));transition:background .5s ease}
+.tg-mapa-txt{font-size:clamp(1.05rem,1.6vw,1.2rem);font-weight:500;line-height:1.35;text-wrap:balance;min-height:4.1em}
+.tg .tg-mapa-txt b{display:block;font-size:1.65em;font-weight:800;letter-spacing:-.025em;line-height:1.15;color:var(--sec)}
+.tg-mapa-destaque .tg-iso10{max-width:16rem}
+.tg-mapa-meta{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg .tg-mapa-meta b{color:var(--color-fg);font-weight:700}
+.tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
+.tg-mapa-vs.tg-up,.tg-mapa-vs.tg-down{color:var(--color-fg);font-weight:600}
+.tg-mapa-vs.tg-up .tg-arrow{color:var(--color-positivo)}
+.tg-mapa-vs.tg-down .tg-arrow{color:var(--color-negativo)}
+.tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-mapa-inds{display:flex;flex-direction:column}
+.tg button.tg-mapa-ind{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;width:100%;padding:.6rem .7rem;border:0;border-radius:10px;background:transparent;text-align:left;font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg-muted);transition:background .15s ease,color .15s ease}
+.tg-mapa-ind .tg-ic{width:1rem;height:1rem;color:var(--sec)}
+.tg .tg-mapa-ind-v{font-weight:700;color:var(--color-fg);font-variant-numeric:tabular-nums}
+.tg-mapa-ind-bar{grid-column:2/-1;height:3px;border-radius:3px;background:var(--cds-chart-grid);overflow:hidden}
+.tg-mapa-ind-bar i{display:block;height:100%;border-radius:3px;background:var(--sec);opacity:.55;transition:width .5s ease}
+.tg button.tg-mapa-ind:hover{background:var(--cds-chart-grid);color:var(--color-fg)}
+.tg button.tg-mapa-ind[aria-pressed=true]{background:color-mix(in srgb,var(--sec) 10%,var(--color-panel));color:var(--color-fg);font-weight:600}
+.tg-mapa-ind[aria-pressed=true] .tg-mapa-ind-bar i{opacity:1}
+.tg button.tg-mapa-ir{align-self:flex-start;margin-top:.25rem;padding:.65rem 1.2rem;border:0;background:var(--sec);color:#fff;font-size:var(--cds-font-size-body);font-weight:600;transition:background .5s ease}
+:root[data-theme="dark"] .tg button.tg-mapa-ir{color:#0b1230}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg button.tg-mapa-ir{color:#0b1230}}
+@media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}}
+.tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
+.tg-mapa-nota span{white-space:nowrap}
+@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:8.6px;letter-spacing:.04em}.tg-mapa-val{font-size:13.5px}.tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}

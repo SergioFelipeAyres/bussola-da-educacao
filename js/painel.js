@@ -869,17 +869,118 @@
     drawFact();
   });
 
-  // números-chave da faixa abaixo do cabeçalho (sempre Brasil)
-  const HOME_NUMS = [['home-n-internet', 'escolas', 'A1', 'Sim'], ['home-n-mulheres', 'gestores', 'A1', 'Feminino'], ['home-n-ia', 'gestores', 'D9A', 'Sim']];
-  const setNum = (id, v) => { const el = document.getElementById(id); el.classList.remove('dash-skeleton'); if (el.textContent !== v) el.textContent = v; };
+  // ---------- início: mapa das cinco regiões ----------
+  // cada indicador traz a cor do tema da seção onde aparece no painel
+  const MAPA = [
+    { ds: 'escolas', ind: 'A1', resp: 'Sim', label: 'Escolas com internet', txt: 'escolas têm acesso à internet', cor: 'teal', icon: 'radio' },
+    { ds: 'escolas', ind: 'A8', resp: 'Sim', label: 'Computador e internet para alunos', txt: 'escolas oferecem computador e internet para os alunos', cor: 'teal', icon: 'notebook' },
+    { ds: 'escolas', ind: 'C3C', resp: 'Sim', label: 'Regras para o celular', txt: 'escolas têm regras para o uso do celular pelos alunos', cor: 'purple', icon: 'celular' },
+    { ds: 'escolas', ind: 'E5A', resp: 'Sim', label: 'Guia sobre uso de IA', txt: 'escolas têm um guia sobre o uso de inteligência artificial', cor: 'purple', icon: 'ia' },
+    { ds: 'gestores', ind: 'A1', resp: 'Feminino', label: 'Gestoras mulheres', txt: 'gestores escolares são mulheres', cor: 'blue', icon: 'pessoa' },
+    { ds: 'gestores', ind: 'D9A', resp: 'Sim', label: 'Gestores que usam IA', txt: 'gestores já usam inteligência artificial na gestão da escola', cor: 'purple', icon: 'ia' }
+  ];
+  const REGIOES = Object.keys(window.MAPA_REGIOES || {});
+  const regRec = (r) => 'REGIÃO|' + r;
+  let mapaInd = 0, mapaReg = null;
+  const mapaSvg = document.getElementById('mapa-svg'), mapaInds = document.getElementById('mapa-inds');
+  const mapaRow = (m, reg) => get(m.ind, '', m.resp, reg ? regRec(reg) : TOTAL, m.ds);
+  const mapaPick = (reg) => { mapaReg = reg === mapaReg ? null : reg; drawMapa(); };
+
+  // desenha o mapa e a lista de indicadores uma vez; depois só atualiza valores
+  const buildMapa = () => {
+    if (mapaSvg.childElementCount || !REGIOES.length) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    for (const r of REGIOES) {
+      const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'tg-mapa-reg'); g.setAttribute('role', 'button'); g.setAttribute('tabindex', '0'); g.dataset.reg = r;
+      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', window.MAPA_REGIOES[r].d);
+      const [x, y] = window.MAPA_REGIOES[r].c;
+      const t = document.createElementNS(NS, 'text'); t.setAttribute('x', x); t.setAttribute('y', y); t.setAttribute('text-anchor', 'middle');
+      const t1 = document.createElementNS(NS, 'tspan'); t1.setAttribute('class', 'tg-mapa-nome'); t1.setAttribute('x', x); t1.textContent = r;
+      const t2 = document.createElementNS(NS, 'tspan'); t2.setAttribute('class', 'tg-mapa-val'); t2.setAttribute('x', x); t2.setAttribute('dy', '1.15em');
+      t.append(t1, t2); g.append(p, t);
+      g.addEventListener('click', () => mapaPick(r));
+      g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mapaPick(r); } });
+      mapaSvg.append(g);
+    }
+    // contorno da região escolhida, desenhado por cima sem tirar a região do lugar (o foco do teclado não se perde)
+    const selP = document.createElementNS(NS, 'path'); selP.setAttribute('class', 'tg-mapa-sel'); selP.setAttribute('aria-hidden', 'true'); mapaSvg.append(selP);
+    MAPA.forEach((m, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-mapa-ind'; b.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
+      b.innerHTML = ic(m.icon) + '<span class="tg-mapa-ind-l"></span><b class="tg-mapa-ind-v"></b><span class="tg-mapa-ind-bar"><i></i></span>';
+      b.querySelector('.tg-mapa-ind-l').textContent = m.label;
+      b.addEventListener('click', () => { mapaInd = i; drawMapa(); });
+      mapaInds.append(b);
+    });
+    document.getElementById('mapa-reset').addEventListener('click', () => { mapaReg = null; drawMapa(); mapaSvg.querySelector('.tg-mapa-reg').focus(); });
+    // abre o painel de escolas ou de gestores já com a região escolhida no filtro
+    document.getElementById('mapa-ir').addEventListener('click', () => {
+      const m = MAPA[mapaInd];
+      dash.setParams({ recorte: mapaReg ? regRec(mapaReg) : TOTAL });
+      location.hash = '#' + m.ds;
+    });
+  };
+
+  function drawMapa() {
+    const m = MAPA[mapaInd];
+    if (dash.data('escolas').status !== 'ok' || dash.data('gestores').status !== 'ok') return;
+    buildMapa();
+    const sec = document.getElementById('mapa'); sec.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
+    const br = mapaRow(m, null), rows = REGIOES.map((r) => ({ r, row: mapaRow(m, r) })).filter((x) => x.row);
+    const vals = rows.map((x) => x.row.pct), lo = Math.min(...vals), hi = Math.max(...vals);
+    // regiões: do tom claro (menor valor) ao escuro (maior valor)
+    for (const g of mapaSvg.querySelectorAll('.tg-mapa-reg')) {
+      const x = rows.find((k) => k.r === g.dataset.reg), on = g.dataset.reg === mapaReg;
+      const t = x ? (hi > lo ? 0.12 + 0.88 * (x.row.pct - lo) / (hi - lo) : 0.6) : 0;
+      g.classList.toggle('tg-on', on); g.classList.toggle('tg-off', !!mapaReg && !on); g.setAttribute('aria-pressed', on ? 'true' : 'false');
+      g.classList.toggle('tg-claro', t < 0.5); // fundo claro pede texto escuro; fundo escuro, texto branco
+      g.querySelector('path').style.fill = x ? tone(t) : 'var(--cds-chart-grid)';
+      g.querySelector('.tg-mapa-val').textContent = x ? pct(x.row.pct) + (noMoe(x.row) ? '*' : '') : '—';
+      g.setAttribute('aria-label', 'Região ' + g.dataset.reg + ': ' + (x ? pct(x.row.pct) + ' — ' + m.label.toLowerCase() : 'sem dado'));
+    }
+    mapaSvg.querySelector('.tg-mapa-sel').setAttribute('d', mapaReg ? window.MAPA_REGIOES[mapaReg].d : '');
+    const top = rows.slice().sort((a, b) => b.row.pct - a.row.pct);
+    const nota = document.getElementById('mapa-nota'); nota.replaceChildren();
+    if (top.length > 1) {
+      const ext = (rotulo, x) => { const s = document.createElement('span'); const k = document.createElement('small'); k.textContent = rotulo; const b = document.createElement('b'); b.textContent = x.r; s.append(k, b, ' ' + pct(x.row.pct)); return s; };
+      nota.append(ext('Maior', top[0]), ext('Menor', top[top.length - 1]));
+    }
+    document.getElementById('mapa-alt-lista').replaceChildren(...[{ r: 'Brasil', row: br }, ...top].filter((x) => x.row).map((x) => {
+      const li = document.createElement('li'); li.textContent = x.r + ': ' + pct(x.row.pct) + (x.row.moe ? ' (pode variar ' + faixa(x.row) + ')' : ''); return li;
+    }));
+
+    // painel: frase, pictograma, margem de erro e comparação com o Brasil
+    const row = mapaRow(m, mapaReg) || br, txt = document.getElementById('mapa-txt');
+    document.getElementById('mapa-eyebrow').textContent = mapaReg ? 'Região' : 'Você está vendo';
+    document.getElementById('mapa-regiao').textContent = mapaReg || 'Brasil';
+    document.getElementById('mapa-reset').hidden = !mapaReg;
+    txt.classList.remove('dash-skeleton'); txt.replaceChildren();
+    if (row) {
+      const b = document.createElement('b'); b.textContent = freqTxt(row.pct);
+      txt.append(b, document.createTextNode(' ' + m.txt + '.'));
+      iso10(document.getElementById('mapa-iso'), row.pct, dash.colors[0], 'mapa', m.ds === 'escolas' ? SCHOOL : P);
+      const meta = document.getElementById('mapa-meta'), exato = document.createElement('b'); exato.textContent = pct(row.pct) + (noMoe(row) ? '*' : '');
+      meta.replaceChildren(exato, row.moe ? ' · pode variar ' + faixa(row) : noMoe(row) ? ' · margem de erro não estimada' : '');
+      const vs = document.getElementById('mapa-vs'); vs.replaceChildren(); vs.className = 'tg-mapa-vs';
+      if (mapaReg && br) {
+        const diff = row.pct - br.pct, out = !noMoe(row) && row.moe != null && Math.abs(diff) > row.moe;
+        if (out) { vs.classList.add(diff > 0 ? 'tg-up' : 'tg-down'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.textContent = diff > 0 ? '▲' : '▼'; vs.append(a); }
+        vs.append((out ? (diff > 0 ? 'Acima' : 'Abaixo') + ' do Brasil' : noMoe(row) ? 'Sem margem estimada para comparar' : 'Empate com o Brasil, dentro da margem de erro') + ' · Brasil: ' + pct(br.pct));
+      } else vs.append('Média de todo o país');
+    }
+    // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
+    [...mapaInds.children].forEach((b, i) => {
+      const r = mapaRow(MAPA[i], mapaReg) || mapaRow(MAPA[i], null);
+      b.setAttribute('aria-pressed', i === mapaInd ? 'true' : 'false');
+      b.querySelector('.tg-mapa-ind-v').textContent = r ? pct(r.pct) : '—';
+      b.querySelector('.tg-mapa-ind-bar i').style.width = (r ? r.pct : 0) + '%';
+    });
+    const ir = document.getElementById('mapa-ir');
+    ir.firstChild.textContent = 'Ver o painel de ' + m.ds + (mapaReg ? ' do ' + mapaReg : ' do Brasil') + ' ';
+  }
+
   const drawHome = () => {
     drawFact();
-    const tot = dash.data('total_escolas');
-    if (tot.status === 'ok') { const t = tot.data.find((x) => x.recorte === TOTAL); if (t) setNum('home-n-escolas', nfc.format(t.total)); }
-    for (const [id, ds, ind, resp] of HOME_NUMS) {
-      if (dash.data(ds).status !== 'ok') continue;
-      const row = get(ind, '', resp, TOTAL, ds); if (row) setNum(id, pct(row.pct));
-    }
+    drawMapa();
   };
 
   // ---------- main draw ----------

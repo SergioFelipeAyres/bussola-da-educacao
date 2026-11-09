@@ -58,11 +58,33 @@
       </section>
     </section>
 
-    <section class="tg-home-stats" aria-label="Números-chave da pesquisa">
-      <a class="tg-home-stat" href="#escolas"><b class="tg-home-num dash-skeleton" id="home-n-escolas">—</b><span>escolas representadas na pesquisa</span></a>
-      <a class="tg-home-stat" href="#card-camadas" style="--sec:var(--v-teal)"><b class="tg-home-num dash-skeleton" id="home-n-internet">—</b><span>das escolas têm acesso à internet</span></a>
-      <a class="tg-home-stat" href="#card-sexo" style="--sec:var(--v-blue)"><b class="tg-home-num dash-skeleton" id="home-n-mulheres">—</b><span>dos gestores escolares são mulheres</span></a>
-      <a class="tg-home-stat" href="#card-ia-adocao" style="--sec:var(--v-purple)"><b class="tg-home-num dash-skeleton" id="home-n-ia">—</b><span>dos gestores já usam IA na gestão</span></a>
+    <section class="tg-sec tg-mapa" id="mapa" aria-labelledby="mapa-titulo">
+      <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5l5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2z"/><path d="M9 4.5v13M15 6.5v13"/></svg>
+        <div><h2 class="tg-sec-title" id="mapa-titulo">O Brasil em 5 regiões</h2><p class="tg-sec-sub">Toque em uma região para ver seus números e compará-los com os do país.</p></div></div>
+      <article class="tg-card tg-mapa-card">
+        <div class="tg-mapa-fig">
+          <svg class="tg-mapa-svg" id="mapa-svg" viewBox="-8 -8 316 316" role="group" aria-label="Mapa do Brasil dividido em cinco regiões. Cada região é um botão."></svg>
+          <div class="tg-mapa-leg" aria-hidden="true"><span>menor</span><i></i><span>maior</span></div>
+          <p class="tg-mapa-nota" id="mapa-nota"></p>
+          <details class="tg-alt" id="mapa-alt"><summary>Ver o mapa em texto</summary><ul id="mapa-alt-lista"></ul></details>
+        </div>
+        <div class="tg-mapa-painel">
+          <div class="tg-mapa-onde">
+            <span class="tg-eyebrow" id="mapa-eyebrow">Você está vendo</span>
+            <h3 class="tg-mapa-regiao" id="mapa-regiao" aria-live="polite">Brasil</h3>
+            <button type="button" class="tg-mapa-reset" id="mapa-reset" hidden><span aria-hidden="true">←</span> Voltar para o Brasil</button>
+          </div>
+          <div class="tg-mapa-destaque">
+            <p class="tg-mapa-txt dash-skeleton" id="mapa-txt">—</p>
+            <svg class="tg-iso10" id="mapa-iso" width="100%" viewBox="0 0 240 26" role="img"></svg>
+            <p class="tg-mapa-meta" id="mapa-meta"></p>
+            <p class="tg-mapa-vs" id="mapa-vs"></p>
+          </div>
+          <h4 class="tg-mapa-sub" id="mapa-sub">Escolha o indicador</h4>
+          <div class="tg-mapa-inds" id="mapa-inds" role="group" aria-labelledby="mapa-sub"></div>
+          <button type="button" class="tg-mapa-ir" id="mapa-ir">Ver o painel completo <span aria-hidden="true">→</span></button>
+        </div>
+      </article>
     </section>
 
     <section class="tg-sec" aria-labelledby="home-como">
@@ -437,6 +459,7 @@
 </main>
 <script src="vendor/d3-7.9.0.min.js"></script>
 <script src="js/dash-shim.js"></script>
+<script src="js/mapa-regioes.js"></script>
 <script src="js/painel.js"></script>
 <script src="js/compartilhar.js"></script>
 <script src="js/animacao.js"></script>
