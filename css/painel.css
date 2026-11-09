@@ -70,7 +70,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-sec-head{display:flex;gap:var(--cds-gap-sm);align-items:flex-start}
 .tg-sec-head .tg-ic{width:1.6rem;height:1.6rem;flex:none;margin-top:.15rem;color:var(--color-fg-muted)}
 .tg-sec-title{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);text-wrap:balance}
-.tg-sec-sub{font-size:var(--cds-font-size-body);color:var(--color-fg-muted);max-width:65ch}
+.tg-sec-sub{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
 /* ocupa duas colunas quando a grade tem três (telas largas), para não deixar buraco */
 @media (min-width:73rem){.tg-card.tg-span2{grid-column:span 2}}
@@ -432,8 +432,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-sec-head .tg-ic{width:3rem;height:3rem;padding:.7rem;margin-top:0;border-radius:14px;color:var(--sec);background:color-mix(in srgb,var(--sec) 15%,var(--color-panel));stroke-width:1.9}
 .tg-sec-head .tg-ic.tg-solid{padding:.75rem}
 .tg-sec-title{font-weight:800;letter-spacing:-.02em}
-.tg-sec-head .tg-sec-title::after{content:"";display:block;width:2.75rem;height:4px;margin-top:.4rem;border-radius:4px;background:var(--sec)}
-.tg-sec-sub{margin-top:.35rem}
+.tg-sec-head .tg-sec-title{width:fit-content;max-width:100%;line-height:1.2}
+.tg-sec-head .tg-sec-title::after{content:"";display:block;width:calc(100% + 1.25rem);max-width:calc(100vw - 6rem);height:4px;margin-top:.3rem;border-radius:4px;background:var(--sec)}
 
 /* destaques tingidos com a cor da seção a que se referem (totais ficam no azul) */
 #kpi-internet,#kpi-alunos{--sec:var(--v-teal)}
