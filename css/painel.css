@@ -1,4 +1,4 @@
-/* ---------- Tokens de design (claro / escuro) ---------- */
+/* ---------- Tokens de design ---------- */
 :root{
   --font-anthropic-sans:"Montserrat",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-anthropic-serif:"Montserrat",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -12,22 +12,6 @@
   --cds-pad-xs:.3rem;--cds-pad-sm:.55rem;--cds-pad-md:.875rem;--cds-pad-lg:1.15rem;--cds-radius:10px;
   --cds-dur-slow:420ms;--cds-ease-out:cubic-bezier(.2,.7,.2,1);
   color-scheme:light;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --color-bg:#121319;--color-panel:#1a1c24;--color-fg:#ecedf2;--color-fg-muted:#a3a7b6;--color-border-line:#2c2f3a;--color-bad:#ef6b63;
-  --cds-chart-categorical-1:#6f95ff;--cds-chart-categorical-2:#f0994a;--cds-chart-categorical-3:#4fc493;--cds-chart-categorical-4:#b588ec;
-  --cds-chart-categorical-5:#e874a6;--cds-chart-categorical-6:#5cc0e0;--cds-chart-categorical-7:#d3b04b;--cds-chart-categorical-8:#9aa2b5;
-  --color-mulheres:var(--cds-chart-categorical-1);--color-homens:var(--cds-chart-muted);--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
-  --cds-text-secondary:#a3a7b6;--cds-surface-popover:#232631;--cds-border:#363a47;--cds-shadow-popover:0 6px 24px rgba(0,0,0,.45);
-  color-scheme:dark;
-}}
-:root[data-theme="dark"]{
-  --color-bg:#121319;--color-panel:#1a1c24;--color-fg:#ecedf2;--color-fg-muted:#a3a7b6;--color-border-line:#2c2f3a;--color-bad:#ef6b63;
-  --cds-chart-categorical-1:#6f95ff;--cds-chart-categorical-2:#f0994a;--cds-chart-categorical-3:#4fc493;--cds-chart-categorical-4:#b588ec;
-  --cds-chart-categorical-5:#e874a6;--cds-chart-categorical-6:#5cc0e0;--cds-chart-categorical-7:#d3b04b;--cds-chart-categorical-8:#9aa2b5;
-  --color-mulheres:var(--cds-chart-categorical-1);--color-homens:var(--cds-chart-muted);--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
-  --cds-text-secondary:#a3a7b6;--cds-surface-popover:#232631;--cds-border:#363a47;--cds-shadow-popover:0 6px 24px rgba(0,0,0,.45);
-  color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -259,15 +243,10 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-link[aria-current=page]{color:var(--color-fg);background:var(--color-panel);box-shadow:inset 0 0 0 1px var(--color-border-line);font-weight:var(--cds-font-weight-medium)}
 .nav-link[aria-current=page] .tg-ic{color:var(--cds-chart-categorical-1)}
 .nav-links{margin-left:auto}
-.nav-tema{display:grid;place-items:center;flex:none;width:2.25rem;height:2.25rem;padding:0;border:1px solid var(--color-border-line);border-radius:50%;background:var(--color-panel);color:var(--color-fg);cursor:pointer}
-.nav-tema:hover{border-color:var(--color-fg-muted)}
-.nav-tema .tg-ic{width:1.15rem;height:1.15rem}
-.nav-tema .nav-sol,.nav-tema[data-tema=dark] .nav-lua{display:none}
-.nav-tema[data-tema=dark] .nav-sol{display:block}
-.nav-tema:focus-visible,.nav-brand:focus-visible,.nav-link:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
-@media (max-width:520px){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.8125rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}.nav-tema{width:2rem;height:2rem}}
+.nav-brand:focus-visible,.nav-link:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+@media (max-width:520px){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.8125rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}}
 @media (max-width:760px){.nav-link .tg-ic{display:none}}
-@media (max-width:560px){.nav-in{flex-wrap:wrap;row-gap:.65rem;padding-top:.6rem}.nav-tema{margin-left:auto}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.5rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8rem}}
+@media (max-width:560px){.nav-in{flex-wrap:wrap;row-gap:.65rem;padding-top:.6rem}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.5rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8rem}}
 .tg-sec,.tg-kpis,.tg-card{scroll-margin-top:5rem}
 
 /* ---------- Compartilhar ---------- */
@@ -374,19 +353,6 @@ body:has(.tg-guide[open]){overflow:hidden}
   --v-shadow:0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22);
   --cds-radius:16px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --color-bg:#10121a;
-  --v-slate:#c5ccda;--v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
-  --hero-a:#1b2f80;--hero-b:#2a4fc0;--hero-c:#5434a6;
-  --v-shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
-}}
-:root[data-theme="dark"]{
-  --color-bg:#10121a;
-  --v-slate:#c5ccda;--v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
-  --hero-a:#1b2f80;--hero-b:#2a4fc0;--hero-c:#5434a6;
-  --v-shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
-}
-
 /* cor de cada tema */
 .tg-sec,.tg-kpi,.tg-feature{--sec:var(--v-blue)}
 #conexao{--sec:var(--v-teal)}
@@ -401,9 +367,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-link{font-weight:500}
 .nav-link[aria-current=page]{background:var(--v-blue);color:#fff;box-shadow:0 4px 14px -6px var(--v-blue)}
 .nav-link[aria-current=page] .tg-ic{color:#fff}
-:root[data-theme="dark"] .nav-link[aria-current=page]{color:#0b1230}
-:root[data-theme="dark"] .nav-link[aria-current=page] .tg-ic{color:#0b1230}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nav-link[aria-current=page],:root:not([data-theme="light"]) .nav-link[aria-current=page] .tg-ic{color:#0b1230}}
 
 /* cabeçalhos em faixa colorida (início, sobre, escolas, gestores) */
 .tg-hero,.tg-head{position:relative;overflow:hidden;isolation:isolate;padding:clamp(1.6rem,4vw,3rem);border-radius:calc(var(--cds-radius) * 1.5);
@@ -491,8 +454,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-hero-home .tg-fact-meta{min-height:2.6em}
 .tg-hero-home .tg-fact-actions{justify-content:space-between}
 .tg .tg-hero-home #fato-outro{padding:.55rem 1rem .55rem .8rem;border:0;background:var(--v-blue);color:#fff;font-size:var(--cds-font-size-body);font-weight:700}
-:root[data-theme="dark"] .tg .tg-hero-home #fato-outro{color:#0b1230}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg .tg-hero-home #fato-outro{color:#0b1230}}
 
 /* ---------- Início: mapa das cinco regiões ---------- */
 .tg-mapa-card{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(1.25rem,3vw,2.75rem);align-items:center;padding:clamp(1.15rem,2.5vw,2rem)}
@@ -540,8 +501,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg button.tg-mapa-ind[aria-pressed=true]{background:color-mix(in srgb,var(--sec) 10%,var(--color-panel));color:var(--color-fg);font-weight:600}
 .tg-mapa-ind[aria-pressed=true] .tg-mapa-ind-bar i{opacity:1}
 .tg button.tg-mapa-ir{align-self:flex-start;margin-top:.25rem;padding:.65rem 1.2rem;border:0;background:var(--sec);color:#fff;font-size:var(--cds-font-size-body);font-weight:600;transition:background .5s ease}
-:root[data-theme="dark"] .tg button.tg-mapa-ir{color:#0b1230}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg button.tg-mapa-ir{color:#0b1230}}
 @media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}}
 .tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
 .tg-mapa-nota span{white-space:nowrap}
@@ -553,5 +512,3 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg .tg-fact-eyebrow,.tg .tg-fact-txt b,.tg .tg-fact-link{color:var(--sec);transition:color .4s ease}
 .tg .tg-hero-home #fato-outro{background:var(--sec);transition:background .4s ease}
 .tg-hero-home .tg-fact{box-shadow:inset 0 4px 0 var(--sec),0 30px 60px -24px rgba(5,12,45,.6),0 2px 6px rgba(5,12,45,.15)}
-:root[data-theme="dark"] .tg .tg-fact-ic{color:#0b1230}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg .tg-fact-ic{color:#0b1230}}

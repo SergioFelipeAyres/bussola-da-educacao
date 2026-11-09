@@ -26,7 +26,7 @@ leitura confortável no celular.
 
 ```
 index.html              página
-css/painel.css          tokens de design (tema claro e escuro) e estilos
+css/painel.css          tokens de design e estilos
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
