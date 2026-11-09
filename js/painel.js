@@ -4,7 +4,8 @@
   const nf1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const nfc = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
   const pct = (v) => nf1.format(v) + '%';
-  const pp = (v) => '±' + nf1.format(v) + ' p.p.';
+  // margem de erro dita como faixa: "entre 93,6% e 96,6%" (limitada a 0% e 100%)
+  const faixa = (r) => 'entre ' + pct(Math.max(0, r.pct - r.moe)) + ' e ' + pct(Math.min(100, r.pct + r.moe));
   const enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
   const em10 = (v) => Math.round(v / 10);
   const freqTxt = (v) => (v >= 99.5 && v < 100) ? 'quase 100 em cada 100' : (v >= 90 || v < 10) ? Math.round(v) + ' em cada 100' : em10(v) + ' em cada 10';
@@ -271,7 +272,7 @@
   root.addEventListener('pointerleave', () => { tip.hidden = true; });
   const rowTip = (label, row, br, rec) => [
     label,
-    recName(rec) + ': ' + pct(row.pct) + (row.moe ? ' (margem de erro ' + pp(row.moe) + ')' : noMoe(row) ? '*' : ''),
+    recName(rec) + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? '*' : ''),
     br && rec !== TOTAL ? 'Brasil: ' + pct(br.pct) : '',
     row.n ? 'Cerca de ' + nfc.format(row.n) + ' ' + (row._ds === 'escolas' ? 'escolas' : 'gestores') : '',
     noMoe(row) ? noMoeTxt(row._ds, true) : ''
@@ -599,7 +600,7 @@
       const brf = get('A1', '', 'Feminino', TOTAL);
       setTip(l1, rowTip('Mulheres', f, brf, rec)); setTip(l2, rowTip('Homens', m, get('A1', '', 'Masculino', TOTAL), rec));
       if (rec !== TOTAL && brf) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.style.marginTop = 'var(--cds-gap-xs)'; p.textContent = 'Brasil: ' + pct(brf.pct) + ' mulheres'; say.append(p); }
-      if (f.moe) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Margem de erro: ' + pp(f.moe); say.append(p); }
+      if (f.moe) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Com a margem de erro, a parcela de mulheres fica ' + faixa(f) + '.'; say.append(p); }
       w.append(say); el.replaceChildren(w);
     })();
 
@@ -651,7 +652,7 @@
         [[it.c, C, 'Concorda'], [it.n, N, 'Nem concorda nem discorda'], [it.x, X, 'Discorda']].forEach(([row, col, name]) => {
           const p = document.createElement('div'); p.style.width = row.pct + '%'; p.style.background = col;
           const brr = get('D8', it.g, name === 'Nem concorda nem discorda' ? 'Não concorda nem discorda' : name, TOTAL);
-          setTip(p, [it.g, name + ': ' + pct(row.pct) + (row.moe ? ' (margem de erro ' + pp(row.moe) + ')' : ''), rec !== TOTAL && brr ? 'Brasil: ' + pct(brr.pct) : '']); s.append(p);
+          setTip(p, [it.g, name + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : ''), rec !== TOTAL && brr ? 'Brasil: ' + pct(brr.pct) : '']); s.append(p);
         });
         if (it.o > 0.05) { const p = document.createElement('div'); p.style.width = it.o + '%'; p.style.background = O; s.append(p); }
         const cap = document.createElement('div'); cap.className = 'tg-lik-cap';
@@ -681,7 +682,7 @@
       setTip(v, rowTip('Usam IA na gestão', s, br, rec));
       if (n) setTip(say.querySelector('.tg-stack-cap span'), rowTip('Não usam', n, get('D9A', '', 'Não', TOTAL), rec));
       if (rec !== TOTAL && br) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Brasil: ' + pct(br.pct); say.append(p); }
-      if (s.moe) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Margem de erro: ' + pp(s.moe); say.append(p); }
+      if (s.moe) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Com a margem de erro, a parcela que usa IA fica ' + faixa(s) + '.'; say.append(p); }
       w.append(say); el.replaceChildren(w);
     })();
 
@@ -726,7 +727,7 @@
         it.rows.forEach((row, i) => {
           const p = document.createElement('div'); p.style.width = row.pct + '%'; p.style.background = fc(i);
           const brr = get('A19', it.g, FREQ[i], TOTAL);
-          setTip(p, [it.g, FREQ[i] + ': ' + pct(row.pct) + (row.moe ? ' (margem de erro ' + pp(row.moe) + ')' : ''), rec !== TOTAL && brr ? 'Brasil: ' + pct(brr.pct) : '']);
+          setTip(p, [it.g, FREQ[i] + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : ''), rec !== TOTAL && brr ? 'Brasil: ' + pct(brr.pct) : '']);
           s.append(p);
         });
         const cap = document.createElement('div'); cap.className = 'tg-lik-cap';
@@ -859,7 +860,7 @@
     txt.append(b, document.createTextNode(' ' + (f.txt1 && b.textContent.startsWith('1 em') ? f.txt1 : f.txt) + '.'));
     iso10(document.getElementById('fato-iso'), row.pct, dash.colors[0], 'fato', f.ds === 'escolas' ? SCHOOL : P);
     const meta = dash.data(META), m = meta.status === 'ok' && meta.data.find((x) => x.ind === f.ind && x.publico === f.ds);
-    document.getElementById('fato-meta').textContent = pct(row.pct) + (row.moe ? ' (margem de erro ' + pp(row.moe) + ')' : '') +
+    document.getElementById('fato-meta').textContent = pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : '') +
       (m ? ' · Base: ' + m.universo.toLowerCase().replace(/^total de /, '') : '');
     document.getElementById('fato-link').href = '#' + f.card;
   };
@@ -961,7 +962,7 @@
       if (!row) { num.textContent = '—'; unmark(num); svg.innerHTML = ''; cmp.textContent = 'Sem dados para este recorte'; return; }
       num.textContent = pct(row.pct); markRow(num, row);
       iso10(svg, row.pct, k.dataset.color || dash.colors[0], view + 'k' + i, view === 'escolas' ? SCHOOL : P);
-      cmp.textContent = freqTxt(row.pct) + (recEff !== TOTAL && br ? ' · Brasil: ' + pct(br.pct) : '') + (row.moe ? ' · ' + pp(row.moe) : '');
+      cmp.textContent = freqTxt(row.pct) + (recEff !== TOTAL && br ? ' · Brasil: ' + pct(br.pct) : '') + (row.moe ? ' · pode variar ' + faixa(row) : '');
     });
 
     if (view === 'gestores') drawGestores(recEff, anim); else drawEscolas(recEff, anim);
