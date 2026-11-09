@@ -137,29 +137,29 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-empty{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-fail{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:inherit;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
-/* ---------- Como ler este painel: área recolhível no topo das abas ---------- */
-.tg-guide{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);scroll-margin-top:5rem}
-.tg-guide[open]{border-color:var(--cds-chart-axis)}
-.tg-guide-sum{display:flex;align-items:center;gap:var(--cds-gap-md);padding:var(--cds-pad-md) var(--cds-pad-lg);cursor:pointer;list-style:none;border-radius:var(--cds-radius)}
-.tg-guide-sum::-webkit-details-marker{display:none}
-.tg-guide-sum:hover{background:var(--cds-chart-grid)}
-.tg-guide-sum:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+/* ---------- Como ler este painel: botão no cabeçalho + janela (dialog) ---------- */
+.tg button.tg-guide-btn{display:inline-flex;align-items:center;gap:.5rem;width:fit-content;margin-top:var(--cds-gap-xs);padding:.6rem 1.1rem .6rem .9rem;border:0;border-radius:999px;background:#fff;color:#1d3a96;font-size:var(--cds-font-size-body);font-weight:700;box-shadow:0 6px 18px -8px rgba(0,0,0,.45);transition:transform .15s ease,box-shadow .15s ease}
+.tg button.tg-guide-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -8px rgba(0,0,0,.5)}
+.tg button.tg-guide-btn:focus-visible{outline:3px solid var(--hero-hi,#ffd166);outline-offset:3px}
+.tg-guide-btn .tg-ic{width:1.2rem;height:1.2rem}
+.tg-guide{width:min(68rem,calc(100vw - 2rem));max-width:none;max-height:calc(100dvh - 2rem);padding:0;border:0;border-radius:calc(var(--cds-radius) * 1.25);background:var(--color-panel);color:var(--color-fg);box-shadow:0 30px 80px -20px rgba(10,20,60,.5);overflow:auto;overscroll-behavior:contain}
+.tg-guide::backdrop{background:rgba(12,18,40,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+body:has(.tg-guide[open]){overflow:hidden}
+.tg-guide-top{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:var(--cds-gap-md);padding:var(--cds-pad-md) var(--cds-pad-lg);background:var(--color-panel);border-bottom:1px solid var(--color-border-line)}
 .tg-guide-ic{display:grid;place-items:center;width:2.5rem;height:2.5rem;flex:none;border-radius:50%;background:var(--cds-chart-grid);color:var(--cds-chart-categorical-1)}
 .tg-guide-ic .tg-ic{width:1.3rem;height:1.3rem}
 .tg-guide-txt{display:flex;flex-direction:column;gap:.1rem;min-width:0;flex:1}
-.tg-guide-title{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium)}
+.tg-guide-title{font-size:var(--cds-font-size-heading);font-weight:700}
 .tg-guide-sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg-guide-act{display:inline-flex;align-items:center;gap:.35rem;flex:none;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);color:var(--cds-chart-categorical-1)}
-.tg-guide-chev{transition:transform var(--cds-dur-slow) var(--cds-ease-out)}
-.tg-guide[open] .tg-guide-chev{transform:rotate(180deg)}
-.tg-guide-close,.tg-guide[open] .tg-guide-open{display:none}
-.tg-guide[open] .tg-guide-close{display:inline}
-.tg-guide-body{display:flex;flex-direction:column;gap:var(--cds-gap-md);padding:0 var(--cds-pad-lg) var(--cds-pad-lg);border-top:1px solid var(--color-border-line);padding-top:var(--cds-pad-lg)}
+.tg button.tg-guide-x{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;padding:0;border-radius:50%;background:var(--color-bg)}
+.tg button.tg-guide-x:hover{background:var(--cds-chart-grid)}
+.tg-guide-x .tg-ic{width:1.2rem;height:1.2rem}
+.tg-guide-body{display:flex;flex-direction:column;gap:var(--cds-gap-md);padding:var(--cds-pad-lg)}
 .tg-guide-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg-guide .tg-lesson{background:var(--color-bg)}
+.tg-guide .tg-lesson{background:var(--color-bg);scroll-margin-top:5rem}
 .tg-guide .tg-lesson-vis{background:var(--color-panel)}
-@media (max-width:520px){.tg-guide-sub{display:none}.tg-guide-sum{padding:var(--cds-pad-md)}.tg-guide-body{padding:var(--cds-pad-md)}}
-@media (prefers-reduced-motion:no-preference){.tg-guide[open] .tg-guide-body{animation:tg-rise .45s var(--tg-ease,ease-out) both}}
+@media (max-width:520px){.tg-guide{width:100vw;max-height:100dvh;height:100dvh;border-radius:0}.tg-guide-sub{display:none}.tg-guide-top{padding:var(--cds-pad-md)}.tg-guide-body{padding:var(--cds-pad-md)}}
+@media (prefers-reduced-motion:no-preference){.tg-guide[open]{animation:tg-rise .35s var(--tg-ease,ease-out) both}}
 .tg-fonte{border-top:none}
 /* ---------- Como ler este painel: guia visual ---------- */
 .tg-learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:var(--cds-gap-md)}
@@ -192,6 +192,11 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-lesson-cmprow .tg-dot{border-color:var(--color-bg)}
 .tg-lesson-tip{display:flex;gap:.5rem;align-items:flex-start;font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-lesson-ast{color:var(--cds-chart-categorical-2)}
+.tg-lesson-cores{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .6rem}
+.tg-lesson-cores span{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .75rem .35rem .45rem;border-radius:999px;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);background:color-mix(in srgb,var(--sec) 13%,var(--color-panel));color:var(--color-fg)}
+.tg-lesson-cores i{width:.9rem;height:.9rem;border-radius:50%;background:var(--sec);flex:none}
+@media (min-width:1080px){.tg-lesson-cores{flex-wrap:nowrap;gap:.4rem}.tg-lesson-cores span{white-space:nowrap;flex:none;padding:.3rem .6rem .3rem .4rem;gap:.35rem;font-size:.75rem}.tg-lesson-cores i{width:.75rem;height:.75rem}}
+@media (min-width:1280px){.tg-lesson-cores{gap:.6rem}.tg-lesson-cores span{padding:.35rem .75rem .35rem .45rem;gap:.45rem;font-size:var(--cds-font-size-caption)}.tg-lesson-cores i{width:.9rem;height:.9rem}}
 .tg-lesson-tip .tg-ic{margin-top:.2rem;color:var(--cds-chart-categorical-1)}
 .tg-how-more{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-how-more a{color:var(--cds-chart-categorical-1);font-weight:var(--cds-font-weight-medium)}
@@ -417,7 +422,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 @media (max-width:620px){.tg-hero::after,.tg-head::after{right:-5rem;top:.5rem;width:10rem;transform:rotate(-12deg);opacity:.35}.tg-title{font-size:1.65rem}}
 
 /* cartões */
-.tg-card,.tg-kpi,.tg-filter,.tg-guide,.tg-cite,.tg-fact{border-color:color-mix(in srgb,var(--color-border-line) 70%,transparent);box-shadow:var(--v-shadow)}
+.tg-card,.tg-kpi,.tg-filter,.tg-cite,.tg-fact{border-color:color-mix(in srgb,var(--color-border-line) 70%,transparent);box-shadow:var(--v-shadow)}
 .tg-sec .tg-card{box-shadow:inset 0 4px 0 var(--sec),var(--v-shadow)}
 .tg-card-title{font-weight:700}
 .tg button{border-radius:999px}

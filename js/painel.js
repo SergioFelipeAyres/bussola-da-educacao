@@ -518,14 +518,28 @@
     setTimeout(() => { b.textContent = 'Copiar'; }, 2000);
   }));
 
-  // links para o guia "Como ler este painel" (ou algo dentro dele) abrem a área recolhida
-  const openGuide = (el) => { const d = el.closest('details'); if (d) d.open = true; };
+  // guia "Como ler este painel": abre em janela (dialog) pelo botão do cabeçalho
+  // ou por links para #como-ler (ou para algo dentro dele)
+  const guia = document.getElementById('como-ler');
+  const fecharGuia = () => { if (guia.open) guia.close(); };
+  const openGuide = (el) => {
+    if (!guia.contains(el)) return false;
+    if (!guia.open) guia.showModal();
+    if (el !== guia) el.scrollIntoView({ block: 'start' }); else guia.scrollTop = 0;
+    return true;
+  };
+  document.querySelectorAll('.tg-guide-btn').forEach((b) => b.addEventListener('click', () => openGuide(guia)));
+  guia.querySelector('.tg-guide-x').addEventListener('click', fecharGuia);
+  // clique fora da caixa (no fundo escurecido) ou em um link interno fecha a janela
+  guia.addEventListener('click', (e) => { if (e.target === guia || e.target.closest('a[href^="#"]')) fecharGuia(); });
+  // ao fechar, tira #como-ler do endereço para o mesmo link poder abrir de novo
+  guia.addEventListener('close', () => { if (guia.contains(document.getElementById(location.hash.slice(1)))) history.replaceState(null, '', '#' + view); });
 
   window.addEventListener('hashchange', () => {
     const h = location.hash.slice(1);
     setView(viewFromHash());
     const el = !VIEWS.includes(h) && document.getElementById(h);
-    if (el) { openGuide(el); el.scrollIntoView(); } else window.scrollTo(0, 0);
+    if (el) { if (!openGuide(el)) el.scrollIntoView(); } else window.scrollTo(0, 0);
   });
 
   // ---------- controls ----------
@@ -960,5 +974,5 @@
   dash.onData(draw);
 
   const named = document.getElementById(location.hash.slice(1));
-  if (named && !VIEWS.includes(named.id)) setTimeout(() => { openGuide(named); named.scrollIntoView(); }, 400);
+  if (named && !VIEWS.includes(named.id)) setTimeout(() => { if (!openGuide(named)) named.scrollIntoView(); }, 400);
 })();

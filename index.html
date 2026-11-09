@@ -143,14 +143,15 @@
     <span class="tg-eyebrow">TIC Educação 2025 · NIC.br/Cetic.br</span>
     <h1 class="tg-title" id="tg-h1">Quem dirige as escolas brasileiras e como usa a tecnologia</h1>
     <p class="tg-take dash-skeleton" id="tg-take">—</p>
+    <button type="button" class="tg-guide-btn" aria-haspopup="dialog" aria-controls="como-ler"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>Como ler este painel</button>
   </header>
 
-  <details class="tg-guide tg-dash-only" id="como-ler">
-    <summary class="tg-guide-sum">
+  <dialog class="tg-guide" id="como-ler" aria-labelledby="como-ler-titulo">
+    <div class="tg-guide-top">
       <span class="tg-guide-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg></span>
-      <span class="tg-guide-txt"><span class="tg-guide-title">Como ler este painel</span><span class="tg-guide-sub">Seis ideias para entender qualquer gráfico daqui: percentual, base, margem de erro e mais.</span></span>
-      <span class="tg-guide-act"><span class="tg-guide-open">Abrir guia</span><span class="tg-guide-close">Fechar</span><svg class="tg-ic tg-guide-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
-    </summary>
+      <div class="tg-guide-txt"><h2 class="tg-guide-title" id="como-ler-titulo">Como ler este painel</h2><p class="tg-guide-sub">Sete ideias para entender qualquer gráfico daqui: percentual, base, margem de erro, cores e mais.</p></div>
+      <button type="button" class="tg-guide-x" aria-label="Fechar o guia"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
     <div class="tg-guide-body">
       <p class="tg-guide-note">Os números dos desenhos são só exemplos.</p>
       <div class="tg-learn" id="card-leitura">
@@ -230,11 +231,25 @@
           <h3 class="tg-card-title"><span class="tg-lesson-n">6</span>Acima, abaixo ou empate</h3>
           <p>Em <a href="#comparar">Compare grupos</a>, a linha vertical é o Brasil. Só dizemos que um grupo está acima ou abaixo quando a faixa da margem de erro <b>não toca</b> essa linha. Se toca, a diferença pode ser acaso.</p>
         </article>
+
+        <article class="tg-card tg-lesson tg-wide">
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <div class="tg-lesson-cores">
+              <span style="--sec:var(--v-teal)"><i></i>Conexão</span>
+              <span style="--sec:var(--v-orange)"><i></i>Equipamentos · Tecnologia na gestão</span>
+              <span style="--sec:var(--v-purple)"><i></i>Regras e IA · IA na gestão</span>
+              <span style="--sec:var(--v-pink)"><i></i>Comunicação · Compare grupos</span>
+              <span style="--sec:var(--v-blue)"><i></i>Quem são os gestores</span>
+            </div>
+          </div>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">7</span>Uma cor para cada tema</h3>
+          <p>Cada seção tem uma <b>cor ligada ao seu tema</b>, e os gráficos e os destaques do topo usam essa mesma cor. Um número em verde-água no topo, por exemplo, é aprofundado na seção Conexão. Dentro dos gráficos, o <b>cinza</b> marca o que não é o foco, como "não sabe", e o <b>grafite</b> marca uma segunda resposta, como "discorda".</p>
+        </article>
       </div>
       <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg><span>Respostas "Não respondeu" ficam fora do filtro de recorte. Recortes cruzados, como escolas particulares do Sudeste, não existem nas tabelas publicadas. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</span></p>
       <p class="tg-how-more">Quer saber por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design aplicados</a>, na página Sobre.</p>
     </div>
-  </details>
+  </dialog>
 
   <div class="tg-filter tg-dash-only" id="filtro">
     <label for="tg-recorte">Ver os dados de</label>
