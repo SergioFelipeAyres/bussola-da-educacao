@@ -546,3 +546,12 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
 .tg-mapa-nota span{white-space:nowrap}
 @media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:8.6px;letter-spacing:.04em}.tg-mapa-val{font-size:13.5px}.tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
+
+/* "Você sabia?": o cartão usa a cor do tema do dado sorteado (--sec, definido pelo painel.js) */
+.tg-fact{--sec:var(--v-blue)}
+.tg .tg-fact-ic{background:var(--sec);color:#fff;transition:background .4s ease}
+.tg .tg-fact-eyebrow,.tg .tg-fact-txt b,.tg .tg-fact-link{color:var(--sec);transition:color .4s ease}
+.tg .tg-hero-home #fato-outro{background:var(--sec);transition:background .4s ease}
+.tg-hero-home .tg-fact{box-shadow:inset 0 4px 0 var(--sec),0 30px 60px -24px rgba(5,12,45,.6),0 2px 6px rgba(5,12,45,.15)}
+:root[data-theme="dark"] .tg .tg-fact-ic{color:#0b1230}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tg .tg-fact-ic{color:#0b1230}}

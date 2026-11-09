@@ -565,11 +565,6 @@
   let resetNote = '';
   const buildControls = () => {
     if (built) return; built = true;
-    for (const [ds, name] of [['escolas', 'Escolas'], ['gestores', 'Gestores']]) {
-      const og = document.createElement('optgroup'); og.label = name;
-      MEAS.filter((m) => m.ds === ds).forEach((m) => og.append(new Option(m.label, m.id)));
-      ci.append(og);
-    }
     ci.addEventListener('change', () => dash.setParams({ cmp_ind: ci.value }));
     cc.addEventListener('change', () => dash.setParams({ cmp_cat: cc.value }));
   };
@@ -795,7 +790,10 @@
   // ---------- compare (shared) ----------
   const drawCompare = (params) => {
     const el = document.getElementById('ch-comparar');
-    const m = MEAS.find((x) => x.id === params.cmp_ind) || MEAS[0];
+    // só os indicadores do público da aba aberta (escolas ou gestores)
+    const ds = view === 'escolas' ? 'escolas' : 'gestores', lista = MEAS.filter((x) => x.ds === ds);
+    if (ci.dataset.ds !== ds) { ci.replaceChildren(...lista.map((x) => new Option(x.label, x.id))); ci.dataset.ds = ds; }
+    const m = lista.find((x) => x.id === params.cmp_ind) || lista[0];
     if (!IDX[m.ds]) return fail(el, 'loading');
     el.classList.remove('dash-skeleton');
     const cats = CATS[m.ds].filter((c) => c !== 'TOTAL');
@@ -850,6 +848,12 @@
     if (dash.data(f.ds).status !== 'ok') return;
     const row = get(f.ind, f.grupo, f.resp, TOTAL, f.ds);
     if (!row) { factIdx = (factIdx + 1) % FACTS.length; return drawFact(); }
+    // o cartão ganha a cor da seção onde o dado aparece no painel (a mesma de --sec no CSS)
+    const card = document.getElementById(f.card), sec = card && card.closest('.tg-sec');
+    const cor = { conexao: 'teal', equipamentos: 'orange', tecnologia: 'orange', regras: 'purple', ia: 'purple', comunicacao: 'pink', comparar: 'pink', perfil: 'blue' }[sec && sec.id] || 'blue';
+    const factEl = txt.closest('.tg-fact');
+    factEl.style.setProperty('--sec', 'var(--v-' + cor + ')');
+    factEl.style.setProperty('--cds-chart-categorical-1', 'var(--sec)');
     const icEl = document.getElementById('fato-ic');
     icEl.innerHTML = ic(f.icon);
     // reinicia a animação de entrada da frase a cada novo dado
