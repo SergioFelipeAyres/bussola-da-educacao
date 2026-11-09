@@ -364,20 +364,20 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
   --font-anthropic-sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-anthropic-serif:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --color-bg:#f4f6fb;
-  --v-blue:#2f5fd0;--v-teal:#0b8a7f;--v-orange:#c95f0e;--v-purple:#7346d0;--v-pink:#c73674;--v-gold:#9a6a00;
+  --v-slate:#454d60;--v-blue:#2f5fd0;--v-teal:#0b8a7f;--v-orange:#c95f0e;--v-purple:#7346d0;--v-pink:#c73674;--v-gold:#9a6a00;
   --hero-a:#2448b8;--hero-b:#3b6be6;--hero-c:#7346d0;--hero-hi:#ffd166;
   --v-shadow:0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22);
   --cds-radius:16px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --color-bg:#10121a;
-  --v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
+  --v-slate:#c5ccda;--v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
   --hero-a:#1b2f80;--hero-b:#2a4fc0;--hero-c:#5434a6;
   --v-shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
 }}
 :root[data-theme="dark"]{
   --color-bg:#10121a;
-  --v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
+  --v-slate:#c5ccda;--v-blue:#7aa0ff;--v-teal:#3fd0c0;--v-orange:#f5a053;--v-purple:#b28cf5;--v-pink:#f07aaf;--v-gold:#f2c14e;
   --hero-a:#1b2f80;--hero-b:#2a4fc0;--hero-c:#5434a6;
   --v-shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
 }
@@ -452,14 +452,15 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-guide-ic{border-radius:14px;background:color-mix(in srgb,var(--v-blue) 14%,var(--color-panel))}
 
 /* gráficos seguem a cor da seção: o destaque vira a cor do tema, a escala
-   sequencial é tingida por ela e a cor da paleta que coincidiria vira azul */
+   sequencial é tingida por ela e a cor da paleta que coincidiria vira grafite,
+   que não é cor de nenhuma seção */
 .tg-sec[id]:not(#perfil){
   --cds-chart-categorical-1:var(--sec);
   --color-mulheres:var(--sec);
   --seq-escuro:color-mix(in oklab,var(--sec) 78%,#000);
   --seq-claro:color-mix(in oklab,var(--sec) 28%,#fff);
 }
-#conexao{--cds-chart-categorical-6:var(--v-blue);--cds-chart-categorical-3:var(--v-blue)}
-#equipamentos,#tecnologia{--cds-chart-categorical-2:var(--v-blue)}
-#regras,#ia{--cds-chart-categorical-4:var(--v-blue)}
-#comunicacao,#comparar{--cds-chart-categorical-5:var(--v-blue)}
+#conexao{--cds-chart-categorical-6:var(--v-slate);--cds-chart-categorical-3:var(--v-slate)}
+#equipamentos,#tecnologia{--cds-chart-categorical-2:var(--v-slate)}
+#regras,#ia{--cds-chart-categorical-4:var(--v-slate)}
+#comunicacao,#comparar{--cds-chart-categorical-5:var(--v-slate)}
