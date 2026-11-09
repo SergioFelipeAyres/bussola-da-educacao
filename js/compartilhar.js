@@ -44,6 +44,12 @@
   // monta uma cópia do cartão com cabeçalho e rodapé, fora da tela
   const buildShot = (card) => {
     const shot = document.createElement('div'); shot.className = 'tg-shot';
+    // a cópia fica fora da seção: leva junto as cores do tema do cartão
+    const cs = getComputedStyle(card);
+    ['--sec', '--color-mulheres', '--seq-claro', '--seq-escuro', 1, 2, 3, 4, 5, 6].forEach((v) => {
+      const name = typeof v === 'number' ? '--cds-chart-categorical-' + v : v;
+      const val = cs.getPropertyValue(name).trim(); if (val) shot.style.setProperty(name, val);
+    });
     const head = document.createElement('div'); head.className = 'tg-shot-head';
     head.innerHTML = '<span class="tg-shot-brand">' + LOGO + '<span>Bússola da <b>Educação</b></span></span>';
     const rec = recorteOf(card);
