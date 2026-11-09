@@ -5,7 +5,7 @@
   --color-bg:#fbfbfd;--color-panel:#ffffff;--color-fg:#1b1d24;--color-fg-muted:#5d6170;--color-border-line:#e2e3ea;--color-bad:#c4302b;
   --cds-chart-categorical-1:#2f5fd0;--cds-chart-categorical-2:#d4731c;--cds-chart-categorical-3:#2c9a6a;--cds-chart-categorical-4:#8a4fc4;
   --cds-chart-categorical-5:#c2417a;--cds-chart-categorical-6:#2a8fb0;--cds-chart-categorical-7:#9a7b1d;--cds-chart-categorical-8:#6b7385;
-  --color-mulheres:#d6407f;--color-homens:#2f5fd0;--seq-claro:#c3d2f6;--seq-escuro:#1c3a8c;--color-positivo:#2c9a6a;--color-negativo:#cf4339;--cds-chart-muted:#a9adbd;--cds-chart-grid:#e9eaf0;--cds-chart-axis:#a4a8b6;
+  --color-mulheres:var(--cds-chart-categorical-1);--color-homens:var(--cds-chart-muted);--seq-claro:#c3d2f6;--seq-escuro:#1c3a8c;--color-positivo:#2c9a6a;--color-negativo:#cf4339;--cds-chart-muted:#a9adbd;--cds-chart-grid:#e9eaf0;--cds-chart-axis:#a4a8b6;
   --cds-text-secondary:#5d6170;--cds-surface-popover:#ffffff;--cds-border:#d9dbe3;--cds-shadow-popover:0 6px 24px rgba(20,24,40,.12);
   --cds-font-size-caption:.8125rem;--cds-font-size-body:.9375rem;--cds-font-size-heading:1.0625rem;--cds-font-size-title:1.6rem;--cds-font-weight-medium:600;
   --cds-gap-xs:.25rem;--cds-gap-sm:.5rem;--cds-gap-md:.875rem;--cds-gap-lg:1.25rem;--cds-gap-xl:2.25rem;
@@ -17,7 +17,7 @@
   --color-bg:#121319;--color-panel:#1a1c24;--color-fg:#ecedf2;--color-fg-muted:#a3a7b6;--color-border-line:#2c2f3a;--color-bad:#ef6b63;
   --cds-chart-categorical-1:#6f95ff;--cds-chart-categorical-2:#f0994a;--cds-chart-categorical-3:#4fc493;--cds-chart-categorical-4:#b588ec;
   --cds-chart-categorical-5:#e874a6;--cds-chart-categorical-6:#5cc0e0;--cds-chart-categorical-7:#d3b04b;--cds-chart-categorical-8:#9aa2b5;
-  --color-mulheres:#f07ab4;--color-homens:#6f95ff;--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
+  --color-mulheres:var(--cds-chart-categorical-1);--color-homens:var(--cds-chart-muted);--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
   --cds-text-secondary:#a3a7b6;--cds-surface-popover:#232631;--cds-border:#363a47;--cds-shadow-popover:0 6px 24px rgba(0,0,0,.45);
   color-scheme:dark;
 }}
@@ -25,7 +25,7 @@
   --color-bg:#121319;--color-panel:#1a1c24;--color-fg:#ecedf2;--color-fg-muted:#a3a7b6;--color-border-line:#2c2f3a;--color-bad:#ef6b63;
   --cds-chart-categorical-1:#6f95ff;--cds-chart-categorical-2:#f0994a;--cds-chart-categorical-3:#4fc493;--cds-chart-categorical-4:#b588ec;
   --cds-chart-categorical-5:#e874a6;--cds-chart-categorical-6:#5cc0e0;--cds-chart-categorical-7:#d3b04b;--cds-chart-categorical-8:#9aa2b5;
-  --color-mulheres:#f07ab4;--color-homens:#6f95ff;--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
+  --color-mulheres:var(--cds-chart-categorical-1);--color-homens:var(--cds-chart-muted);--seq-claro:#d2ddff;--seq-escuro:#2d4aa3;--color-positivo:#4fc493;--color-negativo:#f0716a;--cds-chart-muted:#5f6475;--cds-chart-grid:#2a2d38;--cds-chart-axis:#5b5f6e;
   --cds-text-secondary:#a3a7b6;--cds-surface-popover:#232631;--cds-border:#363a47;--cds-shadow-popover:0 6px 24px rgba(0,0,0,.45);
   color-scheme:dark;
 }
@@ -319,7 +319,8 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-about p,.tg-about li{font-size:var(--cds-font-size-body);line-height:1.55}
 .tg-about ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.4rem}
 .tg-about .tg-fact-link{margin-top:auto}
-.tg-about-links{margin-top:auto;display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm) var(--cds-gap-lg)}
+.tg-autor-papel{display:block;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-autor .tg-fact-link{display:inline-block;margin-top:.3rem}
 .tg-about-head{display:flex;align-items:center;gap:var(--cds-gap-md)}
 .tg-autor{display:flex;align-items:center;gap:var(--cds-gap-lg)}
 .tg-autor-foto{width:6.5rem;height:6.5rem;flex:none;border-radius:50%;object-fit:cover;background:var(--cds-chart-grid);box-shadow:0 0 0 3px var(--color-panel),0 0 0 5px var(--cds-chart-categorical-1)}

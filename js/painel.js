@@ -100,9 +100,16 @@
     tv: '<rect x="2.5" y="5" width="19" height="12" rx="1.5"/><path d="M8 21h8"/>',
     robo: '<rect x="5" y="8" width="14" height="11" rx="2"/><path d="M12 4v4M9 13h.01M15 13h.01M3 13v3M21 13v3"/>',
     ferramenta: '<path d="M14.5 5.5a4 4 0 0 0 5 5L11 19a2 2 0 0 1-3-3z"/>',
-    whatsapp: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/>',
+    whatsapp: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path style="fill:currentColor;stroke:none" transform="translate(7.3 6.9) scale(.39)" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>',
+    telegram: '<path d="M20.5 4.5L3.2 11.2l5.5 2.1 2 6.2 3.1-3.6 4.6 3.4z"/><path d="M8.7 13.3l11.8-8.8"/>',
     app: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
     rede: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>',
+    // logos das redes sociais redesenhados no mesmo traço dos demais ícones
+    instagram: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="3.8"/><path d="M16.8 7.2h.01"/>',
+    facebook: '<circle cx="12" cy="12" r="8.5"/><path d="M15.2 7.6h-1.4a2.6 2.6 0 0 0-2.6 2.6v10.2M8.8 13h5.6"/>',
+    youtube: '<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.4v5.2l4.4-2.6z"/>',
+    tiktok: '<path d="M13 3.5V15a3.5 3.5 0 1 1-3.5-3.5"/><path d="M13 3.5a4.5 4.5 0 0 0 4.5 4.5"/>',
+    x: '<path d="M4.5 4h4l11 16h-4z"/><path d="M19.5 4l-6.3 7.1M4.5 20l6.3-7.1"/>',
     digital: '<path d="M8 20c-1.5-2-2-4.5-2-8a6 6 0 0 1 12 0M12 12v4c0 2 .7 3.5 2 5M9 12a3 3 0 0 1 6 0c0 4 1 6 2.5 7.5"/>',
     rosto: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"/>',
     cadeado: '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'
@@ -167,7 +174,7 @@
     { ds: 'escolas', ind: 'E5B', grupo: '', resp: 'Sim', icon: 'ia', txt: 'escolas permitem que os alunos usem inteligência artificial', card: 'card-politicas' },
     { ds: 'escolas', ind: 'H1', grupo: '', resp: 'Sim', icon: 'cadeado', txt: 'escolas têm política de proteção de dados', card: 'card-politicas' },
     { ds: 'escolas', ind: 'E4B', grupo: '', resp: 'Sim', icon: 'rosto', txt: 'escolas usam reconhecimento facial dos alunos', card: 'card-vigilancia' },
-    { ds: 'escolas', ind: 'F3', grupo: 'Instagram', resp: 'Sim', icon: 'rede', txt: 'escolas têm perfil no Instagram', card: 'card-redes' },
+    { ds: 'escolas', ind: 'F3', grupo: 'Instagram', resp: 'Sim', icon: 'instagram', txt: 'escolas têm perfil no Instagram', card: 'card-redes' },
     { ds: 'escolas', ind: 'F4A', grupo: 'WhatsApp', resp: 'Sim', icon: 'whatsapp', txt: 'escolas usam o WhatsApp para se comunicar', card: 'card-canais' }
   ];
 
@@ -754,7 +761,8 @@
     (() => {
       const el = document.getElementById('ch-redes');
       const f2 = yes('F2', 'Têm perfil em alguma rede social', 'rede');
-      const its = listFrom('F3', ['Instagram', 'Facebook', 'YouTube', 'TikTok', 'Twitter ou X'], 'Sim', rec, null, true).map((x) => ({ ...x, icon: 'rede' }));
+      const its = listFrom('F3', ['Instagram', 'Facebook', 'YouTube', 'TikTok', 'Twitter ou X'], 'Sim', rec,
+        { Instagram: 'instagram', Facebook: 'facebook', YouTube: 'youtube', TikTok: 'tiktok', 'Twitter ou X': 'x' }, true);
       const top = document.createElement('div'), bot = document.createElement('div');
       if (f2) isoRows(top, [f2], rec, '', SCHOOL);
       bars(bot, its, rec, anim);
@@ -763,7 +771,7 @@
     })();
 
     bars(document.getElementById('ch-canais'), [
-      ...listFrom('F4A', ['WhatsApp', 'Telegram'], 'Sim', rec).map((x) => ({ ...x, icon: x.full === 'WhatsApp' ? 'whatsapp' : 'balao' })),
+      ...listFrom('F4A', ['WhatsApp', 'Telegram'], 'Sim', rec).map((x) => ({ ...x, icon: x.full === 'WhatsApp' ? 'whatsapp' : 'telegram' })),
       yes('G4A', 'Plataforma ou ambiente virtual de aprendizagem', 'quadro'),
       yes('F5', 'Aplicativo próprio da escola', 'app')
     ].filter(Boolean).sort((a, b) => b.row.pct - a.row.pct), rec, anim);
