@@ -2,7 +2,7 @@
 
 Painel interativo com os dados de **gestores escolares** e **escolas** da pesquisa
 **TIC Educação 2025** (NIC.br/Cetic.br), feito como produto da dissertação
-*Comunicação visual como facilitadora da visualização de dados* (Mestrado Profissional em
+*Visualização de dados como prática comunicacional: escolhas visuais, mediação e produção de sentidos* (Mestrado Profissional em
 Comunicação Digital e Cultura de Dados, FGV).
 
 O objetivo é tornar os dados compreensíveis para leitores não especializados, aplicando

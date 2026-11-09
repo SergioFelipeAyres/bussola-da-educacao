@@ -72,6 +72,8 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-sec-title{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);text-wrap:balance}
 .tg-sec-sub{font-size:var(--cds-font-size-body);color:var(--color-fg-muted);max-width:65ch}
 .tg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
+/* ocupa duas colunas quando a grade tem três (telas largas), para não deixar buraco */
+@media (min-width:73rem){.tg-card.tg-span2{grid-column:span 2}}
 .tg-card{display:flex;flex-direction:column;gap:var(--cds-gap-md);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
 .tg-card.tg-wide{grid-column:1/-1}
 .tg-card-title{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);text-wrap:balance}
@@ -320,7 +322,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-about ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.4rem}
 .tg-about .tg-fact-link{margin-top:auto}
 .tg-autor-papel{display:block;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
-.tg-autor .tg-fact-link{display:inline-block;margin-top:.3rem}
+.tg-autor .tg-fact-link{display:inline-block;margin-top:.3rem;margin-right:1rem}
 .tg-about-head{display:flex;align-items:center;gap:var(--cds-gap-md)}
 .tg-autor{display:flex;align-items:center;gap:var(--cds-gap-lg)}
 .tg-autor-foto{width:6.5rem;height:6.5rem;flex:none;border-radius:50%;object-fit:cover;background:var(--cds-chart-grid);box-shadow:0 0 0 3px var(--color-panel),0 0 0 5px var(--cds-chart-categorical-1)}
@@ -356,7 +358,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 /* =====================================================================
    Tema vibrante: cada tema da pesquisa ganha sua cor, cabeçalhos em
    faixa colorida e destaques tingidos. Tudo abaixo sobrescreve o visual
-   base; os gráficos continuam usando a paleta dos tokens acima.
+   base; o destaque dos gráficos segue a cor da seção (bloco no fim).
    ===================================================================== */
 :root{
   --font-anthropic-sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -428,12 +430,10 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-sec-head .tg-sec-title::after{content:"";display:block;width:2.75rem;height:4px;margin-top:.4rem;border-radius:4px;background:var(--sec)}
 .tg-sec-sub{margin-top:.35rem}
 
-/* destaques tingidos, um tom por cartão */
-.tg-kpi:nth-child(5n+1){--sec:var(--v-blue)}
-.tg-kpi:nth-child(5n+2){--sec:var(--v-teal)}
-.tg-kpi:nth-child(5n+3){--sec:var(--v-orange)}
-.tg-kpi:nth-child(5n+4){--sec:var(--v-purple)}
-.tg-kpi:nth-child(5n+5){--sec:var(--v-pink)}
+/* destaques tingidos com a cor da seção a que se referem (totais ficam no azul) */
+#kpi-internet,#kpi-alunos{--sec:var(--v-teal)}
+#kpi-celular,#kpi-guia-ia,#kpi-ia{--sec:var(--v-purple)}
+#kpi-reuniao{--sec:var(--v-orange)}
 .tg-kpi{--cds-chart-categorical-1:var(--sec);background:color-mix(in srgb,var(--sec) 9%,var(--color-panel));border-color:color-mix(in srgb,var(--sec) 28%,var(--color-panel))}
 .tg-kpi-label{color:var(--color-fg);font-weight:600}
 .tg-kpi-num{color:var(--sec);font-weight:800;letter-spacing:-.02em}
