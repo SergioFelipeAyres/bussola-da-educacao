@@ -851,7 +851,7 @@
     if (!row) { factIdx = (factIdx + 1) % FACTS.length; return drawFact(); }
     // o cartão ganha a cor da seção onde o dado aparece no painel (a mesma de --sec no CSS)
     const card = document.getElementById(f.card), sec = card && card.closest('.tg-sec');
-    const cor = { conexao: 'teal', equipamentos: 'orange', tecnologia: 'orange', regras: 'purple', ia: 'purple', comunicacao: 'pink', comparar: 'pink', perfil: 'blue' }[sec && sec.id] || 'blue';
+    const cor = { conexao: 'teal', equipamentos: 'orange', tecnologia: 'orange', regras: 'purple', ia: 'purple', comunicacao: 'pink', comparar: 'gold', perfil: 'blue' }[sec && sec.id] || 'blue';
     const factEl = txt.closest('.tg-fact');
     factEl.style.setProperty('--sec', 'var(--v-' + cor + ')');
     factEl.style.setProperty('--cds-chart-categorical-1', 'var(--sec)');

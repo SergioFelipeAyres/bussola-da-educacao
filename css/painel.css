@@ -180,7 +180,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-lesson-cores span{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .75rem .35rem .45rem;border-radius:999px;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);background:color-mix(in srgb,var(--sec) 13%,var(--color-panel));color:var(--color-fg)}
 .tg-lesson-cores i{width:.9rem;height:.9rem;border-radius:50%;background:var(--sec);flex:none}
 @media (min-width:1080px){.tg-lesson-cores{flex-wrap:nowrap;gap:.4rem}.tg-lesson-cores span{white-space:nowrap;flex:none;padding:.3rem .6rem .3rem .4rem;gap:.35rem;font-size:.75rem}.tg-lesson-cores i{width:.75rem;height:.75rem}}
-@media (min-width:1280px){.tg-lesson-cores{gap:.6rem}.tg-lesson-cores span{padding:.35rem .75rem .35rem .45rem;gap:.45rem;font-size:var(--cds-font-size-caption)}.tg-lesson-cores i{width:.9rem;height:.9rem}}
 .tg-lesson-tip .tg-ic{margin-top:.2rem;color:var(--cds-chart-categorical-1)}
 .tg-how-more{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-how-more a{color:var(--cds-chart-categorical-1);font-weight:var(--cds-font-weight-medium)}
@@ -358,7 +357,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 #conexao{--sec:var(--v-teal)}
 #equipamentos,#tecnologia{--sec:var(--v-orange)}
 #regras,#ia{--sec:var(--v-purple)}
-#comunicacao,#comparar{--sec:var(--v-pink)}
+#comunicacao{--sec:var(--v-pink)}
+#comparar{--sec:var(--v-gold)}
 #perfil{--sec:var(--v-blue)}
 
 /* navegação */
@@ -431,7 +431,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 #conexao{--cds-chart-categorical-6:var(--v-slate);--cds-chart-categorical-3:var(--v-slate)}
 #equipamentos,#tecnologia{--cds-chart-categorical-2:var(--v-slate)}
 #regras,#ia{--cds-chart-categorical-4:var(--v-slate)}
-#comunicacao,#comparar{--cds-chart-categorical-5:var(--v-slate)}
+#comunicacao{--cds-chart-categorical-5:var(--v-slate)}
+#comparar{--cds-chart-categorical-7:var(--v-slate)}
 
 /* =====================================================================
    Início: cabeçalho em duas colunas, com o cartão "Você sabia?" flutuando
