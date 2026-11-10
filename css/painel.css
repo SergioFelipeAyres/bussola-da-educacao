@@ -66,7 +66,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-chart{min-height:8rem;position:relative}
 .tg-say{font-size:var(--cds-font-size-heading);line-height:1.4}
 .tg-say b{font-weight:600}
-.tg-iso100{display:block;width:100%;max-width:17rem;height:auto}
+.tg-isowrap .tg-iso-big{flex:1 1 15rem;max-width:20rem}
 .tg-isowrap{display:flex;flex-wrap:wrap;gap:var(--cds-gap-lg);align-items:center}
 .tg-isowrap > *{min-width:0}
 .tg-isowrap .tg-say{flex:1 1 12rem}
@@ -207,7 +207,6 @@ body:has(.tg-guide[open]){overflow:hidden}
   /* legendas e linhas de texto dos gráficos */
   .tg-in .tg-stack-legend > div,.tg-in .tg-bar-label,.tg-in .tg-dot-lab,.tg-in .tg-dot-val{animation:tg-rise .6s var(--tg-ease) both;animation-delay:calc(var(--d,0ms) + 80ms + var(--i,0) * 60ms)}
   /* pictogramas: as figuras acendem em sequência (só opacidade, para não mexer na posição do SVG) */
-  .tg-in .tg-p{animation:tg-fadein .35s ease-out both;animation-delay:calc(var(--d,0ms) + 100ms + var(--i,0) * 9ms)}
   .tg-in .tg-iso10 .tg-c{animation:tg-fadein .4s ease-out both;animation-delay:calc(var(--d,0ms) + 150ms + var(--i,0) * 70ms)}
   /* comparação: faixa da margem de erro abre a partir do ponto, e o ponto surge */
   .tg-in .tg-ci{animation:tg-grow-c .8s var(--tg-ease) both;animation-delay:calc(var(--d,0ms) + 200ms + var(--i,0) * 70ms)}

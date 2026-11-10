@@ -306,18 +306,25 @@
     svg.innerHTML = s;
     svg.setAttribute('aria-label', em10(v) + ' em cada 10');
   };
-  const iso100 = (parts, anim) => {
-    let s = '<svg class="tg-iso100' + (anim ? ' tg-anim' : '') + '" viewBox="0 0 240 260" width="100%" role="img" aria-label="Grade de 100 figuras">';
-    let i = 0;
-    const cell = (fill, faint) => { const x = (i % 10) * 24, y = Math.floor(i / 10) * 26; return '<g class="tg-p" style="--i:' + i + ';fill:' + fill + (faint ? ';opacity:.45' : '') + '" transform="translate(' + x + ',' + y + ')">' + P + '</g>'; };
-    for (const p of parts) for (let k = 0; k < p.count && i < 100; k++, i++) s += cell(p.color, false);
-    while (i < 100) { s += cell('var(--cds-chart-muted)', true); i++; }
-    return s + '</svg>';
-  };
-  const counts100 = (vals) => {
-    const fl = vals.map((v) => Math.floor(v)); let rest = 100 - fl.reduce((a, b) => a + b, 0);
-    vals.map((v, i) => [v - fl[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (rest > 0) { fl[i]++; rest--; } });
-    return fl;
+  // 10 figuras (cada uma = 10%) com várias partes em sequência, ex.: mulheres e homens; a figura da divisa fica cortada
+  let isoN = 0;
+  const isoParts = (parts) => {
+    const uid = 'ip' + (isoN++); let defs = '', body = '', a = 0;
+    for (let i = 0; i < 10; i++) body += '<g transform="translate(' + (i * 24) + ',1)" opacity=".45" style="fill:var(--cds-chart-muted)">' + P + '</g>';
+    parts.forEach((p, k) => {
+      const b = Math.min(100, a + p.v);
+      for (let i = 0; i < 10; i++) {
+        const x0 = Math.max(a, i * 10), x1 = Math.min(b, i * 10 + 10);
+        if (x1 <= x0) continue;
+        const g = '<g class="tg-c" transform="translate(' + (i * 24) + ',1)" style="--i:' + i + ';fill:' + p.color + '">' + P + '</g>';
+        if (x0 === i * 10 && x1 === i * 10 + 10) { body += g; continue; }
+        const id = uid + '-' + k + '-' + i;
+        defs += '<clipPath id="' + id + '"><rect x="' + (x0 * 2.4) + '" y="0" width="' + ((x1 - x0) * 2.4) + '" height="26"/></clipPath>';
+        body += '<g clip-path="url(#' + id + ')">' + g + '</g>';
+      }
+      a = b;
+    });
+    return '<svg class="tg-iso10 tg-iso-big" viewBox="0 0 240 26" width="100%" role="img"><defs>' + defs + '</defs>' + body + '</svg>';
   };
   // rows of 10 pictograms: [{label, icon, row, br, ind}]
   let uidN = 0;
@@ -446,7 +453,7 @@
   const textAlt = (card) => {
     const chart = card && card.querySelector('.tg-chart'); if (!chart) return;
     // barras, figuras e eixos são só desenho: o leitor de tela lê os mesmos números no texto abaixo
-    chart.querySelectorAll('.tg-track,.tg-stack,.tg-dot-track,.tg-iso10,.tg-iso100,.tg-sw,.tg-refkey').forEach((el) => el.setAttribute('aria-hidden', 'true'));
+    chart.querySelectorAll('.tg-track,.tg-stack,.tg-dot-track,.tg-iso10,.tg-sw,.tg-refkey').forEach((el) => el.setAttribute('aria-hidden', 'true'));
     const groups = new Map();
     chart.querySelectorAll('[data-tip]').forEach((el) => {
       if (el.closest('.tg-thin')) return; // barra fina do Brasil: o valor já está na linha do recorte
@@ -581,9 +588,8 @@
       const el = document.getElementById('ch-sexo');
       const f = get('A1', '', 'Feminino', rec), m = get('A1', '', 'Masculino', rec);
       if (!f || !m) return emptyMsg(el, NODATA);
-      const [cf, cm] = counts100([f.pct, m.pct]);
       const w = document.createElement('div'); w.className = 'tg-isowrap';
-      w.innerHTML = iso100([{ count: cf, color: 'var(--color-mulheres)' }, { count: cm, color: 'var(--color-homens)' }], anim);
+      w.innerHTML = isoParts([{ v: f.pct, color: 'var(--color-mulheres)' }, { v: m.pct, color: 'var(--color-homens)' }]);
       const say = document.createElement('div'); say.className = 'tg-say';
       const b = document.createElement('b'); b.textContent = freqTxt(f.pct);
       const sf = document.createElement('span'); sf.textContent = pct(f.pct); markRow(sf, f);
@@ -666,9 +672,8 @@
       const el = document.getElementById('ch-ia');
       const s = get('D9A', '', 'Sim', rec), n = get('D9A', '', 'Não', rec);
       if (!s) return emptyMsg(el, NODATA);
-      const [cs] = counts100([s.pct, 100 - s.pct]);
       const w = document.createElement('div'); w.className = 'tg-isowrap';
-      w.innerHTML = iso100([{ count: cs, color: dash.colors[0] }], anim);
+      w.innerHTML = isoParts([{ v: s.pct, color: dash.colors[0] }]);
       const say = document.createElement('div'); say.className = 'tg-say';
       const b = document.createElement('b'); b.textContent = (em10(s.pct) === 5 ? 'Metade' : freqTxt(s.pct));
       const v = document.createElement('span'); v.textContent = pct(s.pct); markRow(v, s);
