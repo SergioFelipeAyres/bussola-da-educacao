@@ -461,14 +461,22 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-fig{display:flex;flex-direction:column;align-items:center;gap:var(--cds-gap-md);min-width:0;padding:clamp(1rem,2.5vw,1.75rem);border-radius:calc(var(--cds-radius) * 1.1);background:color-mix(in srgb,var(--sec) 5%,var(--color-bg));transition:background .5s ease}
 .tg-mapa-svg{display:block;width:100%;max-width:27rem;height:auto;overflow:visible}
 .tg-mapa-reg{cursor:pointer;outline:none}
-.tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease}
-.tg-mapa-reg text{fill:#fff;pointer-events:none;transition:fill .3s ease}
-.tg-mapa-reg.tg-claro text{fill:#141a2e}
+.tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease,opacity .35s ease}
+.tg-mapa-reg text,.tg-mapa-pick text{fill:#fff;pointer-events:none;transition:fill .3s ease,opacity .35s ease}
+.tg-mapa-reg.tg-claro text,.tg-mapa-pick.tg-claro text{fill:#141a2e}
 .tg-mapa-nome{font-size:7.6px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
 .tg-mapa-val{font-size:13px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tg-mapa-reg:hover path{filter:brightness(1.08)}
-.tg-mapa-sel{fill:none;stroke:var(--color-fg);stroke-width:1.8;stroke-linejoin:round;pointer-events:none;filter:drop-shadow(0 3px 5px rgba(10,20,50,.35))}
 .tg-mapa-reg:focus-visible path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
+/* região escolhida: as demais esmaecem e ela "salta" do mapa, com contorno escuro e sombra */
+.tg-mapa-reg.tg-off path{opacity:.28}
+.tg-mapa-reg.tg-off text{fill:var(--color-fg-muted)}
+.tg-mapa-reg.tg-off:hover path{opacity:.55}
+.tg-mapa-sel{pointer-events:none}
+.tg-mapa-pick{transform-box:fill-box;transform-origin:center;transform:scale(1.06);filter:drop-shadow(0 6px 14px rgba(10,20,50,.32));animation:tg-mapa-pop .4s cubic-bezier(.2,.9,.3,1.25)}
+.tg-mapa-pick path{stroke:#fff;stroke-width:2.6;stroke-linejoin:round}
+.tg-mapa-svg:has(.tg-on:focus-visible) .tg-mapa-pick path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
+@keyframes tg-mapa-pop{from{transform:scale(1);filter:drop-shadow(0 0 0 rgba(10,20,50,0))}}
 .tg-mapa-leg{display:flex;align-items:center;gap:.6rem;font-size:.75rem;letter-spacing:.04em;color:var(--color-fg-muted)}
 .tg-mapa-leg i{width:6.5rem;height:.4rem;border-radius:999px;background:linear-gradient(90deg,var(--seq-claro),var(--seq-escuro))}
 .tg-mapa-nota{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.75rem;font-size:var(--cds-font-size-body);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
@@ -501,10 +509,10 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg button.tg-mapa-ind[aria-pressed=true]{background:color-mix(in srgb,var(--sec) 10%,var(--color-panel));color:var(--color-fg);font-weight:600}
 .tg-mapa-ind[aria-pressed=true] .tg-mapa-ind-bar i{opacity:1}
 .tg button.tg-mapa-ir{align-self:flex-start;margin-top:.25rem;padding:.65rem 1.2rem;border:0;background:var(--sec);color:#fff;font-size:var(--cds-font-size-body);font-weight:600;transition:background .5s ease}
-@media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}}
-.tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
+@media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}.tg-mapa-pick{animation:none}}
+[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
 .tg-mapa-nota span{white-space:nowrap}
-@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:8.6px;letter-spacing:.04em}.tg-mapa-val{font-size:13.5px}.tg-mapa-reg[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
+@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:8.6px;letter-spacing:.04em}.tg-mapa-val{font-size:13.5px}[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
 
 /* "Você sabia?": o cartão usa a cor do tema do dado sorteado (--sec, definido pelo painel.js) */
 .tg-fact{--sec:var(--v-blue)}

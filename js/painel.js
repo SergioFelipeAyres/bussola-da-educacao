@@ -907,8 +907,8 @@
       g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mapaPick(r); } });
       mapaSvg.append(g);
     }
-    // contorno da região escolhida, desenhado por cima sem tirar a região do lugar (o foco do teclado não se perde)
-    const selP = document.createElementNS(NS, 'path'); selP.setAttribute('class', 'tg-mapa-sel'); selP.setAttribute('aria-hidden', 'true'); mapaSvg.append(selP);
+    // camada da região escolhida, desenhada por cima das demais
+    const selG = document.createElementNS(NS, 'g'); selG.setAttribute('class', 'tg-mapa-sel'); selG.setAttribute('aria-hidden', 'true'); mapaSvg.append(selG);
     MAPA.forEach((m, i) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-mapa-ind'; b.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
       b.innerHTML = ic(m.icon) + '<span class="tg-mapa-ind-l"></span><b class="tg-mapa-ind-v"></b><span class="tg-mapa-ind-bar"><i></i></span>';
@@ -952,7 +952,17 @@
       g.querySelector('.tg-mapa-val').textContent = x ? pct(x.row.pct) + (noMoe(x.row) ? '*' : '') : '—';
       g.setAttribute('aria-label', 'Região ' + g.dataset.reg + ': ' + (x ? pct(x.row.pct) + ' — ' + m.label.toLowerCase() : 'sem dado'));
     }
-    mapaSvg.querySelector('.tg-mapa-sel').setAttribute('d', mapaReg ? window.MAPA_REGIOES[mapaReg].d : '');
+    // cópia da região escolhida por cima das demais: a original fica no lugar, então o foco do teclado não se perde
+    const selG = mapaSvg.querySelector('.tg-mapa-sel'), gOn = mapaReg && mapaSvg.querySelector('.tg-mapa-reg.tg-on');
+    let pk = selG.firstElementChild;
+    if (!gOn) selG.replaceChildren();
+    else {
+      if (!pk || pk.dataset.reg !== mapaReg) { // região nova: cria de novo para a animação recomeçar
+        pk = document.createElementNS('http://www.w3.org/2000/svg', 'g'); pk.setAttribute('class', 'tg-mapa-pick'); pk.dataset.reg = mapaReg; selG.replaceChildren(pk);
+      }
+      pk.replaceChildren(gOn.querySelector('path').cloneNode(), gOn.querySelector('text').cloneNode(true));
+      pk.classList.toggle('tg-claro', gOn.classList.contains('tg-claro'));
+    }
     const top = rows.slice().sort((a, b) => b.row.pct - a.row.pct);
     const nota = document.getElementById('mapa-nota'); nota.replaceChildren();
     if (top.length > 1) {
