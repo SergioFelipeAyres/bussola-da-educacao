@@ -422,6 +422,7 @@
   const fala = 'speechSynthesis' in window ? window.speechSynthesis : null;
   let falando = null;
   const tituloDe = (card) => {
+    if (card.dataset.titulo) return card.dataset.titulo; // ex.: o mapa da página inicial, cujo título muda com o indicador
     const t = card.querySelector('.tg-card-title'); if (t) return t.textContent;
     const ind = document.getElementById('tg-cmp-ind').selectedOptions[0], cat = document.getElementById('tg-cmp-cat').selectedOptions[0];
     return 'Compare grupos' + (ind && cat ? ': ' + ind.textContent + ', por ' + cat.textContent : '');
@@ -888,7 +889,7 @@
   let mapaInd = 0, mapaReg = null;
   const mapaSvg = document.getElementById('mapa-svg'), mapaInds = document.getElementById('mapa-inds');
   const mapaRow = (m, reg) => get(m.ind, '', m.resp, reg ? regRec(reg) : TOTAL, m.ds);
-  const mapaPick = (reg) => { mapaReg = reg === mapaReg ? null : reg; drawMapa(); };
+  const mapaPick = (reg) => { pararFala(); mapaReg = reg === mapaReg ? null : reg; drawMapa(); };
 
   // desenha o mapa e a lista de indicadores uma vez; depois só atualiza valores
   const buildMapa = () => {
@@ -912,10 +913,19 @@
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-mapa-ind'; b.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
       b.innerHTML = ic(m.icon) + '<span class="tg-mapa-ind-l"></span><b class="tg-mapa-ind-v"></b><span class="tg-mapa-ind-bar"><i></i></span>';
       b.querySelector('.tg-mapa-ind-l').textContent = m.label;
-      b.addEventListener('click', () => { mapaInd = i; drawMapa(); });
+      b.addEventListener('click', () => { pararFala(); mapaInd = i; drawMapa(); });
       mapaInds.append(b);
     });
-    document.getElementById('mapa-reset').addEventListener('click', () => { mapaReg = null; drawMapa(); mapaSvg.querySelector('.tg-mapa-reg').focus(); });
+    document.getElementById('mapa-reset').addEventListener('click', () => { pararFala(); mapaReg = null; drawMapa(); mapaSvg.querySelector('.tg-mapa-reg').focus(); });
+    // versão em texto que também pode ser ouvida, como nos demais gráficos
+    const alt = document.getElementById('mapa-alt'), card = mapaSvg.closest('.tg-card');
+    alt.querySelector('summary').textContent = fala ? 'Ver em texto ou ouvir' : 'Ver o mapa em texto';
+    if (fala) {
+      const ob = document.createElement('button'); ob.type = 'button'; ob.className = 'tg-ouvir'; ob.textContent = 'Ouvir';
+      ob.addEventListener('click', () => ouvir(ob, card));
+      alt.querySelector('summary').after(ob);
+    }
+    alt.addEventListener('toggle', () => { if (!alt.open && falando && alt.contains(falando)) pararFala(); });
     // abre o painel de escolas ou de gestores já com a região escolhida no filtro
     document.getElementById('mapa-ir').addEventListener('click', () => {
       const m = MAPA[mapaInd];
@@ -929,6 +939,7 @@
     if (dash.data('escolas').status !== 'ok' || dash.data('gestores').status !== 'ok') return;
     buildMapa();
     const sec = document.getElementById('mapa'); sec.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
+    mapaSvg.closest('.tg-card').dataset.titulo = 'O Brasil em 5 regiões: ' + m.label + ', por região';
     const br = mapaRow(m, null), rows = REGIOES.map((r) => ({ r, row: mapaRow(m, r) })).filter((x) => x.row);
     const vals = rows.map((x) => x.row.pct), lo = Math.min(...vals), hi = Math.max(...vals);
     // regiões: do tom claro (menor valor) ao escuro (maior valor)
