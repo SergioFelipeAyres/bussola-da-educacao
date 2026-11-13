@@ -67,7 +67,8 @@
     });
     clone.querySelectorAll('label').forEach((l) => l.removeAttribute('for'));
     const foot = document.createElement('div'); foot.className = 'tg-shot-foot';
-    foot.textContent = 'Fonte: NIC.br/Cetic.br, TIC Educação 2025 · ' + location.host + location.pathname.replace(/\/$/, '');
+    // o rodapé do cartão já cita a pesquisa; sem ele (ex.: Compare grupos), a fonte vai aqui
+    foot.textContent = (clone.querySelector('.tg-base') && clone.querySelector('.tg-base').textContent ? '' : 'Fonte: NIC.br/Cetic.br, TIC Educação 2025 · ') + location.host + location.pathname.replace(/\/$/, '');
     shot.append(head, clone, foot);
     root.append(shot);
     return shot;

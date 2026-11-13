@@ -1027,7 +1027,12 @@
       const pub = p.dataset.pub, ind = p.dataset.ind;
       const m = meta.data.find((x) => x.ind === ind && x.publico === pub);
       p.setAttribute('data-field', 'universo'); p.setAttribute('data-where', 'publico=' + enc(pub) + '&ind=' + enc(ind));
-      p.textContent = m ? 'Base: ' + m.universo.toLowerCase().replace(/^total de /, '') + ' · Tabela ' + ind : '';
+      if (!m) { p.textContent = ''; return; }
+      // "Tabela X" leva à tabela original no site do Cetic.br
+      const a = document.createElement('a'); a.className = 'tg-base-link'; a.target = '_blank'; a.rel = 'noopener';
+      a.href = 'https://cetic.br/pt/tics/educacao/2025/' + (pub === 'gestores' ? 'gestoresescolares' : 'escolas') + '/' + ind + '/';
+      a.textContent = 'Tabela ' + ind; a.setAttribute('aria-label', 'Tabela ' + ind + ' no site do Cetic.br (abre em nova aba)');
+      p.replaceChildren('Fonte: pesquisa TIC Educação 2025 (NIC.br/Cetic.br) · Base: ' + m.universo.toLowerCase().replace(/^total de /, '') + ' · ', a);
     });
 
     const g = dash.data('gestores'), e = dash.data('escolas');
