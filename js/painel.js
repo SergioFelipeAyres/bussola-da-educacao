@@ -8,7 +8,12 @@
   const faixa = (r) => 'entre ' + pct(Math.max(0, r.pct - r.moe)) + ' e ' + pct(Math.min(100, r.pct + r.moe));
   const enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
   const em10 = (v) => Math.round(v / 10);
-  const freqTxt = (v) => (v >= 99.5 && v < 100) ? 'quase 100 em cada 100' : (v >= 90 || v < 10) ? Math.round(v) + ' em cada 100' : em10(v) + ' em cada 10';
+  // frase arredondada: "Cerca de 7 em cada 10"; sem "cerca de" só quando o número é exato (ex.: 100%). ini = false no meio da frase
+  const freqTxt = (v, ini = true) => {
+    if (v >= 99.5 && v < 100) return (ini ? 'Quase' : 'quase') + ' 100 em cada 100';
+    const cem = v >= 90 || v < 10, n = cem ? Math.round(v) : em10(v), s = n + (cem ? ' em cada 100' : ' em cada 10');
+    return Math.abs(v - (cem ? n : n * 10)) < 0.05 ? s : (ini ? 'Cerca de ' : 'cerca de ') + s;
+  };
   const root = document.getElementById('painel');
 
   const CAT = {
@@ -304,7 +309,7 @@
       else if (f > 0) s += '<g clip-path="url(#' + uid + '-c)">' + g(color, 'class="tg-c"') + '</g>';
     }
     svg.innerHTML = s;
-    svg.setAttribute('aria-label', em10(v) + ' em cada 10');
+    svg.setAttribute('aria-label', freqTxt(v));
   };
   // 10 figuras (cada uma = 10%) com várias partes em sequência, ex.: mulheres e homens; a figura da divisa fica cortada
   let isoN = 0;
@@ -552,32 +557,108 @@
   });
 
   // ---------- controls ----------
-  const sel = document.getElementById('tg-recorte');
   const ci = document.getElementById('tg-cmp-ind'), cc = document.getElementById('tg-cmp-cat');
   let built = false;
-  // the slice list depends on the tab: school tables have no manager-profile slices
-  const buildSelect = (v) => {
-    if (sel.dataset.view === v || !SEGS[v]) return;
-    sel.dataset.view = v;
-    const groups = new Map();
-    for (const s of SEGS[v]) { const c = s.split('|')[0]; if (!groups.has(c)) groups.set(c, []); groups.get(c).push(s); }
-    const opts = [];
-    for (const [c, list] of groups) {
-      if (c === 'TOTAL') { opts.push(new Option(v === 'escolas' ? 'Brasil (todas as escolas)' : 'Brasil (todos os gestores)', TOTAL)); continue; }
-      const og = document.createElement('optgroup'); og.label = CAT[c] || c;
-      for (const s of list) og.append(new Option(segName(s), s));
-      opts.push(og);
-    }
-    sel.replaceChildren(...opts);
+
+  // ---------- seletor de recorte (Escolas e Gestores): etapa 1 = dimensão, etapa 2 = grupo; um recorte por vez ----------
+  // todas as dimensões das tabelas continuam disponíveis; a lista muda com a aba (perfil do gestor só existe em Gestores)
+  const DIM = {
+    'TOTAL': 'Brasil', 'REGIÃO': 'Região', 'ÁREA': 'Área', 'LOCALIZAÇÃO': 'Localização', 'DEPENDÊNCIA ADMINISTRATIVA': 'Rede',
+    'PORTE': 'Porte', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Nível de ensino', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Internet e computador',
+    'SEXO': 'Sexo', 'COR OU RAÇA': 'Cor ou raça', 'FAIXA ETÁRIA': 'Idade'
   };
+  // rótulo curto do botão (etapa 2)
+  const OPC = {
+    'DEPENDÊNCIA ADMINISTRATIVA|Públicas (Municipal, Estadual e Federal)': 'Públicas (todas as redes)',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até anos iniciais do Ensino Fundamental': 'Até anos iniciais do Fundamental',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até anos finais do Ensino Fundamental': 'Até anos finais do Fundamental',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até Ensino Médio ou Educação Profissional': 'Até Médio ou Profissional',
+    'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS|Sim': 'Têm', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS|Não': 'Não têm',
+    'SEXO|Feminino': 'Mulheres', 'SEXO|Masculino': 'Homens'
+  };
+  // título "Você está vendo": o grupo de escolas descrito por extenso
+  const ESC = {
+    'ÁREA|Urbana': 'escolas urbanas', 'ÁREA|Rural': 'escolas rurais', 'LOCALIZAÇÃO|Capital': 'escolas das capitais', 'LOCALIZAÇÃO|Interior': 'escolas do interior',
+    'DEPENDÊNCIA ADMINISTRATIVA|Municipal': 'escolas municipais', 'DEPENDÊNCIA ADMINISTRATIVA|Estadual': 'escolas estaduais', 'DEPENDÊNCIA ADMINISTRATIVA|Particular': 'escolas particulares',
+    'DEPENDÊNCIA ADMINISTRATIVA|Públicas (Municipal, Estadual e Federal)': 'escolas públicas (todas as redes)',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até anos iniciais do Ensino Fundamental': 'escolas que vão até os anos iniciais do Ensino Fundamental',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até anos finais do Ensino Fundamental': 'escolas que vão até os anos finais do Ensino Fundamental',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO|Até Ensino Médio ou Educação Profissional': 'escolas que vão até o Ensino Médio ou a Educação Profissional',
+    'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS|Sim': 'escolas com internet e computador para os alunos',
+    'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS|Não': 'escolas sem internet e computador para os alunos'
+  };
+  const GEST = {
+    'SEXO|Feminino': 'Gestoras (mulheres)', 'SEXO|Masculino': 'Gestores (homens)', 'COR OU RAÇA|Branca': 'Gestores de cor branca', 'COR OU RAÇA|Preta': 'Gestores de cor preta',
+    'COR OU RAÇA|Parda': 'Gestores de cor parda', 'COR OU RAÇA|Amarela': 'Gestores de cor amarela', 'COR OU RAÇA|Indígena': 'Gestores indígenas',
+    'FAIXA ETÁRIA|Até 40 anos': 'Gestores com até 40 anos', 'FAIXA ETÁRIA|De 41 a 50 anos': 'Gestores de 41 a 50 anos', 'FAIXA ETÁRIA|De 51 anos ou mais': 'Gestores com 51 anos ou mais'
+  };
+  const escDe = (rec) => {
+    const [c, s] = rec.split('|');
+    if (c === 'REGIÃO') return 'escolas da região ' + s;
+    if (c === 'PORTE') return 'escolas ' + (/^Até|^Mais/.test(s) ? 'com ' + s.toLowerCase() : s.replace(/^De /, 'de '));
+    return ESC[rec] || segName(rec).toLowerCase();
+  };
+  const recTitulo = (rec, v) => {
+    if (rec === TOTAL) return v === 'escolas' ? 'Brasil (todas as escolas)' : 'Brasil (todos os gestores)';
+    if (v === 'gestores') return GEST[rec] || 'Gestores de ' + escDe(rec);
+    const t = escDe(rec); return t.charAt(0).toUpperCase() + t.slice(1);
+  };
+  // grupo de botões de rádio acessível: setas, Home e End mudam a escolha; só o item marcado entra no Tab
+  const radios = (box, itens, atual, escolher) => {
+    const tinhaFoco = box.contains(document.activeElement);
+    box.replaceChildren(...itens.map(([v, rotulo]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.dataset.v = v; b.textContent = rotulo;
+      const on = v === atual; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1;
+      b.addEventListener('click', () => escolher(v));
+      return b;
+    }));
+    if (tinhaFoco) { const on = box.querySelector('[aria-checked=true]'); if (on) on.focus(); }
+    if (!box.dataset.teclas) {
+      box.dataset.teclas = '1';
+      box.addEventListener('keydown', (e) => {
+        const bs = [...box.querySelectorAll('[role=radio]')], i = bs.indexOf(document.activeElement); if (i < 0) return;
+        const j = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: bs.length - 1 }[e.key];
+        if (j == null) return; e.preventDefault();
+        const alvo = bs[(j + bs.length) % bs.length]; alvo.click();
+        const novo = box.querySelector('[data-v="' + CSS.escape(alvo.dataset.v) + '"]'); if (novo) novo.focus();
+      });
+    }
+  };
+  const drawRecorte = (v, rec) => {
+    const dim = rec === TOTAL ? 'TOTAL' : rec.split('|')[0], segs = SEGS[v] || [];
+    const dims = CATS[v].filter((c) => segs.some((s) => s.split('|')[0] === c));
+    // trocar de dimensão substitui o recorte: entra o primeiro grupo da nova dimensão
+    radios(document.getElementById('rec-dims'), dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim,
+      (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); });
+    // a aba ativa fica sempre à vista quando as abas rolam de lado (celular)
+    const dimsBox = document.getElementById('rec-dims'), ativa = dimsBox.querySelector('[aria-checked=true]');
+    if (ativa && dimsBox.scrollWidth > dimsBox.clientWidth) {
+      const a = ativa.offsetLeft - dimsBox.offsetLeft, b = a + ativa.offsetWidth;
+      if (a < dimsBox.scrollLeft) dimsBox.scrollLeft = a - 8; else if (b > dimsBox.scrollLeft + dimsBox.clientWidth - 24) dimsBox.scrollLeft = b - dimsBox.clientWidth + 32;
+    }
+    marcaRola();
+    const opts = document.getElementById('rec-opts');
+    opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', DIM[dim] || '');
+    if (opts.dataset.dim !== v + dim) { opts.dataset.dim = v + dim; opts.classList.remove('tg-troca'); void opts.offsetWidth; opts.classList.add('tg-troca'); }
+    radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), rec,
+      (s) => { if (s !== rec) dash.setParams({ recorte: s }); });
+    const tit = document.getElementById('rec-titulo'), novo = recTitulo(rec, v);
+    document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
+    if (tit.textContent !== novo) { tit.textContent = novo; tit.classList.remove('tg-troca'); void tit.offsetWidth; tit.classList.add('tg-troca'); }
+  };
+  // abas que não cabem: esmaece a borda direita até chegar ao fim da rolagem
+  const recDims = document.getElementById('rec-dims');
+  const marcaRola = () => { const r = recDims.scrollWidth > recDims.clientWidth + 1; recDims.classList.toggle('tg-rola', r); recDims.classList.toggle('tg-fim', r && recDims.scrollLeft + recDims.clientWidth >= recDims.scrollWidth - 2); };
+  recDims.addEventListener('scroll', marcaRola, { passive: true }); window.addEventListener('resize', marcaRola);
+  const recInfo = document.getElementById('rec-info'), recInfoTxt = document.getElementById('rec-info-txt');
+  recInfo.addEventListener('click', () => { const ab = recInfo.getAttribute('aria-expanded') !== 'true'; recInfo.setAttribute('aria-expanded', ab ? 'true' : 'false'); recInfoTxt.hidden = !ab; });
+
   let resetNote = '';
   const buildControls = () => {
     if (built) return; built = true;
     ci.addEventListener('change', () => dash.setParams({ cmp_ind: ci.value }));
     cc.addEventListener('change', () => dash.setParams({ cmp_cat: cc.value }));
   };
-  sel.addEventListener('change', () => dash.setParams({ recorte: sel.value }));
-  document.getElementById('tg-reset').addEventListener('click', () => dash.resetParams());
 
   const chartsIn = (id) => [...document.querySelectorAll('#' + id + ' .tg-chart')];
 
@@ -614,7 +695,7 @@
       const its = respList('A3', ['Branca', 'Preta', 'Parda', 'Amarela', 'Indígena'], rec);
       bars(el, its, rec, anim);
       const pr = its.filter((x) => x.label === 'Preta' || x.label === 'Parda');
-      if (pr.length === 2) { const n = document.createElement('p'); n.className = 'tg-say'; n.style.fontSize = 'var(--cds-font-size-body)'; n.textContent = 'Somados, gestores pretos e pardos são ' + em10(pr[0].row.pct + pr[1].row.pct) + ' em cada 10.'; el.prepend(n); }
+      if (pr.length === 2) { const n = document.createElement('p'); n.className = 'tg-say'; n.style.fontSize = 'var(--cds-font-size-body)'; n.textContent = 'Somados, gestores pretos e pardos são ' + freqTxt(pr[0].row.pct + pr[1].row.pct, false) + '.'; el.prepend(n); }
     })();
 
     bars(document.getElementById('ch-formacao'), listFrom('A4', ['Especialização ou pós-graduação', 'Mestrado', 'Doutorado'], 'Sim', rec).map((x) => ({ ...x, icon: 'livro' })), rec, anim);
@@ -675,7 +756,7 @@
       const w = document.createElement('div'); w.className = 'tg-isowrap';
       w.innerHTML = isoParts([{ v: s.pct, color: dash.colors[0] }]);
       const say = document.createElement('div'); say.className = 'tg-say';
-      const b = document.createElement('b'); b.textContent = (em10(s.pct) === 5 ? 'Metade' : freqTxt(s.pct));
+      const b = document.createElement('b'); b.textContent = (em10(s.pct) === 5 ? 'Cerca de metade' : freqTxt(s.pct));
       const v = document.createElement('span'); v.textContent = pct(s.pct); markRow(v, s);
       say.append(b, document.createTextNode(' dos gestores já usam IA na gestão ('), v, document.createTextNode(').'));
       if (n) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.style.marginTop = 'var(--cds-gap-xs)'; const nv = document.createElement('span'); nv.textContent = pct(n.pct); markRow(nv, n); p.append(document.createTextNode('Não usam: '), nv); say.append(p); }
@@ -820,12 +901,12 @@
     const axt = document.createElement('div'); axt.className = 'tg-dot-track';
     ticks.forEach((t) => { const s = document.createElement('span'); s.className = 'tg-tick'; s.style.left = pos(t); s.textContent = t + '%'; axt.append(s); });
     const axv = document.createElement('div'); axv.className = 'tg-dot-val';
-    const bl = document.createElement('span'); bl.className = 'tg-verdict'; bl.append(document.createTextNode('Brasil ')); const bv = document.createElement('span'); bv.textContent = pct(br.pct); markRow(bv, br); bl.append(bv); axv.append(bl);
+    const bl = document.createElement('span'); bl.className = 'tg-verdict'; bl.append(document.createTextNode('Nacional ')); const bv = document.createElement('span'); bv.textContent = pct(br.pct); markRow(bv, br); bl.append(bv); axv.append(bl);
     ax.append(axl, axt, axv); w.append(ax);
     for (const { s, row } of rows) {
-      // sem margem estimada, não dá para afirmar que o grupo está acima ou abaixo do Brasil
-      const nm = noMoe(row), diff = row.pct - br.pct, out = !nm && row.moe != null && Math.abs(diff) > row.moe;
-      const col = !out ? 'var(--cds-chart-muted)' : diff > 0 ? 'var(--color-positivo)' : 'var(--color-negativo)';
+      // todos os grupos são descritos do mesmo jeito: acima ou abaixo da estimativa nacional, com a diferença em p.p.
+      // uma cor só (a do tema): a direção vem das setas e do sinal, sem verde/vermelho de julgamento
+      const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0, col = 'var(--sec)';
       const r = document.createElement('div'); r.className = 'tg-dot-row';
       const l = document.createElement('div'); l.className = 'tg-dot-lab'; l.textContent = segName(s);
       const t = document.createElement('div'); t.className = 'tg-dot-track';
@@ -834,15 +915,26 @@
       if (row.moe) { const c = document.createElement('div'); c.className = 'tg-ci'; c.style.background = col; c.style.left = pos(Math.max(0, row.pct - row.moe)); c.style.width = (sc(Math.min(100, row.pct + row.moe)) - sc(Math.max(0, row.pct - row.moe))) + '%'; t.append(c); }
       const dot = document.createElement('div'); dot.className = 'tg-dot'; dot.style.left = pos(row.pct); dot.style.background = col; t.append(dot);
       const v = document.createElement('div'); v.className = 'tg-dot-val';
+      const vl = document.createElement('span'); vl.className = 'tg-dot-num';
       const b = document.createElement('b'); b.textContent = pct(row.pct); markRow(b, row);
-      const vd = document.createElement('span'); vd.className = 'tg-verdict' + (out ? (diff > 0 ? ' tg-up' : ' tg-down') : '');
-      if (out) { const ar = document.createElement('span'); ar.className = 'tg-arrow'; ar.setAttribute('aria-hidden', 'true'); ar.textContent = diff > 0 ? '▲' : '▼'; vd.append(ar, document.createTextNode(diff > 0 ? 'acima do Brasil' : 'abaixo do Brasil')); }
-      else vd.textContent = nm ? 'sem margem estimada' : 'dentro da margem';
-      v.append(b, vd);
-      r.append(l, t, v); setTip(r, [...rowTip(m.label, row, br, s), vd.textContent.replace(/^[▲▼]/, '')]); w.append(r);
+      const ppN = Math.abs(dd).toFixed(1).replace('.', ',');
+      const pp = document.createElement('span'); pp.className = 'tg-pp';
+      pp.textContent = (dir > 0 ? '+' : dir < 0 ? '−' : '') + ppN + ' p.p.';
+      vl.append(b, pp);
+      const lado = dir > 0 ? 'acima da estimativa nacional' : dir < 0 ? 'abaixo da estimativa nacional' : 'igual à estimativa nacional';
+      const vd = document.createElement('span'); vd.className = 'tg-verdict';
+      if (dir) { const ar = document.createElement('span'); ar.className = 'tg-arrow'; ar.setAttribute('aria-hidden', 'true'); ar.textContent = dir > 0 ? '▲' : '▼'; vd.append(ar); }
+      vd.append(lado);
+      v.append(vl, vd);
+      // versão por extenso, usada no texto alternativo, no áudio e na dica ao passar o mouse
+      const quem = cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
+      const frase = 'A estimativa para ' + quem + ' é de ' + pct(row.pct) +
+        (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? ' (margem de erro não estimada)' : '') + ', ' +
+        (dir ? ppN + (Math.abs(dd) < 2 ? ' ponto percentual ' : ' pontos percentuais ') + lado : lado) + ', de ' + pct(br.pct) + '.';
+      r.append(l, t, v); setTip(r, [m.label, frase]); w.append(r);
     }
     const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.style.marginTop = 'var(--cds-gap-sm)';
-    lg.innerHTML = '<span><span class="tg-sw" style="background:var(--color-positivo);border-radius:50%"></span>Acima do Brasil</span><span><span class="tg-sw" style="background:var(--color-negativo);border-radius:50%"></span>Abaixo do Brasil</span><span><span class="tg-sw" style="background:var(--cds-chart-muted);border-radius:50%"></span>Diferença dentro da margem de erro</span><span><span class="tg-refkey"></span>Brasil</span>';
+    lg.innerHTML = '<span><span class="tg-sw" style="background:var(--sec);border-radius:50%"></span>ponto = estimativa</span><span><span class="tg-sw" style="background:var(--sec);opacity:.45;width:1.1rem;height:4px;border-radius:2px"></span>faixa = margem de erro</span><span><span class="tg-refkey"></span>linha = estimativa nacional</span>';
     if (rows.some((x) => noMoe(x.row))) { const s = document.createElement('span'); s.textContent = '* sem margem de erro estimada'; lg.append(s); }
     w.append(lg); el.replaceChildren(w);
   };
@@ -867,7 +959,7 @@
     txt.classList.remove('dash-skeleton'); txt.replaceChildren();
     const b = document.createElement('b'); b.textContent = freqTxt(row.pct);
     // com "1 em cada 10" o verbo vai para o singular
-    txt.append(b, document.createTextNode(' ' + (f.txt1 && b.textContent.startsWith('1 em') ? f.txt1 : f.txt) + '.'));
+    txt.append(b, document.createTextNode(' ' + (f.txt1 && /^(cerca de )?1 em/i.test(b.textContent) ? f.txt1 : f.txt) + '.'));
     iso10(document.getElementById('fato-iso'), row.pct, dash.colors[0], 'fato', f.ds === 'escolas' ? SCHOOL : P);
     const meta = dash.data(META), m = meta.status === 'ok' && meta.data.find((x) => x.ind === f.ind && x.publico === f.ds);
     document.getElementById('fato-meta').textContent = pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : '') +
@@ -1045,11 +1137,9 @@
     if (g.status === 'ok' && e.status === 'ok') buildControls();
     if (view === 'inicio') { drawHome(); return; }
     if (!DASH.includes(view)) return;
-    buildSelect(view);
     let rec = params.recorte || TOTAL;
     if (SEGS[view] && !SEGS[view].includes(rec)) rec = TOTAL;
-    sel.value = rec;
-    document.getElementById('tg-reset').hidden = rec === TOTAL;
+    if (SEGS[view]) drawRecorte(view, rec);
 
     if (g.status === 'ok' || e.status === 'ok') drawCompare(params); else fail(document.getElementById('ch-comparar'), g.status);
 
@@ -1065,8 +1155,8 @@
     const note = document.getElementById('tg-filter-note');
     if (resetNote && rec === TOTAL) { note.textContent = resetNote; resetNote = ''; }
     else note.textContent = rec === TOTAL
-      ? (view === 'escolas' ? 'Escolha uma região, área, rede, porte ou nível de ensino da escola. Todos os gráficos da aba mudam juntos.' : 'Escolha uma região, rede ou porte da escola, ou o sexo, a cor ou raça e a idade do gestor. Todos os gráficos da aba mudam juntos.')
-      : 'Mostrando ' + recName(rec) + '. O traço escuro nas barras marca o valor do Brasil.';
+      ? 'Escolha como recortar os dados e depois o grupo. Todos os gráficos da aba mudam juntos.'
+      : 'Todos os gráficos da aba mudam juntos. O traço escuro nas barras marca o valor do Brasil.';
     const anim = firstDraw[view]; firstDraw[view] = false;
     CUR = view;
 
@@ -1084,8 +1174,8 @@
 
     // takeaway
     take.classList.remove('dash-skeleton'); take.replaceChildren();
-    const add = (txt, row) => { if (!row) return false; const b = document.createElement('b'); b.textContent = freqTxt(row.pct); const s = document.createElement('span'); s.textContent = pct(row.pct); markRow(s, row); take.append(b, document.createTextNode(txt + ' ('), s, document.createTextNode(')')); return true; };
-    take.append(document.createTextNode(recEff === TOTAL ? 'No Brasil, ' : 'No recorte ' + recName(recEff) + ', '));
+    const add = (txt, row) => { if (!row) return false; const b = document.createElement('b'); b.textContent = freqTxt(row.pct, false); const s = document.createElement('span'); s.textContent = pct(row.pct); markRow(s, row); take.append(b, document.createTextNode(txt + ' ('), s, document.createTextNode(')')); return true; };
+    take.append(document.createTextNode(recEff === TOTAL ? 'No Brasil, ' : 'No recorte “' + recTitulo(recEff, view) + '”, '));
     if (view === 'gestores') {
       const fem = get('A1', '', 'Feminino', recEff), ia = get('D9A', '', 'Sim', recEff), pos = get('A4', 'Especialização ou pós-graduação', 'Sim', recEff);
       if (!recEff.startsWith('SEXO|')) { add(' gestores escolares são mulheres', fem); take.append(document.createTextNode(', ')); }

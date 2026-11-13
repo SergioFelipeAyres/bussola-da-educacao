@@ -34,9 +34,8 @@
   };
   const recorteOf = (card) => {
     if (!card.closest('#gestores, #escolas')) return '';
-    const sel = document.getElementById('tg-recorte');
-    const opt = sel && sel.selectedOptions[0];
-    return opt && sel.value !== 'TOTAL|Total' ? opt.textContent.trim() : 'Brasil';
+    const f = document.getElementById('filtro');
+    return (f && f.dataset.recorte) || 'Brasil';
   };
   const linkOf = (card) => location.origin + location.pathname + '#' + card.id;
   const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
