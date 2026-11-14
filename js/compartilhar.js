@@ -52,7 +52,7 @@
     const head = document.createElement('div'); head.className = 'tg-shot-head';
     head.innerHTML = '<span class="tg-shot-brand">' + LOGO + '<span>Bússola da <b>Educação</b></span></span>';
     const rec = recorteOf(card);
-    if (rec) { const r = document.createElement('span'); r.className = 'tg-shot-rec'; r.textContent = 'Recorte: ' + rec; head.append(r); }
+    if (rec) { const r = document.createElement('span'); r.className = 'tg-shot-rec'; r.textContent = 'Grupo: ' + rec; head.append(r); }
     const clone = card.cloneNode(true);
     clone.removeAttribute('id');
     clone.querySelectorAll('.tg-share, .tg-alt').forEach((b) => b.remove());

@@ -83,14 +83,25 @@
       </article>
     </section>
 
-    <section class="tg-sec" aria-labelledby="home-como">
-      <h2 class="tg-sec-title" id="home-como">O que você encontra aqui</h2>
-      <div class="tg-features">
-        <div class="tg-feature"><svg class="tg-ic tg-solid" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></svg><div><h3>Pictogramas</h3><p>Cada figura vale uma fração fixa do total, para ver a proporção sem fazer conta.</p></div></div>
-        <div class="tg-feature"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg><div><h3>Filtro por recorte</h3><p>Veja os dados por região, rede, porte da escola ou perfil do gestor. Todos os gráficos mudam juntos.</p></div></div>
-        <div class="tg-feature"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg><div><h3><a href="#comparar">Compare grupos</a></h3><p>Coloque grupos lado a lado com a margem de erro e veja quem está acima ou abaixo da estimativa nacional.</p></div></div>
-        <div class="tg-feature"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg><div><h3><a href="#como-ler">Como ler o painel</a></h3><p>O que são percentual, base e margem de erro, e como ler cada gráfico.</p></div></div>
+    <section class="tg-sec tg-portas" aria-labelledby="home-portas">
+      <h2 class="tg-sec-title" id="home-portas">Por onde começar</h2>
+      <div class="tg-portas-grid">
+        <a class="tg-porta" href="escolas" style="--sec:var(--v-teal)">
+          <span class="tg-porta-tit">Escolas</span>
+          <span class="tg-porta-txt dash-skeleton" id="porta-escolas">—</span>
+          <svg class="tg-iso10" id="porta-escolas-iso" width="100%" viewBox="0 0 240 26" aria-hidden="true"></svg>
+          <span class="tg-porta-sub">Conexão, equipamentos, regras sobre celular e IA, câmeras e plataformas.</span>
+          <span class="tg-porta-ir">Ver o painel das escolas <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="tg-porta" href="gestores" style="--sec:var(--v-purple)">
+          <span class="tg-porta-tit">Gestores</span>
+          <span class="tg-porta-txt dash-skeleton" id="porta-gestores">—</span>
+          <svg class="tg-iso10" id="porta-gestores-iso" width="100%" viewBox="0 0 240 26" aria-hidden="true"></svg>
+          <span class="tg-porta-sub">Perfil de quem dirige as escolas, tecnologia na rotina e uso de inteligência artificial.</span>
+          <span class="tg-porta-ir">Ver o painel dos gestores <span aria-hidden="true">→</span></span>
+        </a>
       </div>
+      <p class="tg-portas-nota">Primeira vez aqui? <a href="#como-ler">Veja como ler o painel</a>: o que são percentual, base e margem de erro.</p>
     </section>
   </div>
 
@@ -231,7 +242,7 @@
             </div>
           </div>
           <h3 class="tg-card-title"><span class="tg-lesson-n">4</span>O traço do Brasil</h3>
-          <p>Ao escolher um recorte no filtro, como uma região, a barra mostra aquele grupo e o <b>traço escuro</b> marca o valor do Brasil. Assim dá para comparar de relance.</p>
+          <p>Ao escolher um grupo no filtro, como uma região, a barra mostra aquele grupo e o <b>traço escuro</b> marca o valor do Brasil. Assim dá para comparar de relance.</p>
         </article>
 
         <article class="tg-card tg-lesson">
@@ -243,8 +254,8 @@
               <li class="tg-nao"><span>✕</span>Escolas rurais do Norte</li>
             </ul>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">5</span>Um recorte por vez</h3>
-          <p>O filtro mostra <b>um recorte de cada vez</b>: uma região, ou a área, ou a rede, e assim por diante. A pesquisa não publica combinações, como "rural do Norte", porque nesses cruzamentos a amostra fica pequena demais para um número confiável. Por isso, escolher outra dimensão substitui o recorte anterior.</p>
+          <h3 class="tg-card-title"><span class="tg-lesson-n">5</span>Um grupo por vez</h3>
+          <p>O filtro mostra <b>um grupo de cada vez</b>: uma região, ou a área, ou a rede, e assim por diante. Na pesquisa, cada grupo desses é chamado de <b>recorte</b>. A pesquisa não publica combinações, como "rural do Norte", porque nesses cruzamentos a amostra fica pequena demais para um número confiável. Por isso, escolher outro tipo de grupo substitui o anterior.</p>
         </article>
 
         <article class="tg-card tg-lesson">
@@ -295,7 +306,7 @@
           <p>Cada seção tem uma <b>cor ligada ao seu tema</b>, e os gráficos e os destaques do topo usam essa mesma cor. Um número em verde-água no topo, por exemplo, é aprofundado na seção Conexão. Dentro dos gráficos, o <b>cinza</b> marca o que não é o foco, como "não sabe", e o <b>grafite</b> marca uma segunda resposta, como "discorda".</p>
         </article>
       </div>
-      <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg><span>Respostas "Não respondeu" ficam fora do filtro de recorte. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</span></p>
+      <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg><span>Respostas "Não respondeu" ficam fora do filtro. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</span></p>
       <p class="tg-how-more">Quer saber por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design aplicados</a>, na página Sobre.</p>
     </div>
   </dialog>
@@ -305,9 +316,9 @@
       <span class="tg-eyebrow">Você está vendo</span>
       <h2 class="tg-rec-titulo" id="rec-titulo" aria-live="polite">Brasil</h2>
     </div>
-    <div class="tg-rec-dims" id="rec-dims" role="radiogroup" aria-label="Recortar os dados por"></div>
+    <div class="tg-rec-dims" id="rec-dims" role="radiogroup" aria-label="Ver os números de"></div>
     <div class="tg-rec-opts" id="rec-opts" role="radiogroup" hidden></div>
-    <p class="tg-rec-nota">Um recorte por vez <button type="button" class="tg-rec-info" id="rec-info" aria-expanded="false" aria-controls="rec-info-txt" aria-label="Por que um recorte por vez?">ⓘ</button></p>
+    <p class="tg-rec-nota">Um grupo por vez <button type="button" class="tg-rec-info" id="rec-info" aria-expanded="false" aria-controls="rec-info-txt" aria-label="Por que um grupo por vez?">ⓘ</button></p>
     <p class="tg-rec-info-txt" id="rec-info-txt" hidden>A pesquisa não publica combinações, como "rural do Norte", porque a amostra fica pequena demais para um número confiável.</p>
     <p class="tg-filter-note" id="tg-filter-note" aria-live="polite">Todos os gráficos da aba mudam juntos.</p>
   </div>
@@ -316,8 +327,9 @@
   <div class="tg-rec-fixo" id="filtro-fixo" hidden>
     <div class="tg-rec-fixo-in">
       <p class="tg-rec-fixo-tit"><span>Você está vendo</span> <b id="rec-titulo2">Brasil</b></p>
-      <div class="tg-rec-dims" id="rec-dims2" role="radiogroup" aria-label="Recortar os dados por"></div>
+      <div class="tg-rec-dims" id="rec-dims2" role="radiogroup" aria-label="Ver os números de"></div>
       <div class="tg-rec-opts" id="rec-opts2" role="radiogroup" hidden></div>
+      <button type="button" class="tg-topo" id="ir-topo" aria-label="Voltar ao topo da página"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>Topo</span></button>
     </div>
   </div>
 
@@ -354,6 +366,15 @@
         <div class="tg-kpi-cmp"></div>
       </div>
     </section>
+
+    <nav class="tg-indice" aria-label="Seções desta página">
+      <span class="tg-indice-lab">Ir para</span>
+      <a href="#conexao" style="--sec:var(--v-teal)">Conexão</a>
+      <a href="#equipamentos" style="--sec:var(--v-orange)">Equipamentos</a>
+      <a href="#regras" style="--sec:var(--v-purple)">Regras e IA</a>
+      <a href="#comunicacao" style="--sec:var(--v-pink)">Comunicação</a>
+      <a href="#comparar" style="--sec:var(--v-slate)">Compare grupos</a>
+    </nav>
 
     <section class="tg-sec" id="conexao">
       <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8"/></svg>
@@ -431,6 +452,14 @@
       </div>
     </section>
 
+    <nav class="tg-indice" aria-label="Seções desta página">
+      <span class="tg-indice-lab">Ir para</span>
+      <a href="#perfil" style="--sec:var(--v-blue)">Perfil</a>
+      <a href="#tecnologia" style="--sec:var(--v-orange)">Tecnologia na gestão</a>
+      <a href="#ia" style="--sec:var(--v-purple)">Inteligência artificial</a>
+      <a href="#comparar" style="--sec:var(--v-slate)">Compare grupos</a>
+    </nav>
+
     <section class="tg-sec" id="perfil">
       <div class="tg-sec-head"><svg class="tg-ic tg-solid" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></svg>
         <div><h2 class="tg-sec-title">Quem são os gestores</h2><p class="tg-sec-sub">Perfil de quem está na direção das escolas: sexo, idade, cor ou raça, formação e experiência no cargo.</p></div></div>
@@ -468,13 +497,13 @@
   <!-- ===================== COMPARAR (compartilhado) ===================== -->
   <section class="tg-sec tg-dash-only" id="comparar">
     <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-      <div><h2 class="tg-sec-title">Compare grupos</h2><p class="tg-sec-sub">Escolha um indicador e um tipo de recorte. A linha vertical é a estimativa nacional (Brasil); a faixa clara em volta de cada ponto é a margem de erro.</p></div></div>
+      <div><h2 class="tg-sec-title">Compare grupos</h2><p class="tg-sec-sub">Escolha um indicador e um tipo de grupo. A linha vertical é a estimativa nacional (Brasil); a faixa clara em volta de cada ponto é a margem de erro.</p></div></div>
     <article class="tg-card" id="card-comparar">
       <div class="tg-cmp-ctrl">
         <label for="tg-cmp-ind">Indicador</label>
         <select id="tg-cmp-ind" aria-label="Indicador para comparar"></select>
         <label for="tg-cmp-cat">por</label>
-        <select id="tg-cmp-cat" aria-label="Tipo de recorte"></select>
+        <select id="tg-cmp-cat" aria-label="Tipo de grupo"></select>
       </div>
       <div class="tg-chart" id="ch-comparar" data-source="gestores escolas"></div>
       <p class="tg-card-note" style="margin-top:0">Cada ponto é a estimativa do grupo, e a faixa, sua margem de erro. As diferenças em relação à estimativa nacional são descritivas: o painel não testa se elas são estatisticamente significativas.</p>

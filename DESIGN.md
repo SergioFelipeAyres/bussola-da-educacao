@@ -68,6 +68,7 @@ rounded:
   icon-tile: "14px"
   card: "16px"
   feature: "22px"
+  porta: "20px"
   hero: "24px"
   pill: "999px"
 spacing:
@@ -117,6 +118,34 @@ components:
     textColor: "{colors.painel}"
     rounded: "{rounded.hero}"
     padding: "clamp(1.6rem, 4vw, 3rem)"
+  button-retry:
+    backgroundColor: "{colors.painel}"
+    textColor: "{colors.tinta}"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: "0.5rem 1rem"
+  skip-link:
+    backgroundColor: "{colors.azul-bussola}"
+    textColor: "{colors.painel}"
+    rounded: "{rounded.pill}"
+    padding: "0.6rem 1rem"
+  section-index-link:
+    backgroundColor: "{colors.painel}"
+    textColor: "{colors.tinta}"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: "0.45rem 0.95rem 0.45rem 0.75rem"
+    height: "2.5rem"
+  porta:
+    backgroundColor: "{colors.painel}"
+    textColor: "{colors.tinta}"
+    rounded: "{rounded.porta}"
+    padding: "clamp(1.25rem, 2.5vw, 1.75rem)"
+  note:
+    backgroundColor: "{colors.trilho}"
+    textColor: "{colors.tinta-suave}"
+    rounded: "{rounded.segment}"
+    padding: "0.45rem 0.7rem"
   bar-track:
     backgroundColor: "{colors.trilho}"
     rounded: "{rounded.pill}"
@@ -187,6 +216,8 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 **Display Font:** Plus Jakarta Sans (com system-ui, -apple-system, Segoe UI, Roboto e sans-serif como reserva)
 **Body Font:** Plus Jakarta Sans
 
+No CSS, `--font-sans` é a família e `--font-display` (a mesma família) marca títulos e números.
+
 **Character:** Uma geométrica humanista que fica calorosa e firme no peso 800 e legível no 400. Uma família só, com contraste de peso, mantém o tom de livro didático acessível, sem a frieza técnica.
 
 ### Hierarchy
@@ -194,12 +225,12 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Headline** (800; 2.16rem, ou 1.65rem abaixo de 620px; 1.15): títulos das capas de Escolas, Gestores e Sobre, com no máximo 20ch.
 - **Title** (800; 1.6rem; 1.2; -0.02em): títulos de seção, sempre sublinhados pelo filete de 4px na cor do tema.
 - **Number** (800; 2rem; 1.1; algarismos tabulares): números-chave dos destaques, na cor do tema.
-- **Statement** (400, com negrito 600; 1.0625rem; 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…").
+- **Statement** (400, com negrito 600; 1.0625rem; 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…"), com no máximo 62ch e 0.875rem de respiro até a figura.
 - **Body** (400; 0.9375rem; 1.5): texto corrente, rótulos de barra e controles. Textos longos ficam em 62ch no máximo.
 - **Label** (600; 0.8125rem; 0.06em; caixa alta): sobretítulos. Na mesma medida, sem caixa alta e em Tinta Suave, a linha de base e margem de erro.
 
 ### Named Rules
-**The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto.
+**The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em "N em cada 10"; "o mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois.
 
 **The Números Tabulares Rule.** Todo valor numérico (barras, comparações, legendas, destaques) usa `font-variant-numeric: tabular-nums`, para que as colunas de números se alinhem.
 
@@ -210,7 +241,9 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Ritmo:** 2.25rem entre seções, 0.875rem entre cartões e dentro deles, e 1.15rem de padding interno nos cartões.
 - **Capa da página inicial:** uma coluna no celular; a partir de 900px, texto e cartão "Você sabia?" lado a lado (1.15fr para minmax(19rem, 25rem)).
 - **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px. Abaixo de 560px, os links da navegação vão para uma segunda linha e perdem os ícones.
-- **Navegação fixa no topo** e, ao rolar Escolas e Gestores, um filtro de recorte compacto fixo logo abaixo dela. As âncoras compensam essa altura.
+- **Ordem de leitura em Escolas e Gestores:** capa, filtro de recorte, destaques, índice de seções ("Ir para") e as seções na ordem do índice, terminando em "Compare grupos".
+- **Navegação fixa no topo** e, ao rolar Escolas e Gestores, um filtro de recorte compacto fixo logo abaixo dela, com o botão "Topo". As âncoras compensam essa altura.
+- **Fim do Início:** duas portas lado a lado (colunas de no mínimo 22rem), que viram uma coluna no celular.
 
 ## Elevation & Depth
 
@@ -225,11 +258,11 @@ Profundidade em camadas suaves: cartões brancos sobre papel azulado, com uma so
 - **Filtro fixo** (`box-shadow: 0 10px 28px -12px rgba(20,30,70,.35)`, com desfoque de fundo de 10px): barra de recorte fixa.
 
 ### Named Rules
-**The Sombra Tingida Rule.** Sombras são sempre azul-marinho translúcido (rgba(20,30,70,…)), nunca preto puro, para continuar na família do papel azulado.
+**The Sombra Tingida Rule.** Sombras são sempre azul-marinho translúcido, nunca preto puro, para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.
 
 ## Shapes
 
-Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do controle segmentado, 14px para as pastilhas de ícone, 16px para cartões, cerca de 22px para o cartão "Você sabia?", 24px para as capas e pílula (999px) para botões, links da navegação e trilhos das barras. Bordas de 1px em Linha, com 70% de opacidade quando há sombra. A rosa dos ventos (círculos concêntricos, marcas cardeais e agulha amarelo/branco), girada -12°, é a única silhueta decorativa e aparece só nas capas.
+Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do controle segmentado, 14px para as pastilhas de ícone, 16px para cartões, cerca de 22px para o cartão "Você sabia?", 20px para as portas do Início, 24px para as capas e pílula (999px) para botões, links da navegação e trilhos das barras. Bordas de 1px em Linha, com 70% de opacidade quando há sombra. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A rosa dos ventos (círculos concêntricos, marcas cardeais e agulha amarelo/branco), girada -12°, é a única silhueta decorativa e aparece só nas capas.
 
 ## Components
 
@@ -238,12 +271,12 @@ Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do cont
 - **Primary:** fundo no tom de texto do tema (`--sec-texto`), texto branco em 700, 0.9375rem, padding de 0.55rem 1rem 0.55rem 0.8rem e ícone à esquerda. Exemplo: "Outro dado".
 - **Secondary:** fundo Papel Azulado, borda de 1px em Linha, texto em 0.8125rem e padding de 0.4rem 0.7rem.
 - **Hover / Focus:** no hover, a borda escurece para Tinta Suave. No foco, contorno de 2px em Tinta (ou na cor do tema) com 2px de afastamento. Mudanças de cor levam 0.4s ao trocar o tema.
-
 - **Tentar de novo (erro de carregamento):** pílula branca com borda Linha, texto 700 no tom de texto do tema, abaixo da mensagem "Não foi possível carregar os dados. Verifique a conexão e tente de novo." em Tinta Suave, centralizada no lugar do gráfico. Sem vermelho (regra Sem Alarme).
 - **Pular para o conteúdo:** pílula Azul Bússola com texto branco 700, fora da tela até receber foco pelo teclado; é o primeiro item da página.
 
 ### Chips (seletor de recorte)
-- **Abas de dimensão:** texto Tinta Suave em 500 e sublinhado de 2.5px na cor do tema quando selecionadas (texto em Tinta, 700). Rolam de lado, com esmaecimento na borda.
+- **Abas de dimensão:** texto Tinta Suave em 500 e sublinhado de 2.5px na cor do tema quando selecionadas (texto em Tinta, 700). No filtro principal, ficam em blocos rotulados e todos à vista: "Ver os números de" (Brasil), "Onde fica a escola", "Tipo de escola" e, em Gestores, "Quem dirige"; o rótulo do bloco vai em 0.75rem 600 Tinta Suave, sem caixa alta. Na barra fixa compacta, as abas seguem numa linha que rola de lado, com esmaecimento na borda.
+- **Vocabulário:** a interface diz "grupo", nunca "recorte" (o termo da pesquisa fica explicado no guia).
 - **Controle segmentado de grupo:** trilho em Trilho com raio de 10px. A opção ativa vira uma pastilha branca de 8px com sombra mínima e texto em 700.
 
 ### Cards / Containers
@@ -260,7 +293,7 @@ Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do cont
 - Barra fixa no topo com fundo em Papel Azulado a 88% de opacidade, desfoque de 10px e fio inferior. Marca: logo em quadrado azul de 1.75rem com a bússola em branco, e "Educação" em 800 Azul Bússola. Links em pílula, Tinta Suave em 500, com ícone. Hover sobre Trilho; ativo em pílula Azul Bússola com texto branco e Pílula ativa. No celular, os links quebram para uma linha própria distribuída e sem ícones.
 
 ### Capa (Hero)
-Faixa em degradê de 135° de Azul Profundo para Azul Claro, com brilho radial roxo, raio de 24px e padding de clamp(1.6rem, 4vw, 3rem). A rosa dos ventos fica em marca-d'água à direita. Sobretítulo em branco a 82%, título em 800 branco com a palavra-chave em Amarelo Norte e números da frase de abertura em branco 800.
+Faixa em degradê de 135° de Azul Profundo para Azul Claro, com brilho radial roxo, raio de 24px e padding de clamp(1.6rem, 4vw, 3rem). A rosa dos ventos fica em marca-d'água à direita. Sobretítulo em branco a 82%, título em 800 branco com a palavra-chave em Amarelo Norte e números da frase de abertura em branco 800. Em Escolas e Gestores, a frase da capa é uma manchete com um achado só (Escolas: internet na escola × computador e internet para os alunos; Gestores: uso de IA na gestão), sem os valores exatos, que ficam nos destaques logo abaixo; ela vai até 40ch, em clamp(1.0625rem, 1.6vw, 1.25rem). Texto corrido da capa vai até 52ch.
 
 ### Barra com margem de erro (componente-assinatura)
 Trilho em pílula de 0.85rem em Trilho, preenchimento na cor do tema, faixa de margem de erro em Tinta a 16% que ultrapassa o trilho em 0.15rem, e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
@@ -270,6 +303,15 @@ Fileira de 10 figuras em SVG (cada uma vale 10%), preenchidas na cor do tema e o
 
 ### Destaque (KPI)
 Cartão tingido com rótulo em Tinta 600, número em Number na cor do tema e linha de comparação em Tinta Suave, 0.8125rem.
+
+### Índice de seções
+Linha "Ir para" logo depois dos destaques de Escolas e Gestores: pílulas brancas de 2.5rem de altura, borda Linha, texto 600 e um ponto na cor de cada capítulo; no hover, a borda e um fundo a 7% assumem a cor do capítulo. As âncoras usam o roteamento do painel. No filtro fixo, o botão "Topo" leva de volta ao início da aba.
+
+### Portas do Início
+Fim da página inicial: duas portas (Escolas em teal, Gestores em roxo), cada uma inteira clicável, com o nome do público em Label, um dado real em frase (número em 800 no tom de texto do tema), o pictograma de 10 figuras, uma linha do que há no painel e "Ver o painel… →". Abaixo, uma linha leva ao guia "Como ler o painel".
+
+### Notas e avisos
+Caixa em Trilho com raio de 8px e padding de 0.45rem 0.7rem, texto 0.8125rem em Tinta Suave, sem borda lateral. Usada na nota "sem margem de erro estimada" (o asterisco no valor fica em Tinta, negrito) e na explicação de "Um recorte por vez".
 
 ### Pastilha de ícone de seção
 Ícone de traço de 1.9 em pastilha de 3rem com raio de 14px, fundo na cor do tema a 15% sobre branco e traço na cor do tema, ao lado do título com filete.
@@ -283,7 +325,7 @@ Cartão tingido com rótulo em Tinta 600, número em Number na cor do tema e lin
 - **Do** use Plus Jakarta Sans em 800 para títulos e números, e algarismos tabulares em todo valor.
 - **Do** use sombras azul-marinho translúcidas e os raios da escala (8, 14, 16, 22, 24px e pílula).
 - **Do** coloque toda animação dentro de `prefers-reduced-motion: no-preference` e garanta que impressão e imagem de compartilhamento saiam completas.
-- **Do** mantenha contraste WCAG 2.2 AA: texto sobre o degradê só em branco (ou branco a 82% ou mais) Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`.
+- **Do** mantenha contraste WCAG 2.2 AA: texto sobre o degradê só em branco (ou branco a 82% ou mais), Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`.
 
 ### Don't:
 - **Don't** faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.
@@ -292,3 +334,4 @@ Cartão tingido com rótulo em Tinta 600, número em Number na cor do tema e lin
 - **Don't** rotule diferenças entre grupos como "reais" ou "empates", nem dê cores diferentes aos grupos comparados.
 - **Don't** use Amarelo Norte sobre fundo claro.
 - **Don't** use sombras pretas puras nem cantos retos em cartões e botões.
+- **Don't** marque avisos, notas ou cartões com borda lateral colorida; o acento de capítulo é o filete no topo.

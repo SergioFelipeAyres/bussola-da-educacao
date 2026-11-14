@@ -341,7 +341,7 @@
     } else { el.replaceChildren(); el.classList.add('dash-skeleton'); }
   };
   const emptyMsg = (el, text) => { const p = document.createElement('p'); p.className = 'tg-empty'; p.textContent = text; el.replaceChildren(p); };
-  const NODATA = 'Sem dados para este recorte.';
+  const NODATA = 'Sem dados para este grupo.';
 
   // ---------- pictograms ----------
   const iso10 = (svg, v, color, uid, shape = P) => {
@@ -443,6 +443,34 @@
     }).filter(Boolean);
     if (sort) items.sort((a, b) => b.row.pct - a.row.pct);
     return items;
+  };
+
+  // ---------- frase de abertura dos cartões (regra "Frase Primeiro" do DESIGN.md) ----------
+  // Cada gráfico abre com uma frase em linguagem simples, montada com os mesmos dados do recorte.
+  // "O mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam;
+  // se se tocam, a frase cita os dois (o painel é descritivo, não testa significância).
+  const um = (v) => /^(cerca de |quase )?1 em/i.test(freqTxt(v));
+  const vb = (v, pl, sg) => (um(v) ? sg : pl);
+  const NOMES = /^(WhatsApp|Telegram|Instagram|Facebook|YouTube|TikTok|Twitter|IA)\b/;
+  const minus = (s) => (NOMES.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1));
+  const separa = (a, b) => !b || (a.pct - (a.moe || 0)) > (b.pct + (b.moe || 0));
+  const negrito = (t) => { const b = document.createElement('b'); b.textContent = t; return b; };
+  const lead = (id, partes) => {
+    const el = document.getElementById(id);
+    if (!el || !partes || el.querySelector('.tg-empty, .tg-fail')) return;
+    const p = document.createElement('p'); p.className = 'tg-say tg-lead';
+    partes.forEach((x) => p.append(typeof x === 'string' ? document.createTextNode(x) : x));
+    el.prepend(p);
+  };
+  const soma = (ind, resps, rec) => {
+    const rows = resps.map((r) => get(ind, '', r, rec));
+    return rows.every(Boolean) ? rows.reduce((s, x) => s + x.pct, 0) : null;
+  };
+  // "O motivo mais citado é “X” (cerca de 4 em cada 10)." ou, empatado na margem, "Os motivos mais citados são “X” e “Y”."
+  const maisCitado = (id, lista, um1, dois) => {
+    const [a, b] = lista; if (!a) return;
+    if (separa(a.row, b && b.row)) lead(id, [um1, negrito('“' + a.label + '”'), ' (' + freqTxt(a.row.pct, false) + ').']);
+    else lead(id, [dois, negrito('“' + a.label + '”'), ' e ', negrito('“' + b.label + '”'), '.']);
   };
 
   // tom de uma escala ordenada: t = 0 é o azul mais claro, t = 1 o mais escuro, nos dois temas.
@@ -588,7 +616,7 @@
     const cur = dash.params().recorte || TOTAL;
     showView(v);
     if (SEGS[v] && !SEGS[v].includes(cur)) {
-      resetNote = 'O recorte "' + recName(cur) + '" só existe para gestores. Voltamos para Brasil; escolha um recorte de escolas.';
+      resetNote = 'O grupo "' + recName(cur) + '" só existe para gestores. Voltamos para Brasil; escolha um grupo de escolas.';
       dash.setParams({ recorte: TOTAL });
     } else draw();
   };
@@ -641,6 +669,12 @@
   document.querySelector('.pular')?.addEventListener('click', (e) => {
     e.preventDefault();
     const m = document.getElementById('conteudo'); m.focus({ preventScroll: true }); m.scrollIntoView();
+  });
+  // "Topo", no filtro fixo: volta ao início da aba sem passar pelo roteamento por âncora
+  document.getElementById('ir-topo')?.addEventListener('click', () => {
+    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduz ? 'auto' : 'smooth' });
+    document.getElementById('conteudo').focus({ preventScroll: true });
   });
   // voltar/avançar do navegador
   window.addEventListener('popstate', () => {
@@ -703,15 +737,38 @@
     if (v === 'gestores') return GEST[rec] || 'Gestores de ' + escDe(rec);
     const t = escDe(rec); return t.charAt(0).toUpperCase() + t.slice(1);
   };
-  // grupo de botões de rádio acessível: setas, Home e End mudam a escolha; só o item marcado entra no Tab
-  const radios = (box, itens, atual, escolher) => {
+  // filtro principal: as dimensões aparecem em blocos com título, na linguagem do leitor
+  const GRUPOS = [
+    ['Ver os números de', ['TOTAL']],
+    ['Onde fica a escola', ['REGIÃO', 'ÁREA', 'LOCALIZAÇÃO']],
+    ['Tipo de escola', ['DEPENDÊNCIA ADMINISTRATIVA', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO', 'PORTE', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS']],
+    ['Quem dirige', ['SEXO', 'COR OU RAÇA', 'FAIXA ETÁRIA']]
+  ];
+  const grupoDe = (c) => { const i = GRUPOS.findIndex(([, cs]) => cs.includes(c)); return i < 0 ? GRUPOS.length : i; };
+  // grupo de botões de rádio acessível: setas, Home e End mudam a escolha; só o item marcado entra no Tab.
+  // Com agrupar = true, os botões vão em blocos rotulados (a navegação por setas atravessa os blocos).
+  const radios = (box, itens, atual, escolher, agrupar) => {
     const tinhaFoco = box.contains(document.activeElement);
-    box.replaceChildren(...itens.map(([v, rotulo]) => {
+    const botao = ([v, rotulo]) => {
       const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'radio'); b.dataset.v = v; b.textContent = rotulo;
       const on = v === atual; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1;
       b.addEventListener('click', () => escolher(v));
       return b;
-    }));
+    };
+    box.classList.toggle('tg-agrupado', !!agrupar);
+    if (agrupar) {
+      const blocos = new Map();
+      [...itens].sort((a, b) => grupoDe(a[0]) - grupoDe(b[0])).forEach((it) => {
+        const g = grupoDe(it[0]);
+        if (!blocos.has(g)) {
+          const d = document.createElement('div'); d.className = 'tg-rec-g';
+          const l = document.createElement('span'); l.className = 'tg-rec-g-lab'; l.textContent = (GRUPOS[g] || ['Outros'])[0];
+          d.append(l); blocos.set(g, d);
+        }
+        blocos.get(g).append(botao(it));
+      });
+      box.replaceChildren(...blocos.values());
+    } else box.replaceChildren(...itens.map(botao));
     if (tinhaFoco) { const on = box.querySelector('[aria-checked=true]'); if (on) on.focus(); }
     if (!box.dataset.teclas) {
       box.dataset.teclas = '1';
@@ -745,7 +802,7 @@
     for (const set of REC_SETS) {
       // trocar de dimensão substitui o recorte: entra o primeiro grupo da nova dimensão
       radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim,
-        (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); });
+        (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); }, set === REC_SETS[0]);
       mostraAtiva(set.dims);
       const opts = set.opts;
       opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', DIM[dim] || '');
@@ -832,7 +889,7 @@
       const el = document.getElementById('ch-funcao');
       const groups = ['Diretor ou diretora', 'Vice-diretor ou vice-diretora', 'Professor ou professora', 'Coordenador ou coordenadora', 'Supervisor ou supervisora', 'Gerente regional de ensino', 'Diretor ou diretora regional de ensino', 'Secretário ou secretarária de educação', 'Outra função'];
       const list = respList('D1', groups, rec, null, true).filter((x) => x.row.pct > 0).map((x) => ({ ...x, label: x.label.replace('secretarária', 'secretária'), icon: 'pessoa' }));
-      if (!list.length || rec === 'ÁREA|Urbana') return emptyMsg(el, 'Este indicador só existe para escolas rurais. Escolha Brasil ou outro recorte.');
+      if (!list.length || rec === 'ÁREA|Urbana') return emptyMsg(el, 'Este indicador só existe para escolas rurais. Escolha Brasil ou outro grupo.');
       bars(el, list, rec, anim);
     })();
 
@@ -898,6 +955,37 @@
 
     bars(document.getElementById('ch-ia-usos'), listFrom('D9B', Object.keys(D9B), 'Sim', rec, D9B, true), rec, anim);
     bars(document.getElementById('ch-ia-contrib'), listFrom('D9C', Object.keys(D9C), 'Sim', rec, D9C, true), rec, anim);
+
+    // frases de abertura
+    (() => {
+      const faixas = { 'Até 40 anos': 'até 40 anos', 'De 41 a 50 anos': 'de 41 a 50 anos', 'De 51 anos ou mais': '51 anos ou mais' };
+      const m = Object.keys(faixas).map((r) => ({ r, row: get('A2', '', r, rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct)[0];
+      if (m) lead('ch-idade', [negrito(freqTxt(m.row.pct)), ' gestores ' + vb(m.row.pct, 'têm', 'tem') + ' ' + faixas[m.r] + '.']);
+    })();
+    (() => {
+      const esp = get('A4', 'Especialização ou pós-graduação', 'Sim', rec), mes = get('A4', 'Mestrado', 'Sim', rec);
+      if (esp) lead('ch-formacao', [negrito(freqTxt(esp.pct)), ' gestores ' + vb(esp.pct, 'têm', 'tem') + ' especialização ou pós-graduação' +
+        (mes ? '; ' + freqTxt(mes.pct, false) + ' ' + vb(mes.pct, 'têm', 'tem') + ' mestrado.' : '.')]);
+    })();
+    (() => {
+      const ate2 = soma('D2', ['Há menos de um ano', 'Entre 1 e 2 anos'], rec), mais10 = get('D2', '', 'Há mais de 10 anos', rec);
+      if (ate2 != null) lead('ch-tempo', [negrito(freqTxt(ate2)), ' gestores ' + vb(ate2, 'estão', 'está') + ' na direção da escola há até 2 anos' +
+        (mais10 ? '; ' + freqTxt(mais10.pct, false) + ', há mais de 10 anos.' : '.')]);
+    })();
+    (() => {
+      const a = respList('D1', ['Diretor ou diretora', 'Vice-diretor ou vice-diretora', 'Professor ou professora', 'Coordenador ou coordenadora', 'Supervisor ou supervisora', 'Outra função'], rec, null, true)[0];
+      if (a && a.row.pct > 0) lead('ch-funcao', ['Em ', negrito(freqTxt(a.row.pct, false)), ' escolas rurais, quem responde pela direção é ' + minus(a.label) + '.']);
+    })();
+    maisCitado('ch-temas', listFrom('D7', Object.keys(D7), 'Sim', rec, D7, true), 'O tema mais discutido foi ', 'Os temas mais discutidos foram ');
+    (() => {
+      const its = Object.keys(D8).map((g) => ({ g, c: get('D8', g, 'Concorda', rec) })).filter((x) => x.c).sort((a, b) => b.c.pct - a.c.pct);
+      if (its.length < 2) return;
+      const p = its[0], u = its[its.length - 1];
+      lead('ch-percepcao', ['Há mais concordância com ', negrito('“' + D8[p.g] + '”'), ' (' + freqTxt(p.c.pct, false) + ' gestores) e menos com ',
+        negrito('“' + D8[u.g] + '”'), ' (' + freqTxt(u.c.pct, false) + ').']);
+    })();
+    maisCitado('ch-ia-usos', listFrom('D9B', Object.keys(D9B), 'Sim', rec, D9B, true), 'Entre quem usa IA, o uso mais citado é ', 'Entre quem usa IA, os usos mais citados são ');
+    maisCitado('ch-ia-contrib', listFrom('D9C', Object.keys(D9C), 'Sim', rec, D9C, true), 'A contribuição da IA mais citada é ', 'As contribuições da IA mais citadas são ');
   };
 
   // ---------- page: escolas ----------
@@ -1000,6 +1088,61 @@
       yes('G4A', 'Plataforma ou ambiente virtual de aprendizagem', 'quadro'),
       yes('F5', 'Aplicativo próprio da escola', 'app')
     ].filter(Boolean).sort((a, b) => b.row.pct - a.row.pct), rec, anim);
+
+    // frases de abertura
+    (() => {
+      const a = respList('A2', Object.keys(A2L), rec, A2L, true)[0];
+      if (a) lead('ch-tipo-conexao', [negrito(freqTxt(a.row.pct)), ' escolas com internet ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) + ' como principal conexão.']);
+    })();
+    (() => {
+      const ate50 = soma('A3_1', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], rec), ns = get('A3_1', '', 'Não sabe', rec);
+      if (ate50 != null) lead('ch-velocidade', [negrito(freqTxt(ate50)), ' escolas com internet ' + vb(ate50, 'têm', 'tem') + ' velocidade de até 50 Mbps' +
+        (ns && ns.pct >= 5 ? '; ' + freqTxt(ns.pct, false) + ' não ' + vb(ns.pct, 'sabem', 'sabe') + ' informar a velocidade.' : '.')]);
+    })();
+    maisCitado('ch-sem-internet', listFrom('A20', Object.keys(A20L), 'Sim', rec, A20L, true).filter((x) => x.full !== 'Outros motivos'),
+      'O motivo mais citado pelas escolas sem internet é ', 'Os motivos mais citados pelas escolas sem internet são ');
+    (() => {
+      const its = Object.keys(A19L).map((g) => {
+        const s = get('A19', g, 'Sempre', rec), q = get('A19', g, 'Quase sempre', rec);
+        return s && q ? { label: A19L[g], row: { pct: s.pct + q.pct, moe: Math.hypot(s.moe || 0, q.moe || 0) } } : null;
+      }).filter(Boolean).sort((a, b) => b.row.pct - a.row.pct);
+      const [a, b] = its; if (!a) return;
+      if (separa(a.row, b && b.row)) lead('ch-problemas', ['O problema mais frequente é ', negrito('“' + a.label + '”'), ': ' + freqTxt(a.row.pct, false) + ' escolas com internet passam por isso sempre ou quase sempre.']);
+      else lead('ch-problemas', ['Os problemas mais frequentes são ', negrito('“' + a.label + '”'), ' e ', negrito('“' + b.label + '”'), ', que acontecem sempre ou quase sempre em ' + freqTxt(a.row.pct, false) + ' escolas com internet.']);
+    })();
+    (() => {
+      const its = listFrom('B2', ['Computador de mesa', 'Computador portátil', 'Tablet'], 'Sim', rec).sort((a, b) => b.row.pct - a.row.pct);
+      const a = its[0], u = its[its.length - 1]; if (!a) return;
+      lead('ch-computadores', [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
+        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]);
+    })();
+    (() => {
+      const its = [['B17', 'Equipamentos audiovisuais'], ['B14', 'Smart TV ou conversor'], ['B15', 'Material para aulas de robótica'], ['B18', 'Material para atividades maker'], ['B16', 'Celulares para alunos e professores']]
+        .map(([ind, label]) => ({ label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct);
+      const a = its[0], u = its[its.length - 1]; if (!a) return;
+      lead('ch-recursos', [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
+        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]);
+    })();
+    (() => {
+      const ate10 = soma('B4C', ['Até 5 alunos', 'De 5,1 a 10 alunos'], rec), sem = get('B4C', '', 'Não possui computador disponível para uso dos alunos', rec);
+      if (ate10 != null) lead('ch-alunos-pc', [negrito(freqTxt(ate10)), ' escolas ' + vb(ate10, 'têm', 'tem') + ' até 10 alunos por computador' +
+        (sem ? '; ' + freqTxt(sem.pct, false) + ' não ' + vb(sem.pct, 'têm', 'tem') + ' computador para os alunos.' : '.')]);
+    })();
+    (() => {
+      const rec5 = soma('K1_1', ['Há menos de 1 ano', 'Entre 1 e 5 anos'], rec);
+      if (rec5 != null) lead('ch-renovacao', ['Em ', negrito(freqTxt(rec5, false)), ' escolas com computador, a última compra ou doação de dispositivos foi há até 5 anos.']);
+    })();
+    (() => {
+      const cam = get('E3', '', 'Sim', rec), fac = get('E4B', '', 'Sim', rec);
+      if (cam) lead('ch-vigilancia', [negrito(freqTxt(cam.pct)), ' escolas ' + vb(cam.pct, 'têm', 'tem') + ' câmeras de vídeo' +
+        (fac ? ', e ' + freqTxt(fac.pct, false) + ' ' + vb(fac.pct, 'usam', 'usa') + ' reconhecimento facial.' : '.')]);
+    })();
+    (() => {
+      const its = [...listFrom('F4A', ['WhatsApp', 'Telegram'], 'Sim', rec), ...[['G4A', 'Plataforma ou ambiente virtual de aprendizagem'], ['F5', 'Aplicativo próprio da escola']]
+        .map(([ind, label]) => ({ label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row)].sort((a, b) => b.row.pct - a.row.pct);
+      const a = its[0]; if (!a) return;
+      lead('ch-canais', [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'usam', 'usa') + ' ' + minus(a.label) + '.']);
+    })();
   };
 
   // ---------- compare (shared) ----------
@@ -1230,8 +1373,8 @@
         // mesmo padrão de Compare grupos: comparação descritiva, diferença em p.p. e seta neutra
         const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0;
         if (dir) { vs.classList.add('tg-dir'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.setAttribute('aria-hidden', 'true'); a.textContent = dir > 0 ? '▲' : '▼'; vs.append(a); }
-        vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + ' p.p. ' + (dir > 0 ? 'acima' : 'abaixo') + ' da estimativa nacional' : 'Igual à estimativa nacional') + ' (' + pct(br.pct) + ')');
-      } else vs.append('Estimativa nacional');
+        vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + ' pontos percentuais ' + (dir > 0 ? 'acima' : 'abaixo') + ' do Brasil' : 'Igual ao Brasil') + ' (' + pct(br.pct) + ')');
+      } else vs.append('Brasil todo');
     }
     // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
     [...mapaInds.children].forEach((b, i) => {
@@ -1274,8 +1417,25 @@
   // a fonte do site muda a medida das linhas: mede de novo quando ela termina de carregar
   if (document.fonts) document.fonts.ready.then(() => { fatoW = 0; mapaW = 0; if (view === 'inicio') { igualaFato(); igualaMapa(); } });
 
+  // fim do Início: duas portas (Escolas e Gestores), cada uma com um dado real e seu pictograma
+  const drawPortas = () => {
+    const portas = [
+      ['escolas', 'A8', 'porta-escolas', SCHOOL, (r) => [freqTxt(r.pct), ' escolas ' + vb(r.pct, 'oferecem', 'oferece') + ' computador e internet aos alunos.']],
+      ['gestores', 'D9A', 'porta-gestores', P, (r) => [em10(r.pct) === 5 ? 'Cerca de metade' : freqTxt(r.pct), ' dos gestores já usam IA na gestão.']]
+    ];
+    for (const [ds, ind, id, shape, frase] of portas) {
+      const el = document.getElementById(id); if (!el) continue;
+      const st = dash.data(ds).status;
+      if (st !== 'ok') { if (isErro(st)) { el.classList.remove('dash-skeleton'); el.textContent = ''; } continue; }
+      const r = get(ind, '', 'Sim', TOTAL, ds); if (!r) continue;
+      const [b, t] = frase(r);
+      el.classList.remove('dash-skeleton'); el.replaceChildren(negrito(b), document.createTextNode(t));
+      iso10(document.getElementById(id + '-iso'), r.pct, 'var(--sec)', id, shape);
+    }
+  };
   const drawHome = () => {
     drawFact();
+    drawPortas();
     drawMapa();
     igualaFato();
     igualaMapa();
@@ -1331,7 +1491,7 @@
     const note = document.getElementById('tg-filter-note');
     if (resetNote && rec === TOTAL) { note.textContent = resetNote; resetNote = ''; }
     else note.textContent = rec === TOTAL
-      ? 'Escolha como recortar os dados e depois o grupo. Todos os gráficos da aba mudam juntos.'
+      ? 'Escolha o tipo de grupo e depois qual grupo ver. Todos os gráficos da aba mudam juntos.'
       : 'Todos os gráficos da aba mudam juntos. O traço escuro nas barras marca o valor do Brasil.';
     const anim = firstDraw[view]; firstDraw[view] = false;
     CUR = view;
@@ -1348,20 +1508,23 @@
       totEl.parentElement.querySelector('.tg-total-cmp').textContent = recEff === TOTAL ? (view === 'escolas' ? 'Estimativa de escolas de Ensino Fundamental e Médio' : 'Estimativa para escolas de Ensino Fundamental e Médio') : recName(recEff);
     }
 
-    // takeaway
+    // manchete da capa: um achado só por aba, em frase; os valores exatos ficam nos destaques logo abaixo
     take.classList.remove('dash-skeleton'); take.replaceChildren();
-    const add = (txt, row) => { if (!row) return false; const b = document.createElement('b'); b.textContent = freqTxt(row.pct, false); const s = document.createElement('span'); s.textContent = pct(row.pct); markRow(s, row); take.append(b, document.createTextNode(txt + ' ('), s, document.createTextNode(')')); return true; };
-    take.append(document.createTextNode(recEff === TOTAL ? 'No Brasil, ' : 'No recorte “' + recTitulo(recEff, view) + '”, '));
+    const add = (txt, row) => { if (!row) return false; const b = document.createElement('b'); b.textContent = freqTxt(row.pct, false); markRow(b, row); take.append(b, document.createTextNode(txt)); return true; };
+    const br = recEff === TOTAL;
+    if (br) take.append(document.createTextNode('No Brasil, '));
+    else {
+      const t = recTitulo(recEff, view);
+      take.append(document.createTextNode('Entre ' + (/^Gestoras/.test(t) ? 'as ' : view === 'gestores' ? 'os ' : 'as ') + t.charAt(0).toLowerCase() + t.slice(1) + ', '));
+    }
     if (view === 'gestores') {
-      const fem = get('A1', '', 'Feminino', recEff), ia = get('D9A', '', 'Sim', recEff), pos = get('A4', 'Especialização ou pós-graduação', 'Sim', recEff);
-      if (!recEff.startsWith('SEXO|')) { add(' gestores escolares são mulheres', fem); take.append(document.createTextNode(', ')); }
-      add(' têm especialização ou pós-graduação', pos); take.append(document.createTextNode(' e '));
-      add(' já usam inteligência artificial na gestão da escola', ia);
+      const ia = get('D9A', '', 'Sim', recEff);
+      if (ia && em10(ia.pct) === 5) { const b = document.createElement('b'); b.textContent = 'cerca de metade'; markRow(b, ia); take.append(b, document.createTextNode((br ? ' dos gestores' : '') + ' já usam inteligência artificial na gestão da escola')); }
+      else add((br ? ' gestores' : '') + ' já usam inteligência artificial na gestão da escola', ia);
     } else {
-      const a1 = get('A1', '', 'Sim', recEff), a8 = get('A8', '', 'Sim', recEff), e5 = get('E5A', '', 'Sim', recEff);
-      add(' escolas têm internet', a1); take.append(document.createTextNode(', mas '));
-      add(' oferecem computador e internet aos alunos', a8); take.append(document.createTextNode('. Só '));
-      add(' têm um guia sobre o uso de inteligência artificial', e5);
+      const a1 = get('A1', '', 'Sim', recEff), a8 = get('A8', '', 'Sim', recEff);
+      add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
+      add(' oferecem computador e internet aos alunos', a8);
     }
     take.append(document.createTextNode('.'));
 
@@ -1370,7 +1533,7 @@
       const row = get(k.dataset.ind, k.dataset.grupo, k.dataset.resp, recEff), br = get(k.dataset.ind, k.dataset.grupo, k.dataset.resp, TOTAL);
       const num = k.querySelector('.tg-kpi-num'), svg = k.querySelector('svg'), cmp = k.querySelector('.tg-kpi-cmp');
       num.classList.remove('dash-skeleton');
-      if (!row) { num.textContent = '—'; unmark(num); svg.innerHTML = ''; cmp.textContent = 'Sem dados para este recorte'; return; }
+      if (!row) { num.textContent = '—'; unmark(num); svg.innerHTML = ''; cmp.textContent = 'Sem dados para este grupo'; return; }
       num.textContent = pct(row.pct); markRow(num, row);
       iso10(svg, row.pct, k.dataset.color || dash.colors[0], view + 'k' + i, view === 'escolas' ? SCHOOL : P);
       cmp.textContent = freqTxt(row.pct) + (recEff !== TOTAL && br ? ' · Brasil: ' + pct(br.pct) : '') + (row.moe ? ' · pode variar ' + faixa(row) : '');

@@ -42,7 +42,7 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 - Barras sempre a partir do zero.
 - Todo gráfico tem versão em texto que também pode ser ouvida.
 - Idioma: português do Brasil.
-- Terminologia da pesquisa: "gestores", "escolas", "base", "margem de erro", "recorte".
+- Terminologia da pesquisa: "gestores", "escolas", "base", "margem de erro", "recorte". Na interface, o leitor vê "grupo" ("Ver os números de…", "Um grupo por vez"); "recorte" aparece só no guia "Como ler", explicado como o nome que a pesquisa dá a cada grupo.
 
 ## Brand Commitments
 

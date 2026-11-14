@@ -9,7 +9,7 @@
 (() => {
   if (!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
   const root = document.getElementById('painel');
-  const REVEAL = '.tg-hero > *, .tg-fact, .tg-feature, .tg-kpi, .tg-card, .tg-sec-head, .tg-cite, .tg-filter';
+  const REVEAL = '.tg-hero > *, .tg-fact, .tg-porta, .tg-indice, .tg-kpi, .tg-card, .tg-sec-head, .tg-cite, .tg-filter';
   const NUMS = '.tg-kpi-num, .tg-val, .tg-stack-legend b, .tg-dot-val b';
   const ROWS = '.tg-bar-row, .tg-dot-row, .tg-lik-row, .tg-isorow, .tg-stack-legend > div, .tg-stack > div';
   const DUR = 900;
