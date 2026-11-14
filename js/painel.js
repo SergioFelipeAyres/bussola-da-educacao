@@ -1,5 +1,44 @@
-/* Painel TIC Educação 2025 — desenho dos gráficos. Depende de d3 (global) e de dash-shim.js. */
+/* Painel TIC Educação 2025 — desenho dos gráficos. Depende de dash-shim.js. */
 (() => {
+  // Escala linear de [lo, hi] para [0, 100] com domínio arredondado ("nice") e marcas redondas,
+  // no mesmo algoritmo do d3-scale/d3-array (tickIncrement, nice, ticks); substitui o d3 inteiro,
+  // que era carregado só para isto.
+  const E10 = Math.sqrt(50), E5 = Math.sqrt(10), E2 = Math.sqrt(2);
+  const tickSpec = (start, stop, count) => {
+    const step = (stop - start) / Math.max(0, count), power = Math.floor(Math.log10(step)), error = step / Math.pow(10, power);
+    const factor = error >= E10 ? 10 : error >= E5 ? 5 : error >= E2 ? 2 : 1;
+    let i1, i2, inc;
+    if (power < 0) {
+      inc = Math.pow(10, -power) / factor; i1 = Math.round(start * inc); i2 = Math.round(stop * inc);
+      if (i1 / inc < start) ++i1; if (i2 / inc > stop) --i2; inc = -inc;
+    } else {
+      inc = Math.pow(10, power) * factor; i1 = Math.round(start / inc); i2 = Math.round(stop / inc);
+      if (i1 * inc < start) ++i1; if (i2 * inc > stop) --i2;
+    }
+    if (i2 < i1 && 0.5 <= count && count < 2) return tickSpec(start, stop, count * 2);
+    return [i1, i2, inc];
+  };
+  const escala = (lo, hi) => {
+    let start = lo, stop = hi, prestep;
+    for (let k = 0; k < 10 && stop > start; k++) {
+      const step = tickSpec(start, stop, 10)[2];
+      if (step === prestep) break;
+      if (step > 0) { start = Math.floor(start / step) * step; stop = Math.ceil(stop / step) * step; }
+      else if (step < 0) { start = Math.ceil(start * step) / step; stop = Math.floor(stop * step) / step; }
+      else break;
+      prestep = step;
+    }
+    const sc = (v) => stop === start ? 50 : (v - start) / (stop - start) * 100;
+    sc.ticks = (count) => {
+      if (!(count > 0)) return [];
+      if (start === stop) return [start];
+      const [i1, i2, inc] = tickSpec(start, stop, count), n = i2 - i1 + 1;
+      if (!(n > 0)) return [];
+      return Array.from({ length: n }, (_, i) => inc < 0 ? (i1 + i) / -inc : (i1 + i) * inc);
+    };
+    return sc;
+  };
+
   const DS = 'gestores', META = 'indicadores', TOT = 'total_recorte', TOTAL = 'TOTAL|Total';
   const nf1 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const nfc = new Intl.NumberFormat('pt-BR', { notation: 'compact', maximumFractionDigits: 1 });
@@ -211,6 +250,8 @@
     LAST[ds] = rows; const idx = new Map(), segs = [], cats = [], seen = new Set();
     for (const r of rows) {
       r.pct = Number(r.pct); r.moe = r.moe == null ? null : Number(r.moe); r._ds = ds;
+      // a chave não vem mais no JSON (era repetida em toda linha); é montada aqui, na mesma ordem de get()
+      if (r.key == null) r.key = [r.ind, r.cat, r.seg, r.grupo || '', r.resp].join('|');
       idx.set(r.key, r);
       const s = r.cat + '|' + r.seg;
       if (r.ind === 'A1' && !seen.has(s)) { seen.add(s); if (r.seg !== 'Não respondeu') segs.push(s); if (!cats.includes(r.cat)) cats.push(r.cat); }
@@ -283,10 +324,20 @@
     noMoe(row) ? noMoeTxt(row._ds, true) : ''
   ];
 
+  // erro de carregamento: diz o que houve e oferece tentar de novo (busca só os arquivos que falharam)
+  const ERRO = 'Não foi possível carregar os dados. Verifique a conexão e tente de novo.';
+  const isErro = (st) => st === 'error' || st === 'connect' || st === 'declined' || st === 'missing';
+  const btnRetry = () => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-retry'; b.textContent = 'Tentar de novo';
+    b.addEventListener('click', () => dash.retry());
+    return b;
+  };
   const fail = (el, st) => {
     el.classList.remove('dash-skeleton');
-    if (st === 'error' || st === 'connect' || st === 'declined' || st === 'missing') {
-      const f = document.createElement('div'); f.className = 'tg-fail'; f.textContent = 'Não foi possível carregar os dados'; el.replaceChildren(f);
+    if (isErro(st)) {
+      const f = document.createElement('div'); f.className = 'tg-fail'; f.setAttribute('role', 'status');
+      const p = document.createElement('p'); p.textContent = ERRO;
+      f.append(p, btnRetry()); el.replaceChildren(f);
     } else { el.replaceChildren(); el.classList.add('dash-skeleton'); }
   };
   const emptyMsg = (el, text) => { const p = document.createElement('p'); p.className = 'tg-empty'; p.textContent = text; el.replaceChildren(p); };
@@ -585,6 +636,11 @@
     e.preventDefault();
     if (!v) { history.replaceState(null, '', urlDe(view, h)); openGuide(document.getElementById(h)); return; }
     irPara(v, VIEWS.includes(h) ? '' : h);
+  });
+  // "Pular para o conteúdo": move o foco sem passar pelo roteamento por âncora (que trataria #conteudo como seção)
+  document.querySelector('.pular')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const m = document.getElementById('conteudo'); m.focus({ preventScroll: true }); m.scrollIntoView();
   });
   // voltar/avançar do navegador
   window.addEventListener('popstate', () => {
@@ -963,8 +1019,8 @@
     const rows = SEGS[m.ds].filter((s) => s.split('|')[0] === cat).map((s) => ({ s, row: get(m.ind, m.grupo, m.resp, s, m.ds) })).filter((x) => x.row);
     if (!rows.length || !br) return emptyMsg(el, 'Sem dados para esta combinação.');
     const ext = rows.flatMap((x) => [x.row.pct - (x.row.moe || 0), x.row.pct + (x.row.moe || 0)]).concat(br.pct);
-    const lo = Math.max(0, d3.min(ext) - 3), hi = Math.min(100, d3.max(ext) + 3);
-    const sc = d3.scaleLinear([lo, hi], [0, 100]).nice();
+    const lo = Math.max(0, Math.min(...ext) - 3), hi = Math.min(100, Math.max(...ext) + 3);
+    const sc = escala(lo, hi);
     const ticks = sc.ticks(Math.max(3, Math.min(6, Math.floor(el.clientWidth / 110))));
     const pos = (v) => sc(v) + '%';
     const w = document.createElement('div'); w.className = 'tg-dots';
@@ -1015,7 +1071,13 @@
   let factIdx = Math.floor(Math.random() * FACTS.length);
   const drawFact = () => {
     const f = FACTS[factIdx], txt = document.getElementById('fato-txt');
-    if (dash.data(f.ds).status !== 'ok') return;
+    const st = dash.data(f.ds).status;
+    if (st !== 'ok') {
+      const meta = document.getElementById('fato-meta');
+      if (isErro(st)) { txt.classList.remove('dash-skeleton'); txt.textContent = ERRO; meta.replaceChildren(btnRetry()); }
+      else if (st === 'loading') { txt.classList.add('dash-skeleton'); meta.replaceChildren(); }
+      return;
+    }
     const row = get(f.ind, f.grupo, f.resp, TOTAL, f.ds);
     if (!row) { factIdx = (factIdx + 1) % FACTS.length; return drawFact(); }
     // o cartão ganha a cor da seção onde o dado aparece no painel (a mesma de --sec no CSS)
@@ -1105,7 +1167,16 @@
 
   function drawMapa() {
     const m = MAPA[mapaInd];
-    if (dash.data('escolas').status !== 'ok' || dash.data('gestores').status !== 'ok') return;
+    const sts = ['escolas', 'gestores'].map((d) => dash.data(d).status);
+    if (sts.some((s) => s !== 'ok')) {
+      const nota = document.getElementById('mapa-nota');
+      if (sts.some(isErro)) {
+        document.querySelectorAll('.tg-mapa-card .dash-skeleton').forEach((x) => { x.classList.remove('dash-skeleton'); x.textContent = '—'; });
+        nota.replaceChildren(document.createTextNode(ERRO + ' '), btnRetry()); nota.setAttribute('role', 'status');
+      } else nota.replaceChildren();
+      return;
+    }
+    document.getElementById('mapa-nota').removeAttribute('role');
     buildMapa();
     const sec = document.getElementById('mapa'); sec.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
     mapaSvg.closest('.tg-card').dataset.titulo = 'O Brasil em 5 regiões: ' + m.label + ', por região';
@@ -1250,7 +1321,7 @@
 
     if (d.status !== 'ok') {
       pageCharts.forEach((c) => fail(c, d.status));
-      [take, ...kpis.map((k) => k.querySelector('.tg-kpi-num'))].forEach((x) => { x.classList.toggle('dash-skeleton', d.status === 'loading'); if (d.status !== 'loading') x.textContent = '—'; });
+      [take, ...kpis.map((k) => k.querySelector('.tg-kpi-num')), document.querySelector('#' + view + ' .tg-total')].filter(Boolean).forEach((x) => { x.classList.toggle('dash-skeleton', d.status === 'loading'); if (d.status !== 'loading') x.textContent = '—'; });
       return;
     }
     pageCharts.forEach((c) => c.classList.remove('dash-skeleton'));

@@ -68,7 +68,8 @@ def ler(pasta, somente=None):
                 if v is None:
                     continue
                 g, resp = cols[i]
-                linhas.append({'key': '|'.join([sn, cat, seg, g or '', resp]), 'ind': sn, 'cat': cat, 'seg': seg,
+                # sem 'key': o painel monta a chave (ind|cat|seg|grupo|resp) ao carregar, e o arquivo fica ~35% menor
+                linhas.append({'ind': sn, 'cat': cat, 'seg': seg,
                                'grupo': g or '', 'resp': resp, 'pct': v,
                                'moe': num(moe[sn].cell(r, 3 + i).value), 'n': num(tot[sn].cell(r, 3 + i).value)})
         tabelas.append({'ind': sn, 'titulo': ws.cell(1, 1).value.split(' - ', 1)[1].capitalize(), 'universo': ws.cell(2, 1).value, 'linhas': linhas})

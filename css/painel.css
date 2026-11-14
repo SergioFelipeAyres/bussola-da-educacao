@@ -125,8 +125,12 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-verdict.tg-up,.tg-verdict.tg-down{color:var(--color-fg);font-weight:var(--cds-font-weight-medium)}
 .tg-verdict .tg-arrow{margin-right:.2em}.tg-up .tg-arrow{color:var(--color-positivo)}.tg-down .tg-arrow{color:var(--color-negativo)}
 .tg-empty{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
-.tg-fail{display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:inherit;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+.tg-fail{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;min-height:inherit;padding:var(--cds-pad-md);text-align:center;font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
+.tg-fail p{max-width:34ch;text-wrap:balance}
+/* "Tentar de novo": botão em pílula do sistema, com o tom de texto do tema */
+.tg .tg-retry{padding:.5rem 1rem;border:1px solid var(--color-border-line);background:var(--color-panel);color:var(--sec-texto,var(--color-fg));font-size:var(--cds-font-size-body);font-weight:700}
+.tg .tg-retry:hover{border-color:var(--sec-texto,var(--color-fg-muted))}
+.tg-mapa-nota .tg-retry,.tg-fact-meta .tg-retry{margin-top:.25rem}
 /* ---------- Como ler este painel: botão no cabeçalho + janela (dialog) ---------- */
 .tg button.tg-guide-btn{display:inline-flex;align-items:center;gap:.5rem;width:fit-content;margin-top:var(--cds-gap-xs);padding:.6rem 1.1rem .6rem .9rem;border:0;border-radius:999px;background:#fff;color:#1d3a96;font-size:var(--cds-font-size-body);font-weight:700;box-shadow:0 6px 18px -8px rgba(0,0,0,.45);transition:transform .15s ease,box-shadow .15s ease}
 .tg button.tg-guide-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -8px rgba(0,0,0,.5)}
@@ -232,6 +236,11 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-shot .tg-reveal{opacity:1!important;transform:none!important}
 @media print{.tg-reveal{opacity:1!important;transform:none!important}*{animation:none!important}}
 
+/* ---------- Pular para o conteúdo: escondido até receber foco pelo teclado ---------- */
+.pular{position:absolute;z-index:40;left:max(16px,env(safe-area-inset-left,0px));top:.5rem;padding:.6rem 1rem;border-radius:999px;background:var(--v-blue,#2f5fd0);color:#fff;font-weight:700;text-decoration:none;transform:translateY(-150%);transition:transform .2s ease}
+.pular:focus{transform:none;outline:2px solid var(--color-fg);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.pular{transition:none}}
+#conteudo:focus{outline:none}
 /* ---------- Barra de navegação ---------- */
 .nav{position:sticky;top:0;z-index:20;background:var(--color-bg);background:color-mix(in srgb,var(--color-bg) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border-line)}
 .nav-in{max-width:calc(76rem + 32px);margin-inline:auto;min-height:3.6rem;display:flex;align-items:center;justify-content:space-between;gap:var(--cds-gap-md);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -270,6 +279,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-share-menu{position:absolute;z-index:30;width:15rem;max-width:calc(100vw - 16px);display:flex;flex-direction:column;padding:.35rem;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);font-family:var(--font-anthropic-sans)}
 .tg-share-item{display:flex;align-items:center;gap:.6rem;width:100%;padding:.55rem .6rem;border:none;border-radius:calc(var(--cds-radius) - 4px);background:none;color:var(--color-fg);font:inherit;font-size:var(--cds-font-size-body);text-align:left;cursor:pointer}
 .tg-share-item:hover,.tg-share-item:focus-visible{background:var(--cds-chart-grid);outline:none}
+/* teclado: além do fundo, o contorno de 2px usado no resto do painel (o fundo sozinho tem ~1.2:1) */
+.tg-share-item:focus-visible{outline:2px solid var(--color-fg);outline-offset:-2px}
 .tg-share-item:disabled{opacity:.6;cursor:progress}
 .tg-share-item .tg-ic{color:var(--color-fg-muted)}
 .tg-share-hint{margin:.25rem .6rem .1rem;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);line-height:1.35}

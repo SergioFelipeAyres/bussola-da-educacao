@@ -14,13 +14,20 @@
     });
   }
 
-  Object.keys(SOURCES).forEach(function (id) {
+  // carrega um arquivo de dados; conexão parada vira erro depois de TEMPO ms, para a página
+  // poder mostrar "Tentar de novo" em vez de ficar carregando para sempre
+  var TEMPO = 45000;
+  function carregar(id) {
     store[id] = { status: 'loading', data: [] };
-    fetch(SOURCES[id])
+    var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = ctrl && setTimeout(function () { ctrl.abort(); }, TEMPO);
+    fetch(SOURCES[id], ctrl ? { signal: ctrl.signal } : undefined)
       .then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + r.statusText); return r.json(); })
-      .then(function (rows) { store[id] = { status: 'ok', data: rows }; run(); })
-      .catch(function (e) { store[id] = { status: 'error', data: [], message: String(e) }; run(); });
-  });
+      .then(function (rows) { store[id] = { status: 'ok', data: rows }; })
+      .catch(function (e) { store[id] = { status: 'error', data: [], message: String(e) }; })
+      .then(function () { clearTimeout(timer); run(); });
+  }
+  Object.keys(SOURCES).forEach(carregar);
 
   window.dash = {
     colors: [1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return 'var(--cds-chart-categorical-' + i + ')'; }),
@@ -44,6 +51,12 @@
     setParams: function (p) { Object.assign(params, p); run(); },
     resetParams: function () { params = Object.assign({}, DEFAULTS); run(); },
     refresh: function () {},
+    // busca de novo só os arquivos que falharam
+    retry: function () {
+      var falhos = Object.keys(SOURCES).filter(function (id) { return store[id].status === 'error'; });
+      falhos.forEach(carregar);
+      if (falhos.length) run();
+    },
     setLink: function (name) { try { history.replaceState(null, '', '#' + name); } catch (e) { /* ignore */ } }
   };
 

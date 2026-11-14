@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "plus jakarta sans",
+        "createdAt": "2026-11-14T21:30:38.478Z",
+        "reason": "Fonte única do sistema registrada no DESIGN.md (Typography), extraída do site existente; não é escolha nova desta sessão"
+      }
+    ]
+  }
+}

@@ -239,6 +239,9 @@ Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do cont
 - **Secondary:** fundo Papel Azulado, borda de 1px em Linha, texto em 0.8125rem e padding de 0.4rem 0.7rem.
 - **Hover / Focus:** no hover, a borda escurece para Tinta Suave. No foco, contorno de 2px em Tinta (ou na cor do tema) com 2px de afastamento. Mudanças de cor levam 0.4s ao trocar o tema.
 
+- **Tentar de novo (erro de carregamento):** pílula branca com borda Linha, texto 700 no tom de texto do tema, abaixo da mensagem "Não foi possível carregar os dados. Verifique a conexão e tente de novo." em Tinta Suave, centralizada no lugar do gráfico. Sem vermelho (regra Sem Alarme).
+- **Pular para o conteúdo:** pílula Azul Bússola com texto branco 700, fora da tela até receber foco pelo teclado; é o primeiro item da página.
+
 ### Chips (seletor de recorte)
 - **Abas de dimensão:** texto Tinta Suave em 500 e sublinhado de 2.5px na cor do tema quando selecionadas (texto em Tinta, 700). Rolam de lado, com esmaecimento na borda.
 - **Controle segmentado de grupo:** trilho em Trilho com raio de 10px. A opção ativa vira uma pastilha branca de 8px com sombra mínima e texto em 700.

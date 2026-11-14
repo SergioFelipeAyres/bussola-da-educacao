@@ -32,7 +32,6 @@ css/painel.css          tokens de design e estilos
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
-vendor/d3-7.9.0.min.js  biblioteca d3
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data
 ```
 
