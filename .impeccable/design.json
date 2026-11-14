@@ -1,0 +1,549 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T21:19:47.688Z",
+  "title": "Design System: Bússola da Educação",
+  "extensions": {
+    "colorMeta": {
+      "azul-bussola": {
+        "role": "primary",
+        "displayName": "Azul Bússola",
+        "canonical": "oklch(52.0% 0.183 264)",
+        "tonalRamp": [
+          "oklch(15% 0.070 264)",
+          "oklch(26% 0.109 264)",
+          "oklch(37% 0.140 264)",
+          "oklch(48% 0.167 264)",
+          "oklch(60% 0.172 264)",
+          "oklch(72% 0.142 264)",
+          "oklch(84% 0.109 264)",
+          "oklch(95% 0.070 264)"
+        ]
+      },
+      "azul-profundo": {
+        "role": "primary",
+        "displayName": "Azul Profundo",
+        "canonical": "oklch(45.0% 0.182 266)",
+        "tonalRamp": [
+          "oklch(15% 0.069 266)",
+          "oklch(26% 0.108 266)",
+          "oklch(37% 0.139 266)",
+          "oklch(48% 0.166 266)",
+          "oklch(60% 0.171 266)",
+          "oklch(72% 0.142 266)",
+          "oklch(84% 0.108 266)",
+          "oklch(95% 0.069 266)"
+        ]
+      },
+      "azul-claro": {
+        "role": "primary",
+        "displayName": "Azul Claro",
+        "canonical": "oklch(56.5% 0.194 265)",
+        "tonalRamp": [
+          "oklch(15% 0.074 265)",
+          "oklch(26% 0.115 265)",
+          "oklch(37% 0.149 265)",
+          "oklch(48% 0.177 265)",
+          "oklch(60% 0.182 265)",
+          "oklch(72% 0.151 265)",
+          "oklch(84% 0.115 265)",
+          "oklch(95% 0.074 265)"
+        ]
+      },
+      "amarelo-norte": {
+        "role": "primary",
+        "displayName": "Amarelo Norte",
+        "canonical": "oklch(88.0% 0.135 86)",
+        "tonalRamp": [
+          "oklch(15% 0.051 86)",
+          "oklch(26% 0.080 86)",
+          "oklch(37% 0.103 86)",
+          "oklch(48% 0.123 86)",
+          "oklch(60% 0.127 86)",
+          "oklch(72% 0.105 86)",
+          "oklch(84% 0.080 86)",
+          "oklch(95% 0.051 86)"
+        ]
+      },
+      "teal-conexao": {
+        "role": "secondary",
+        "displayName": "Teal Conexão",
+        "canonical": "oklch(57.0% 0.099 185)",
+        "tonalRamp": [
+          "oklch(15% 0.038 185)",
+          "oklch(26% 0.059 185)",
+          "oklch(37% 0.075 185)",
+          "oklch(48% 0.090 185)",
+          "oklch(60% 0.093 185)",
+          "oklch(72% 0.077 185)",
+          "oklch(84% 0.059 185)",
+          "oklch(95% 0.038 185)"
+        ]
+      },
+      "laranja-equipamentos": {
+        "role": "secondary",
+        "displayName": "Laranja Equipamentos",
+        "canonical": "oklch(60.5% 0.157 49)",
+        "tonalRamp": [
+          "oklch(15% 0.060 49)",
+          "oklch(26% 0.093 49)",
+          "oklch(37% 0.120 49)",
+          "oklch(48% 0.143 49)",
+          "oklch(60% 0.147 49)",
+          "oklch(72% 0.122 49)",
+          "oklch(84% 0.093 49)",
+          "oklch(95% 0.060 49)"
+        ]
+      },
+      "roxo-regras": {
+        "role": "secondary",
+        "displayName": "Roxo Regras",
+        "canonical": "oklch(52.3% 0.201 293)",
+        "tonalRamp": [
+          "oklch(15% 0.077 293)",
+          "oklch(26% 0.120 293)",
+          "oklch(37% 0.154 293)",
+          "oklch(48% 0.184 293)",
+          "oklch(60% 0.189 293)",
+          "oklch(72% 0.157 293)",
+          "oklch(84% 0.120 293)",
+          "oklch(95% 0.077 293)"
+        ]
+      },
+      "rosa-comunicacao": {
+        "role": "secondary",
+        "displayName": "Rosa Comunicação",
+        "canonical": "oklch(56.8% 0.188 359)",
+        "tonalRamp": [
+          "oklch(15% 0.071 359)",
+          "oklch(26% 0.111 359)",
+          "oklch(37% 0.143 359)",
+          "oklch(48% 0.171 359)",
+          "oklch(60% 0.176 359)",
+          "oklch(72% 0.146 359)",
+          "oklch(84% 0.111 359)",
+          "oklch(95% 0.071 359)"
+        ]
+      },
+      "grafite-comparacao": {
+        "role": "secondary",
+        "displayName": "Grafite Comparação",
+        "canonical": "oklch(42.1% 0.033 267)",
+        "tonalRamp": [
+          "oklch(15% 0.013 267)",
+          "oklch(26% 0.020 267)",
+          "oklch(37% 0.026 267)",
+          "oklch(48% 0.031 267)",
+          "oklch(60% 0.031 267)",
+          "oklch(72% 0.026 267)",
+          "oklch(84% 0.020 267)",
+          "oklch(95% 0.013 267)"
+        ]
+      },
+      "verde-positivo": {
+        "role": "tertiary",
+        "displayName": "Verde Positivo",
+        "canonical": "oklch(61.3% 0.123 160)",
+        "tonalRamp": [
+          "oklch(15% 0.047 160)",
+          "oklch(26% 0.073 160)",
+          "oklch(37% 0.094 160)",
+          "oklch(48% 0.112 160)",
+          "oklch(60% 0.115 160)",
+          "oklch(72% 0.096 160)",
+          "oklch(84% 0.073 160)",
+          "oklch(95% 0.047 160)"
+        ]
+      },
+      "vermelho-negativo": {
+        "role": "tertiary",
+        "displayName": "Vermelho Negativo",
+        "canonical": "oklch(58.1% 0.178 28)",
+        "tonalRamp": [
+          "oklch(15% 0.068 28)",
+          "oklch(26% 0.106 28)",
+          "oklch(37% 0.136 28)",
+          "oklch(48% 0.163 28)",
+          "oklch(60% 0.167 28)",
+          "oklch(72% 0.139 28)",
+          "oklch(84% 0.106 28)",
+          "oklch(95% 0.068 28)"
+        ]
+      },
+      "tinta": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "oklch(23.2% 0.014 273)",
+        "tonalRamp": [
+          "oklch(15% 0.005 273)",
+          "oklch(26% 0.008 273)",
+          "oklch(37% 0.011 273)",
+          "oklch(48% 0.013 273)",
+          "oklch(60% 0.013 273)",
+          "oklch(72% 0.011 273)",
+          "oklch(84% 0.008 273)",
+          "oklch(95% 0.005 273)"
+        ]
+      },
+      "tinta-suave": {
+        "role": "neutral",
+        "displayName": "Tinta Suave",
+        "canonical": "oklch(49.5% 0.024 274)",
+        "tonalRamp": [
+          "oklch(15% 0.009 274)",
+          "oklch(26% 0.015 274)",
+          "oklch(37% 0.019 274)",
+          "oklch(48% 0.022 274)",
+          "oklch(60% 0.023 274)",
+          "oklch(72% 0.019 274)",
+          "oklch(84% 0.015 274)",
+          "oklch(95% 0.009 274)"
+        ]
+      },
+      "papel-azulado": {
+        "role": "neutral",
+        "displayName": "Papel Azulado",
+        "canonical": "oklch(97.3% 0.007 269)",
+        "tonalRamp": [
+          "oklch(15% 0.003 269)",
+          "oklch(26% 0.004 269)",
+          "oklch(37% 0.005 269)",
+          "oklch(48% 0.006 269)",
+          "oklch(60% 0.007 269)",
+          "oklch(72% 0.005 269)",
+          "oklch(84% 0.004 269)",
+          "oklch(95% 0.003 269)"
+        ]
+      },
+      "painel": {
+        "role": "neutral",
+        "displayName": "Painel",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(37% 0.000 90)",
+          "oklch(48% 0.000 90)",
+          "oklch(60% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "linha": {
+        "role": "neutral",
+        "displayName": "Linha",
+        "canonical": "oklch(91.7% 0.010 280)",
+        "tonalRamp": [
+          "oklch(15% 0.004 280)",
+          "oklch(26% 0.006 280)",
+          "oklch(37% 0.007 280)",
+          "oklch(48% 0.009 280)",
+          "oklch(60% 0.009 280)",
+          "oklch(72% 0.007 280)",
+          "oklch(84% 0.006 280)",
+          "oklch(95% 0.004 280)"
+        ]
+      },
+      "trilho": {
+        "role": "neutral",
+        "displayName": "Trilho",
+        "canonical": "oklch(93.8% 0.008 279)",
+        "tonalRamp": [
+          "oklch(15% 0.003 279)",
+          "oklch(26% 0.005 279)",
+          "oklch(37% 0.006 279)",
+          "oklch(48% 0.007 279)",
+          "oklch(60% 0.008 279)",
+          "oklch(72% 0.006 279)",
+          "oklch(84% 0.005 279)",
+          "oklch(95% 0.003 279)"
+        ]
+      },
+      "cinza-secundario": {
+        "role": "neutral",
+        "displayName": "Cinza Secundário",
+        "canonical": "oklch(74.9% 0.023 275)",
+        "tonalRamp": [
+          "oklch(15% 0.009 275)",
+          "oklch(26% 0.014 275)",
+          "oklch(37% 0.018 275)",
+          "oklch(48% 0.021 275)",
+          "oklch(60% 0.022 275)",
+          "oklch(72% 0.018 275)",
+          "oklch(84% 0.014 275)",
+          "oklch(95% 0.009 275)"
+        ]
+      },
+      "cinza-grupo": {
+        "role": "neutral",
+        "displayName": "Cinza do Grupo",
+        "canonical": "oklch(62.2% 0.031 272)",
+        "tonalRamp": [
+          "oklch(15% 0.012 272)",
+          "oklch(26% 0.018 272)",
+          "oklch(37% 0.024 272)",
+          "oklch(48% 0.028 272)",
+          "oklch(60% 0.029 272)",
+          "oklch(72% 0.024 272)",
+          "oklch(84% 0.018 272)",
+          "oklch(95% 0.012 272)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Título da capa da página inicial; segunda palavra em Amarelo Norte."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos das capas de Escolas, Gestores e Sobre."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Títulos de seção, sublinhados pelo filete na cor do tema."
+      },
+      "number": {
+        "displayName": "Number",
+        "purpose": "Números-chave dos destaques, na cor do tema, com algarismos tabulares."
+      },
+      "statement": {
+        "displayName": "Statement",
+        "purpose": "Frase em linguagem simples que abre cada gráfico."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrente, rótulos de barra e controles."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Sobretítulos em caixa alta; sem caixa alta, a linha de base e margem de erro."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambiente",
+        "value": "0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22)",
+        "purpose": "Todos os cartões, destaques, filtro e citação."
+      },
+      {
+        "name": "filete-capitulo",
+        "value": "inset 0 4px 0 var(--sec),0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22)",
+        "purpose": "Cartões dentro de uma seção temática."
+      },
+      {
+        "name": "capa",
+        "value": "0 18px 40px -22px #2448b8",
+        "purpose": "Faixa em degradê das capas."
+      },
+      {
+        "name": "flutuante",
+        "value": "0 30px 60px -24px rgba(5,12,45,.6),0 2px 6px rgba(5,12,45,.15)",
+        "purpose": "Cartão 'Você sabia?' sobre a capa."
+      },
+      {
+        "name": "pilula-ativa",
+        "value": "0 4px 14px -6px #2f5fd0",
+        "purpose": "Link ativo da navegação."
+      },
+      {
+        "name": "filtro-fixo",
+        "value": "0 10px 28px -12px rgba(20,30,70,.35)",
+        "purpose": "Barra de recorte fixa, com desfoque de fundo de 10px."
+      }
+    ],
+    "motion": [
+      {
+        "name": "tg-ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Revelação de blocos e crescimento de barras (0.7s a 1s)."
+      },
+      {
+        "name": "cds-ease-out",
+        "value": "cubic-bezier(.2,.7,.2,1)",
+        "purpose": "Transições gerais de estado."
+      },
+      {
+        "name": "pop",
+        "value": "cubic-bezier(.34,1.56,.64,1)",
+        "purpose": "Pontos da comparação surgindo (0.6s)."
+      },
+      {
+        "name": "stagger",
+        "value": "70ms",
+        "purpose": "Atraso por linha ou figura dentro de um gráfico."
+      },
+      {
+        "name": "troca-de-tema",
+        "value": "0.4s ease",
+        "purpose": "Cor do cartão 'Você sabia?' ao sortear outro dado."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "480px"
+      },
+      {
+        "name": "sm",
+        "value": "520px"
+      },
+      {
+        "name": "nav-wrap",
+        "value": "560px"
+      },
+      {
+        "name": "md",
+        "value": "620px"
+      },
+      {
+        "name": "tablet",
+        "value": "720px"
+      },
+      {
+        "name": "desktop",
+        "value": "900px"
+      },
+      {
+        "name": "wide",
+        "value": "1080px"
+      },
+      {
+        "name": "grid-3col",
+        "value": "73rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal em pílula na cor do tema (ex.: 'Outro dado').",
+      "html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 12a8 8 0 1 1-2.3-5.6\"/><path d=\"M20 4v4.5h-4.5\"/></svg>Outro dado</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem .55rem .8rem;border:0;border-radius:999px;background:var(--v-blue,#2f5fd0);color:#fff;font:700 .9375rem/1.2 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;transition:background .4s ease,filter .15s ease}.ds-btn-primary:hover{filter:brightness(1.08)}.ds-btn-primary:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}"
+    },
+    {
+      "name": "Botão secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ação discreta em pílula com borda fina.",
+      "html": "<button class=\"ds-btn-secondary\">Ver em texto ou ouvir</button>",
+      "css": ".ds-btn-secondary{padding:.4rem .7rem;border:1px solid #e2e3ea;border-radius:999px;background:#f4f6fb;color:#1b1d24;font:400 .8125rem/1.3 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}.ds-btn-secondary:hover{border-color:#5d6170}.ds-btn-secondary:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}"
+    },
+    {
+      "name": "Navegação",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Links em pílula; o ativo vira pílula azul com sombra.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">Início</a><a class=\"ds-nav-link ds-on\" href=\"#\" aria-current=\"page\">Escolas</a><a class=\"ds-nav-link\" href=\"#\">Gestores</a><a class=\"ds-nav-link\" href=\"#\">Sobre</a></nav>",
+      "css": ".ds-nav{display:flex;gap:.2rem;padding:.6rem;background:rgba(244,246,251,.88);border-bottom:1px solid #e2e3ea}.ds-nav-link{padding:.45rem .8rem;border-radius:999px;color:#5d6170;text-decoration:none;font:500 .9375rem/1 'Plus Jakarta Sans',system-ui,sans-serif}.ds-nav-link:hover{color:#1b1d24;background:#e9eaf0}.ds-nav-link.ds-on{background:#2f5fd0;color:#fff;box-shadow:0 4px 14px -6px #2f5fd0}.ds-nav-link:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}"
+    },
+    {
+      "name": "Seletor de recorte",
+      "kind": "chip",
+      "refersTo": "segment-option-active",
+      "description": "Controle segmentado de grupo: a opção ativa vira pastilha branca.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\"><button role=\"radio\" aria-checked=\"true\">Brasil</button><button role=\"radio\" aria-checked=\"false\">Norte</button><button role=\"radio\" aria-checked=\"false\">Sudeste</button></div>",
+      "css": ".ds-seg{display:inline-flex;gap:.2rem;padding:.2rem;border-radius:10px;background:#e9eaf0}.ds-seg button{padding:.35rem .75rem;border:0;border-radius:8px;background:transparent;color:#5d6170;font:500 .8125rem/1.2 'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer}.ds-seg button:hover{color:#1b1d24}.ds-seg button[aria-checked=true]{background:#fff;color:#1b1d24;font-weight:700;box-shadow:0 1px 3px rgba(20,30,70,.14)}.ds-seg button:focus-visible{outline:2px solid #2f5fd0;outline-offset:2px}"
+    },
+    {
+      "name": "Cartão de gráfico com barra",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Cartão com filete do capítulo, frase antes do gráfico, barra com margem de erro e traço do Brasil, e rodapé de base.",
+      "html": "<article class=\"ds-card\" style=\"--sec:#0b8a7f\"><h3 class=\"ds-card-t\">Escolas com internet</h3><p class=\"ds-say\"><b>8 em cada 10</b> escolas rurais têm acesso à internet.</p><div class=\"ds-row\"><span>Rural</span><div class=\"ds-line\"><div class=\"ds-track\"><div class=\"ds-fill\" style=\"width:78%\"></div><div class=\"ds-moe\" style=\"left:74%;width:8%\"></div><div class=\"ds-ref\" style=\"left:92%\"></div></div><span class=\"ds-val\">78%</span></div></div><p class=\"ds-base\">Exemplo ilustrativo. Base: escolas. Pode variar entre 74% e 82%.</p></article>",
+      "css": ".ds-card{display:flex;flex-direction:column;gap:.875rem;max-width:26rem;padding:1.15rem;background:#fff;border:1px solid rgba(226,227,234,.7);border-radius:16px;box-shadow:inset 0 4px 0 var(--sec),0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22);color:#1b1d24;font-family:'Plus Jakarta Sans',system-ui,sans-serif}.ds-card-t{margin:0;font-size:1.0625rem;font-weight:700}.ds-say{margin:0;font-size:1.0625rem;line-height:1.4}.ds-say b{font-weight:600;color:var(--sec)}.ds-row{display:flex;flex-direction:column;gap:.3rem;font-size:.9375rem}.ds-line{display:flex;align-items:center;gap:.5rem}.ds-track{position:relative;flex:1;height:.85rem;border-radius:999px;background:#e9eaf0}.ds-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sec)}.ds-moe{position:absolute;top:-.15rem;bottom:-.15rem;border-radius:3px;background:#1b1d24;opacity:.16}.ds-ref{position:absolute;top:-.3rem;bottom:-.3rem;width:2px;margin-left:-1px;background:#1b1d24;border-radius:1px}.ds-val{min-width:3.6rem;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}.ds-base{margin:0;padding-top:.55rem;border-top:1px solid #e2e3ea;font-size:.8125rem;color:#5d6170}"
+    },
+    {
+      "name": "Destaque (KPI)",
+      "kind": "card",
+      "refersTo": "kpi",
+      "description": "Cartão tingido com o número-chave na cor do capítulo.",
+      "html": "<div class=\"ds-kpi\" style=\"--sec:#7346d0\"><span class=\"ds-kpi-l\">Têm regras para o celular dos alunos</span><span class=\"ds-kpi-n\">64%</span><span class=\"ds-kpi-c\">Exemplo ilustrativo</span></div>",
+      "css": ".ds-kpi{display:flex;flex-direction:column;gap:.25rem;max-width:16rem;padding:1.15rem;border-radius:16px;background:color-mix(in srgb,var(--sec) 9%,#fff);border:1px solid color-mix(in srgb,var(--sec) 28%,#fff);box-shadow:0 1px 2px rgba(20,30,70,.06),0 10px 28px -14px rgba(20,30,70,.22);font-family:'Plus Jakarta Sans',system-ui,sans-serif}.ds-kpi-l{font-size:.9375rem;font-weight:600;color:#1b1d24}.ds-kpi-n{font-size:2rem;line-height:1.1;font-weight:800;letter-spacing:-.02em;color:var(--sec);font-variant-numeric:tabular-nums}.ds-kpi-c{font-size:.8125rem;color:#5d6170}"
+    },
+    {
+      "name": "Capa",
+      "kind": "custom",
+      "refersTo": "hero",
+      "description": "Faixa em degradê azul com destaque em Amarelo Norte.",
+      "html": "<header class=\"ds-hero\"><span class=\"ds-hero-e\">TIC Educação 2025 · NIC.br/Cetic.br</span><h1 class=\"ds-hero-t\">Bússola da <span>Educação</span></h1><p class=\"ds-hero-p\">A tecnologia nas escolas brasileiras, em linguagem simples.</p></header>",
+      "css": ".ds-hero{display:flex;flex-direction:column;gap:.875rem;padding:clamp(1.6rem,4vw,3rem);border-radius:24px;background:radial-gradient(120% 140% at 100% 0%,#7346d0 0%,transparent 55%),linear-gradient(135deg,#2448b8,#3b6be6);color:#fff;box-shadow:0 18px 40px -22px #2448b8;font-family:'Plus Jakarta Sans',system-ui,sans-serif}.ds-hero-e{font-size:.8125rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.82)}.ds-hero-t{margin:0;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;font-weight:800;letter-spacing:-.025em}.ds-hero-t span{color:#ffd166}.ds-hero-p{margin:0;font-size:1.25rem;font-weight:600;max-width:34ch}"
+    },
+    {
+      "name": "Título de seção",
+      "kind": "custom",
+      "refersTo": "title",
+      "description": "Pastilha de ícone tingida e título com filete na cor do capítulo.",
+      "html": "<div class=\"ds-sec\" style=\"--sec:#c95f0e\"><svg class=\"ds-sec-ic\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"4.5\" width=\"18\" height=\"12\" rx=\"1.5\"/><path d=\"M8.5 20h7M12 16.5V20\"/></svg><h2 class=\"ds-sec-t\">Equipamentos</h2></div>",
+      "css": ".ds-sec{display:flex;align-items:center;gap:.875rem;font-family:'Plus Jakarta Sans',system-ui,sans-serif}.ds-sec-ic{width:3rem;height:3rem;padding:.7rem;border-radius:14px;color:var(--sec);background:color-mix(in srgb,var(--sec) 15%,#fff);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.ds-sec-t{margin:0;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#1b1d24}.ds-sec-t::after{content:\"\";display:block;width:calc(100% + 1.25rem);height:4px;margin-top:.3rem;border-radius:4px;background:var(--sec)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Atlas Escolar",
+    "overview": "A Bússola é desenhada como um atlas didático moderno: cada tema da pesquisa é um capítulo com cor própria (conexão em teal, equipamentos em laranja, regras e IA em roxo, comunicação em rosa), e o leitor sempre sabe em que capítulo está pela cor do ícone, do filete e do número principal. A capa de cada página é uma faixa em degradê azul com a rosa dos ventos em marca-d'água e o norte em amarelo; dali para baixo, o papel é claro, azulado e calmo, para que a cor dos dados fale mais alto.\n\nO sistema é amigável e tátil. Cartões arredondados com sombra suave e filete colorido no topo, botões em pílula, ícones em pastilhas tingidas e pictogramas que acendem um a um convidam ao toque no celular, que é o ambiente padrão. A densidade é baixa: uma ideia por cartão, a frase em linguagem simples antes do gráfico e a base e a margem de erro no rodapé de cada cartão.\n\nO sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas cheias, notação estatística, texto miúdo como protagonista) e o visual **alarmista** (vermelho e cores de alerta para dramatizar números). A seriedade vem da integridade dos dados, não de um visual austero.",
+    "keyCharacteristics": [
+      "Uma cor por tema, aplicada no ícone, no filete, no número-chave e no destaque do gráfico.",
+      "Capas em degradê azul com a rosa dos ventos e o norte em amarelo.",
+      "Superfícies brancas sobre papel azulado, com cantos de 16px e sombra ambiente leve.",
+      "Uma única família tipográfica (Plus Jakarta Sans), com peso 800 para títulos e números.",
+      "Pictogramas Isotype, barras em trilho arredondado e margem de erro sempre desenhada.",
+      "Movimento que revela os dados em sequência e respeita `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Capítulo Rule",
+        "body": "Cada seção tem exatamente uma cor de tema. Ela aparece na pastilha do ícone (com 15% de mistura sobre branco), no filete sob o título, no filete de 4px no topo dos cartões, no número-chave e no destaque do gráfico. Nenhuma outra cor saturada disputa com ela dentro da seção.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tom de Texto Rule",
+        "body": "A cor pura do capítulo (`--sec`) é para preenchimentos, ícones, filetes e números grandes. Todo texto pequeno na cor do capítulo e todo fundo de botão com texto branco usam `--sec-texto`, a mesma cor 15% mais escura em oklab (`color-mix(in oklab, var(--sec) 85%, #000)`), que fica acima de 4.9:1 no branco, no papel e nos fundos tingidos. Teal e laranja puros não passam em 4.5:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Escala de Um Tom Rule",
+        "body": "Categorias ordenadas (idade, velocidade, frequência) usam tons de uma só cor, derivados da cor do tema: o claro é a cor com 28% de mistura sobre branco e o escuro, com 78% de mistura sobre preto, no espaço oklab.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sem Alarme Rule",
+        "body": "Vermelho não é cor de tema nem de fundo. Um dado ruim é dito com palavras e mostrado com a cor do seu capítulo, nunca pintado de alerta.",
+        "section": "colors"
+      },
+      {
+        "name": "The Frase Primeiro Rule",
+        "body": "Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto.",
+        "section": "typography"
+      },
+      {
+        "name": "The Números Tabulares Rule",
+        "body": "Todo valor numérico (barras, comparações, legendas, destaques) usa `font-variant-numeric: tabular-nums`, para que as colunas de números se alinhem.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sombra Tingida Rule",
+        "body": "Sombras são sempre azul-marinho translúcido (rgba(20,30,70,…)), nunca preto puro, para continuar na família do papel azulado.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** defina `--sec` em cada nova seção e deixe ícone, filete, número e destaque do gráfico herdarem dela.",
+      "**Do** abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a margem de erro em 0.8125rem Tinta Suave.",
+      "**Do** desenhe a margem de erro em toda barra e comparação, e comece as barras no zero.",
+      "**Do** use Plus Jakarta Sans em 800 para títulos e números, e algarismos tabulares em todo valor.",
+      "**Do** use sombras azul-marinho translúcidas e os raios da escala (8, 14, 16, 22, 24px e pílula).",
+      "**Do** coloque toda animação dentro de `prefers-reduced-motion: no-preference` e garanta que impressão e imagem de compartilhamento saiam completas.",
+      "**Do** mantenha contraste WCAG 2.2 AA: texto sobre o degradê só em branco (ou branco a 82% ou mais) Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`."
+    ],
+    "donts": [
+      "**Don't** faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.",
+      "**Don't** use vermelho, laranja de alerta ou ícones de perigo para dramatizar um número. As setas verde e vermelha só indicam direção.",
+      "**Don't** use duas cores de tema na mesma seção, nem a cor de um capítulo em outro.",
+      "**Don't** rotule diferenças entre grupos como \"reais\" ou \"empates\", nem dê cores diferentes aos grupos comparados.",
+      "**Don't** use Amarelo Norte sobre fundo claro.",
+      "**Don't** use sombras pretas puras nem cantos retos em cartões e botões."
+    ]
+  }
+}
