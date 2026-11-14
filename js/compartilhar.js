@@ -161,7 +161,7 @@
     }
   });
   window.addEventListener('resize', close);
-  window.addEventListener('hashchange', close);
+  window.addEventListener('hashchange', close); window.addEventListener('popstate', close);
 
   // ---------- botões ----------
   document.querySelectorAll('.tg-card').forEach((card) => {

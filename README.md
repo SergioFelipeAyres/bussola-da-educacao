@@ -25,7 +25,9 @@ leitura confortável no celular.
 ## Estrutura
 
 ```
-index.html              página
+index.html              página (o site inteiro; as abas abrem em /, /escolas, /gestores e /sobre)
+escolas.html, gestores.html, sobre.html
+                        páginas de entrada dos endereços /escolas etc.: só abrem a aba certa do index.html
 css/painel.css          tokens de design e estilos
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos

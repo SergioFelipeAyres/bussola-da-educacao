@@ -13,6 +13,8 @@ while ($listener.IsListening) {
   $path = [Uri]::UnescapeDataString($ctx.Request.Url.AbsolutePath).TrimStart('/')
   if ($path -eq '' -or $path.EndsWith('/')) { $path += 'index.html' }
   $file = Join-Path $root $path
+  # como o GitHub Pages: /escolas serve escolas.html
+  if (-not (Test-Path $file -PathType Leaf) -and (Test-Path "$file.html" -PathType Leaf)) { $file = "$file.html" }
   try {
     if (Test-Path $file -PathType Leaf) {
       $bytes = [IO.File]::ReadAllBytes($file)

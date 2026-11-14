@@ -497,25 +497,42 @@
   window.addEventListener('hashchange', pararFala);
 
   // ---------- view (navbar) ----------
+  // cada aba tem seu endereço: / (início), /escolas, /gestores, /sobre; #âncora continua apontando seções (/escolas#comparar)
   const VIEWS = ['inicio', 'escolas', 'gestores', 'sobre'];
   const DASH = ['escolas', 'gestores'];
-  // a hash can name a view or any section inside one (e.g. #ia, #conexao, #comparar)
-  const viewFromHash = () => {
-    const h = decodeURIComponent(location.hash.slice(1));
-    if (!h || VIEWS.includes(h)) return h || 'inicio';
-    const el = document.getElementById(h);
-    if (!el) return 'inicio';
-    return VIEWS.find((v) => v !== 'escolas' && document.getElementById(v).contains(el)) || 'escolas';
+  // pasta onde o site está publicado (a raiz no domínio próprio; funciona também numa subpasta)
+  const BASE = location.pathname.replace(/(escolas|gestores|sobre)(\.html)?\/?$|index\.html$/, '').replace(/[^/]*$/, '') || '/';
+  const urlDe = (v, hash) => BASE + (v === 'inicio' ? '' : v) + (hash ? '#' + hash : '');
+  const viewDoCaminho = () => {
+    const q = new URLSearchParams(location.search).get('v'); // vindo das páginas de entrada (escolas.html etc.)
+    if (VIEWS.includes(q)) return q;
+    const p = location.pathname.slice(BASE.length).replace(/(\.html)?\/?$/, '');
+    return VIEWS.includes(p) ? p : 'inicio';
   };
-  let view = viewFromHash();
+  // o #âncora pode nomear uma aba (links antigos, como #escolas) ou uma seção dentro dela (#ia, #conexao, #comparar)
+  const viewDaAncora = (h) => {
+    if (VIEWS.includes(h)) return h;
+    const el = h && document.getElementById(h);
+    if (!el || guia.contains(el)) return null;
+    // fora das abas (ex.: #comparar, comum a Escolas e Gestores): fica na aba atual se ela for de dados, senão Escolas
+    return VIEWS.find((v) => document.getElementById(v).contains(el)) || (DASH.includes(view) ? view : 'escolas');
+  };
+  const guia = document.getElementById('como-ler');
+  const ancoraInicial = decodeURIComponent(location.hash.slice(1));
+  let view = null;
+  view = viewDaAncora(ancoraInicial) || viewDoCaminho();
+  // endereço limpo: troca ?v=escolas ou #escolas por /escolas, mantendo a âncora de seção
+  history.replaceState(null, '', urlDe(view, VIEWS.includes(ancoraInicial) ? '' : ancoraInicial));
   const firstDraw = { gestores: true, escolas: true };
   const navLinks = [...document.querySelectorAll('.nav-link[data-view]')];
   const showView = (v) => {
     navLinks.forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     VIEWS.forEach((id) => { document.getElementById(id).hidden = v !== id; });
+    document.title = v === 'inicio' ? 'Bússola da Educação' : { escolas: 'Escolas', gestores: 'Gestores', sobre: 'Sobre' }[v] + ' · Bússola da Educação';
     document.querySelectorAll('.tg-dash-only').forEach((el) => { el.hidden = !DASH.includes(v); });
   };
   const setView = (v) => {
+    if (v !== view) pararFala();
     view = v;
     const cur = dash.params().recorte || TOTAL;
     showView(v);
@@ -534,7 +551,6 @@
 
   // guia "Como ler este painel": abre em janela (dialog) pelo botão do cabeçalho
   // ou por links para #como-ler (ou para algo dentro dele)
-  const guia = document.getElementById('como-ler');
   const fecharGuia = () => { if (guia.open) guia.close(); };
   const openGuide = (el) => {
     if (!guia.contains(el)) return false;
@@ -547,13 +563,41 @@
   // clique fora da caixa (no fundo escurecido) ou em um link interno fecha a janela
   guia.addEventListener('click', (e) => { if (e.target === guia || e.target.closest('a[href^="#"]')) fecharGuia(); });
   // ao fechar, tira #como-ler do endereço para o mesmo link poder abrir de novo
-  guia.addEventListener('close', () => { if (guia.contains(document.getElementById(location.hash.slice(1)))) history.replaceState(null, '', '#' + view); });
+  guia.addEventListener('close', () => { if (guia.contains(document.getElementById(location.hash.slice(1)))) history.replaceState(null, '', urlDe(view)); });
 
-  window.addEventListener('hashchange', () => {
-    const h = location.hash.slice(1);
-    setView(viewFromHash());
-    const el = !VIEWS.includes(h) && document.getElementById(h);
+  // muda de aba sem recarregar a página; o endereço vira /escolas, /sobre etc.
+  const irPara = (v, hash, trocar) => {
+    const url = urlDe(v, hash);
+    if (url !== location.pathname + location.hash) history[trocar ? 'replaceState' : 'pushState'](null, '', url);
+    if (v !== view) setView(v);
+    const el = hash && document.getElementById(hash);
     if (el) { if (!openGuide(el)) el.scrollIntoView(); } else window.scrollTo(0, 0);
+  };
+  window.navegar = (v) => irPara(v);
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || a.target === '_blank') return;
+    const u = new URL(a.getAttribute('href'), location.href);
+    if (u.origin !== location.origin) return;
+    const h = decodeURIComponent(u.hash.slice(1)), p = u.pathname.slice(BASE.length).replace(/(\.html)?\/?$/, '');
+    const v = viewDaAncora(h) || (VIEWS.includes(p) ? p : u.pathname === BASE ? 'inicio' : null);
+    if (!v && !(h && guia.contains(document.getElementById(h)))) return;
+    e.preventDefault();
+    if (!v) { history.replaceState(null, '', urlDe(view, h)); openGuide(document.getElementById(h)); return; }
+    irPara(v, VIEWS.includes(h) ? '' : h);
+  });
+  // voltar/avançar do navegador
+  window.addEventListener('popstate', () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    setView(viewDaAncora(h) || viewDoCaminho());
+    const el = h && document.getElementById(h);
+    if (el && !guia.contains(el)) el.scrollIntoView();
+  });
+  // âncora digitada na barra de endereço
+  window.addEventListener('hashchange', () => {
+    const h = decodeURIComponent(location.hash.slice(1)), v = viewDaAncora(h);
+    if (v) irPara(v, VIEWS.includes(h) ? '' : h, true);
+    else { const el = h && document.getElementById(h); if (el) openGuide(el); }
   });
 
   // ---------- controls ----------
@@ -1027,7 +1071,7 @@
     document.getElementById('mapa-ir').addEventListener('click', () => {
       const m = MAPA[mapaInd];
       dash.setParams({ recorte: mapaReg ? regRec(mapaReg) : TOTAL });
-      location.hash = '#' + m.ds;
+      irPara(m.ds);
     });
   };
 
@@ -1210,6 +1254,6 @@
   showView(view);
   dash.onData(draw);
 
-  const named = document.getElementById(location.hash.slice(1));
+  const named = ancoraInicial && document.getElementById(ancoraInicial);
   if (named && !VIEWS.includes(named.id)) setTimeout(() => { if (!openGuide(named)) named.scrollIntoView(); }, 400);
 })();
