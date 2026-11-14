@@ -500,9 +500,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-meta{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg .tg-mapa-meta b{color:var(--color-fg);font-weight:700}
 .tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
-.tg-mapa-vs.tg-up,.tg-mapa-vs.tg-down{color:var(--color-fg);font-weight:600}
-.tg-mapa-vs.tg-up .tg-arrow{color:var(--color-positivo)}
-.tg-mapa-vs.tg-down .tg-arrow{color:var(--color-negativo)}
+.tg-mapa-vs.tg-dir{color:var(--color-fg);font-weight:600}
+.tg-mapa-vs .tg-arrow{color:var(--color-fg-muted)}
 .tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-mapa-inds{display:flex;flex-direction:column}
 .tg button.tg-mapa-ind{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;width:100%;padding:.6rem .7rem;border:0;border-radius:10px;background:transparent;text-align:left;font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg-muted);transition:background .15s ease,color .15s ease}

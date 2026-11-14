@@ -1084,10 +1084,11 @@
       meta.replaceChildren(exato, row.moe ? ' · pode variar ' + faixa(row) : noMoe(row) ? ' · margem de erro não estimada' : '');
       const vs = document.getElementById('mapa-vs'); vs.replaceChildren(); vs.className = 'tg-mapa-vs';
       if (mapaReg && br) {
-        const diff = row.pct - br.pct, out = !noMoe(row) && row.moe != null && Math.abs(diff) > row.moe;
-        if (out) { vs.classList.add(diff > 0 ? 'tg-up' : 'tg-down'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.textContent = diff > 0 ? '▲' : '▼'; vs.append(a); }
-        vs.append((out ? (diff > 0 ? 'Acima' : 'Abaixo') + ' do Brasil' : noMoe(row) ? 'Sem margem estimada para comparar' : 'Empate com o Brasil, dentro da margem de erro') + ' · Brasil: ' + pct(br.pct));
-      } else vs.append('Média de todo o país');
+        // mesmo padrão de Compare grupos: comparação descritiva, diferença em p.p. e seta neutra
+        const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0;
+        if (dir) { vs.classList.add('tg-dir'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.setAttribute('aria-hidden', 'true'); a.textContent = dir > 0 ? '▲' : '▼'; vs.append(a); }
+        vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + ' p.p. ' + (dir > 0 ? 'acima' : 'abaixo') + ' da estimativa nacional' : 'Igual à estimativa nacional') + ' (' + pct(br.pct) + ')');
+      } else vs.append('Estimativa nacional');
     }
     // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
     [...mapaInds.children].forEach((b, i) => {
