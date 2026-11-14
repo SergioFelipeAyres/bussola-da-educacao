@@ -562,3 +562,38 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-lesson-combo .tg-nao{color:var(--color-fg-muted);text-decoration:line-through;text-decoration-color:var(--cds-chart-muted)}
 .tg-lesson-combo .tg-nao span{background:var(--cds-chart-muted)}
 .tg-lesson-pp{font-variant-numeric:tabular-nums}
+/* filtro fixo: versão compacta que aparece logo abaixo do menu ao rolar Escolas e Gestores */
+.tg-rec-fixo{position:fixed;left:0;right:0;top:var(--nav-h,3.6rem);z-index:15;padding:.5rem max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
+@media (min-width:900px){.tg-rec-fixo{padding-inline:max(2.5rem,env(safe-area-inset-left,0px))}}
+.tg-rec-fixo[hidden]{display:none}
+.tg-rec-fixo-in{--sec:var(--v-blue);max-width:76rem;margin-inline:auto;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem 1rem;padding:.5rem .9rem .55rem;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:color-mix(in srgb,var(--color-panel) 94%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 28px -12px rgba(20,30,70,.35);pointer-events:auto;animation:tg-fixo-in .25s ease-out}
+@keyframes tg-fixo-in{from{opacity:0;transform:translateY(-.5rem)}}
+.tg .tg-rec-fixo-tit{display:flex;align-items:baseline;gap:.4rem;margin:0;min-width:0;font-size:.95rem;white-space:nowrap}
+.tg-rec-fixo-tit span{font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-rec-fixo-tit b{overflow:hidden;text-overflow:ellipsis;font-weight:800;letter-spacing:-.015em}
+.tg-rec-fixo .tg-rec-dims{flex:1 1 24rem;min-width:0;border-bottom:0}
+.tg .tg-rec-fixo .tg-rec-dims button{padding:.35rem .6rem;font-size:.8125rem}
+.tg-rec-fixo .tg-rec-opts{flex:1 1 100%;max-width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.tg-rec-fixo .tg-rec-opts::-webkit-scrollbar{display:none}
+.tg .tg-rec-fixo .tg-rec-opts button{flex:none;white-space:nowrap;padding:.28rem .65rem}
+.tg-rec-opts.tg-rola{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.tg-rec-opts.tg-rola.tg-fim{-webkit-mask-image:none;mask-image:none}
+@media (max-width:560px){.tg-rec-fixo-in{padding:.4rem .6rem .45rem;gap:.25rem}.tg .tg-rec-fixo-tit{font-size:.875rem}.tg-rec-fixo-tit span{display:none}.tg-rec-fixo .tg-rec-dims{flex-basis:100%}}
+@media (prefers-reduced-motion:reduce){.tg-rec-fixo-in{animation:none}}
+/* âncoras não ficam escondidas atrás do menu e do filtro fixo */
+#escolas .tg-sec,#escolas .tg-kpis,#escolas .tg-card,#gestores .tg-sec,#gestores .tg-kpis,#gestores .tg-card,#comparar,#card-comparar{scroll-margin-top:calc(var(--nav-h,4rem) + var(--fixo-h,7rem) + 1.25rem)}
+/* seções recolhíveis */
+.tg-sec-corpo{display:contents}
+.tg-sec-corpo[hidden]{display:none}
+.tg button.tg-sec-toggle{flex:none;align-self:center;margin-left:auto;display:inline-flex;align-items:center;gap:.35rem;padding:.4rem .55rem .4rem .8rem;border:1px solid var(--color-border-line);border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:600;color:var(--color-fg-muted);transition:color .15s ease,border-color .15s ease}
+.tg button.tg-sec-toggle:hover{color:var(--color-fg);border-color:var(--sec)}
+.tg button.tg-sec-toggle:focus-visible{outline:2px solid var(--sec);outline-offset:2px}
+.tg .tg-sec-toggle .tg-ic{width:1rem;height:1rem;padding:0;margin:0;border-radius:0;background:none;color:currentColor;stroke-width:2.2;transition:transform .25s ease}
+.tg-sec.tg-fechada .tg-sec-toggle .tg-ic{transform:rotate(-90deg)}
+.tg-sec.tg-fechada{padding-bottom:.25rem;border-bottom:1px dashed var(--color-border-line)}
+@media (max-width:560px){.tg button.tg-sec-toggle{padding:.45rem}.tg-sec-toggle span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+@media (prefers-reduced-motion:reduce){.tg .tg-sec-toggle .tg-ic{transition:none}}
+/* tamanhos iguais: big numbers com a mesma altura em todas as linhas; "Você sabia?" com altura fixa (definida pelo JS) */
+.tg-kpis{grid-auto-rows:1fr}
+.tg-hero-home .tg-fact-body{flex:1;display:flex;flex-direction:column}
+.tg-hero-home .tg-fact-actions{margin-top:auto}

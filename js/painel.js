@@ -529,7 +529,7 @@
     navLinks.forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     VIEWS.forEach((id) => { document.getElementById(id).hidden = v !== id; });
     document.title = v === 'inicio' ? 'Bússola da Educação' : { escolas: 'Escolas', gestores: 'Gestores', sobre: 'Sobre' }[v] + ' · Bússola da Educação';
-    document.querySelectorAll('.tg-dash-only').forEach((el) => { el.hidden = !DASH.includes(v); });
+    document.querySelectorAll('.tg-dash-only').forEach((el) => { el.hidden = !DASH.includes(v); }); fixaFiltro();
   };
   const setView = (v) => {
     if (v !== view) pararFala();
@@ -571,7 +571,7 @@
     if (url !== location.pathname + location.hash) history[trocar ? 'replaceState' : 'pushState'](null, '', url);
     if (v !== view) setView(v);
     const el = hash && document.getElementById(hash);
-    if (el) { if (!openGuide(el)) el.scrollIntoView(); } else window.scrollTo(0, 0);
+    if (el) { if (!openGuide(el)) { abreSecao(el); el.scrollIntoView(); } } else window.scrollTo(0, 0);
   };
   window.navegar = (v) => irPara(v);
   document.addEventListener('click', (e) => {
@@ -591,7 +591,7 @@
     const h = decodeURIComponent(location.hash.slice(1));
     setView(viewDaAncora(h) || viewDoCaminho());
     const el = h && document.getElementById(h);
-    if (el && !guia.contains(el)) el.scrollIntoView();
+    if (el && !guia.contains(el)) { abreSecao(el); el.scrollIntoView(); }
   });
   // âncora digitada na barra de endereço
   window.addEventListener('hashchange', () => {
@@ -668,32 +668,60 @@
       });
     }
   };
+  // abas que não cabem: esmaece a borda direita até chegar ao fim da rolagem
+  const marcaRola = (box) => { const r = box.scrollWidth > box.clientWidth + 1; box.classList.toggle('tg-rola', r); box.classList.toggle('tg-fim', r && box.scrollLeft + box.clientWidth >= box.scrollWidth - 2); };
+  // a aba ativa fica sempre à vista quando as abas rolam de lado (celular)
+  const mostraAtiva = (box) => {
+    const ativa = box.querySelector('[aria-checked=true]');
+    if (ativa && box.scrollWidth > box.clientWidth) {
+      const a = ativa.offsetLeft - box.offsetLeft, b = a + ativa.offsetWidth;
+      if (a < box.scrollLeft) box.scrollLeft = a - 8; else if (b > box.scrollLeft + box.clientWidth - 24) box.scrollLeft = b - box.clientWidth + 32;
+    }
+    marcaRola(box);
+  };
+  // o seletor existe em dois lugares: o cartão no topo da aba e a versão compacta fixa, que aparece ao rolar
+  const REC_SETS = [['rec-dims', 'rec-opts'], ['rec-dims2', 'rec-opts2']].map(([d, o]) => ({ dims: document.getElementById(d), opts: document.getElementById(o) }));
+  REC_SETS.forEach(({ dims }) => dims.addEventListener('scroll', () => marcaRola(dims), { passive: true }));
+  window.addEventListener('resize', () => REC_SETS.forEach(({ dims }) => marcaRola(dims)));
   const drawRecorte = (v, rec) => {
     const dim = rec === TOTAL ? 'TOTAL' : rec.split('|')[0], segs = SEGS[v] || [];
     const dims = CATS[v].filter((c) => segs.some((s) => s.split('|')[0] === c));
-    // trocar de dimensão substitui o recorte: entra o primeiro grupo da nova dimensão
-    radios(document.getElementById('rec-dims'), dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim,
-      (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); });
-    // a aba ativa fica sempre à vista quando as abas rolam de lado (celular)
-    const dimsBox = document.getElementById('rec-dims'), ativa = dimsBox.querySelector('[aria-checked=true]');
-    if (ativa && dimsBox.scrollWidth > dimsBox.clientWidth) {
-      const a = ativa.offsetLeft - dimsBox.offsetLeft, b = a + ativa.offsetWidth;
-      if (a < dimsBox.scrollLeft) dimsBox.scrollLeft = a - 8; else if (b > dimsBox.scrollLeft + dimsBox.clientWidth - 24) dimsBox.scrollLeft = b - dimsBox.clientWidth + 32;
+    for (const set of REC_SETS) {
+      // trocar de dimensão substitui o recorte: entra o primeiro grupo da nova dimensão
+      radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim,
+        (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); });
+      mostraAtiva(set.dims);
+      const opts = set.opts;
+      opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', DIM[dim] || '');
+      if (opts.dataset.dim !== v + dim) { opts.dataset.dim = v + dim; opts.classList.remove('tg-troca'); void opts.offsetWidth; opts.classList.add('tg-troca'); }
+      radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), rec,
+        (s) => { if (s !== rec) dash.setParams({ recorte: s }); });
+      mostraAtiva(opts);
     }
-    marcaRola();
-    const opts = document.getElementById('rec-opts');
-    opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', DIM[dim] || '');
-    if (opts.dataset.dim !== v + dim) { opts.dataset.dim = v + dim; opts.classList.remove('tg-troca'); void opts.offsetWidth; opts.classList.add('tg-troca'); }
-    radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), rec,
-      (s) => { if (s !== rec) dash.setParams({ recorte: s }); });
-    const tit = document.getElementById('rec-titulo'), novo = recTitulo(rec, v);
+    const novo = recTitulo(rec, v);
     document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
+    document.getElementById('rec-titulo2').textContent = novo;
+    const tit = document.getElementById('rec-titulo');
     if (tit.textContent !== novo) { tit.textContent = novo; tit.classList.remove('tg-troca'); void tit.offsetWidth; tit.classList.add('tg-troca'); }
+    fixaFiltro();
   };
-  // abas que não cabem: esmaece a borda direita até chegar ao fim da rolagem
-  const recDims = document.getElementById('rec-dims');
-  const marcaRola = () => { const r = recDims.scrollWidth > recDims.clientWidth + 1; recDims.classList.toggle('tg-rola', r); recDims.classList.toggle('tg-fim', r && recDims.scrollLeft + recDims.clientWidth >= recDims.scrollWidth - 2); };
-  recDims.addEventListener('scroll', marcaRola, { passive: true }); window.addEventListener('resize', marcaRola);
+  // filtro fixo: quando o cartão do filtro sai da tela ao rolar, a versão compacta aparece logo abaixo do menu
+  const filtro = document.getElementById('filtro'), fixo = document.getElementById('filtro-fixo'), navEl = document.querySelector('.nav');
+  let fixoRaf = 0;
+  const fixaFiltro = () => {
+    const navH = navEl.offsetHeight;
+    document.documentElement.style.setProperty('--nav-h', navH + 'px');
+    const mostrar = DASH.includes(view) && !filtro.hidden && filtro.getBoundingClientRect().bottom < navH + 8;
+    if (fixo.hidden === mostrar) {
+      fixo.hidden = !mostrar;
+      if (mostrar) REC_SETS.forEach(({ dims, opts }) => { mostraAtiva(dims); mostraAtiva(opts); });
+      // o foco não pode ficar preso numa barra que sumiu
+      else if (fixo.contains(document.activeElement)) { const b = filtro.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true }); }
+    }
+    if (mostrar) document.documentElement.style.setProperty('--fixo-h', fixo.offsetHeight + 'px');
+  };
+  window.addEventListener('scroll', () => { if (!fixoRaf) fixoRaf = requestAnimationFrame(() => { fixoRaf = 0; fixaFiltro(); }); }, { passive: true });
+  window.addEventListener('resize', fixaFiltro);
   const recInfo = document.getElementById('rec-info'), recInfoTxt = document.getElementById('rec-info-txt');
   recInfo.addEventListener('click', () => { const ab = recInfo.getAttribute('aria-expanded') !== 'true'; recInfo.setAttribute('aria-expanded', ab ? 'true' : 'false'); recInfoTxt.hidden = !ab; });
 
@@ -1145,9 +1173,41 @@
     ir.firstChild.textContent = 'Ver o painel de ' + m.ds + (mapaReg ? ' do ' + mapaReg : ' do Brasil') + ' ';
   }
 
+  // "Você sabia?" com tamanho fixo: mede todas as curiosidades na largura atual e usa a maior altura,
+  // para o cartão não crescer nem encolher ao trocar de dado
+  let fatoW = 0;
+  const igualaFato = () => {
+    const card = document.querySelector('.tg-hero-home .tg-fact');
+    if (!card || !card.offsetWidth || card.offsetWidth === fatoW) return;
+    if (['escolas', 'gestores', META].some((d) => dash.data(d).status !== 'ok')) return; // mede só com todos os dados (inclusive a base, no rodapé)
+    const salvo = factIdx; let max = 0;
+    card.style.minHeight = '';
+    for (let i = 0; i < FACTS.length; i++) { factIdx = i; drawFact(); max = Math.max(max, card.offsetHeight); }
+    factIdx = salvo; drawFact();
+    card.style.minHeight = max + 'px'; fatoW = card.offsetWidth;
+  };
+  // destaque do mapa com tamanho fixo: mede todas as combinações de indicador e região (incluindo Brasil)
+  let mapaW = 0;
+  const igualaMapa = () => {
+    const box = document.querySelector('.tg-mapa-destaque');
+    if (!box || !box.offsetWidth || box.offsetWidth === mapaW) return;
+    if (['escolas', 'gestores'].some((d) => dash.data(d).status !== 'ok')) return;
+    const salvo = [mapaInd, mapaReg]; let max = 0;
+    box.style.minHeight = '';
+    for (let i = 0; i < MAPA.length; i++) for (const r of [null, ...REGIOES]) { mapaInd = i; mapaReg = r; drawMapa(); max = Math.max(max, box.offsetHeight); }
+    [mapaInd, mapaReg] = salvo; drawMapa();
+    box.style.minHeight = max + 'px'; mapaW = box.offsetWidth;
+  };
+  let fatoT = 0;
+  window.addEventListener('resize', () => { clearTimeout(fatoT); fatoT = setTimeout(() => { fatoW = 0; mapaW = 0; if (view === 'inicio') { igualaFato(); igualaMapa(); } }, 200); });
+  // a fonte do site muda a medida das linhas: mede de novo quando ela termina de carregar
+  if (document.fonts) document.fonts.ready.then(() => { fatoW = 0; mapaW = 0; if (view === 'inicio') { igualaFato(); igualaMapa(); } });
+
   const drawHome = () => {
     drawFact();
     drawMapa();
+    igualaFato();
+    igualaMapa();
   };
 
   // ---------- main draw ----------
@@ -1251,9 +1311,46 @@
     document.querySelectorAll('#' + view + ' .tg-card, #card-comparar').forEach(textAlt);
   }
 
+  // ---------- seções recolhíveis (Escolas, Gestores e Compare grupos) ----------
+  // o botão fica no cabeçalho; a escolha de cada seção é lembrada neste navegador
+  const SEC_KEY = 'bussola-secoes-fechadas';
+  const lerFechadas = () => { try { return new Set(JSON.parse(localStorage.getItem(SEC_KEY) || '[]')); } catch (e) { return new Set(); } };
+  const salvarFechadas = (s) => { try { localStorage.setItem(SEC_KEY, JSON.stringify([...s])); } catch (e) { /* sem armazenamento: só não lembra */ } };
+  const fechadas = lerFechadas();
+  const CHEV = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  const marcaSecao = (sec, aberta) => {
+    const b = sec.querySelector(':scope > .tg-sec-head > .tg-sec-toggle'), corpo = sec.querySelector(':scope > .tg-sec-corpo');
+    const nome = sec.querySelector('.tg-sec-title').textContent;
+    sec.classList.toggle('tg-fechada', !aberta); corpo.hidden = !aberta;
+    b.setAttribute('aria-expanded', aberta ? 'true' : 'false');
+    b.setAttribute('aria-label', (aberta ? 'Recolher' : 'Expandir') + ' a seção ' + nome);
+    b.querySelector('span').textContent = aberta ? 'Recolher' : 'Expandir';
+  };
+  document.querySelectorAll('#escolas > .tg-sec[id], #gestores > .tg-sec[id], #comparar').forEach((sec) => {
+    const head = sec.querySelector(':scope > .tg-sec-head'); if (!head) return;
+    const corpo = document.createElement('div'); corpo.className = 'tg-sec-corpo'; corpo.id = sec.id + '-corpo';
+    [...sec.children].filter((c) => c !== head).forEach((c) => corpo.append(c));
+    sec.append(corpo);
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-sec-toggle'; b.setAttribute('aria-controls', corpo.id);
+    b.innerHTML = '<span></span>' + CHEV;
+    b.addEventListener('click', () => {
+      const abrir = sec.classList.contains('tg-fechada');
+      marcaSecao(sec, abrir);
+      if (abrir) { fechadas.delete(sec.id); draw(); } else { fechadas.add(sec.id); if (sec.getBoundingClientRect().top < 0) sec.scrollIntoView(); }
+      salvarFechadas(fechadas);
+    });
+    head.append(b);
+    marcaSecao(sec, !fechadas.has(sec.id));
+  });
+  // um link para algo dentro de uma seção recolhida abre a seção antes de rolar até lá
+  function abreSecao(el) {
+    const sec = el && el.closest && el.closest('.tg-sec.tg-fechada');
+    if (sec) { marcaSecao(sec, true); fechadas.delete(sec.id); salvarFechadas(fechadas); draw(); }
+  }
+
   showView(view);
   dash.onData(draw);
 
   const named = ancoraInicial && document.getElementById(ancoraInicial);
-  if (named && !VIEWS.includes(named.id)) setTimeout(() => { if (!openGuide(named)) named.scrollIntoView(); }, 400);
+  if (named && !VIEWS.includes(named.id)) setTimeout(() => { if (!openGuide(named)) { abreSecao(named); named.scrollIntoView(); } }, 400);
 })();
