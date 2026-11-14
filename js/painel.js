@@ -455,13 +455,17 @@
   const minus = (s) => (NOMES.test(s) ? s : s.charAt(0).toLowerCase() + s.slice(1));
   const separa = (a, b) => !b || (a.pct - (a.moe || 0)) > (b.pct + (b.moe || 0));
   const negrito = (t) => { const b = document.createElement('b'); b.textContent = t; return b; };
+  // a frase fica logo abaixo do título do cartão: título → frase → nota sobre as cores → gráfico
   const lead = (id, partes) => {
     const el = document.getElementById(id);
     if (!el || !partes || el.querySelector('.tg-empty, .tg-fail')) return;
     const p = document.createElement('p'); p.className = 'tg-say tg-lead';
     partes.forEach((x) => p.append(typeof x === 'string' ? document.createTextNode(x) : x));
-    el.prepend(p);
+    const card = el.closest('.tg-card'), tit = card && card.querySelector(':scope > .tg-card-title');
+    if (tit) tit.after(p); else el.prepend(p);
   };
+  // a cada redesenho, as frases antigas saem antes de entrarem as novas (o gráfico é refeito, o cartão não)
+  const limpaFrases = (id) => document.querySelectorAll('#' + id + ' .tg-card > .tg-lead').forEach((x) => x.remove());
   const soma = (ind, resps, rec) => {
     const rows = resps.map((r) => get(ind, '', r, rec));
     return rows.every(Boolean) ? rows.reduce((s, x) => s + x.pct, 0) : null;
@@ -670,6 +674,15 @@
     e.preventDefault();
     const m = document.getElementById('conteudo'); m.focus({ preventScroll: true }); m.scrollIntoView();
   });
+  // celular: o filtro começa recolhido ("Você está vendo: Brasil" + "Mudar grupo"); no desktop o botão não aparece
+  const recMudar = document.getElementById('rec-mudar');
+  recMudar?.addEventListener('click', () => {
+    const aberto = recMudar.getAttribute('aria-expanded') !== 'true';
+    recMudar.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    recMudar.querySelector('span').textContent = aberto ? 'Fechar' : 'Mudar grupo';
+    document.getElementById('filtro').classList.toggle('tg-rec-aberto', aberto);
+    if (aberto) { const b = document.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true }); }
+  });
   // "Topo", no filtro fixo: volta ao início da aba sem passar pelo roteamento por âncora
   document.getElementById('ir-topo')?.addEventListener('click', () => {
     const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -850,6 +863,7 @@
   // ---------- page: gestores ----------
   const drawGestores = (rec, anim) => {
     CUR = 'gestores';
+    limpaFrases('gestores');
     (() => {
       const el = document.getElementById('ch-sexo');
       const f = get('A1', '', 'Feminino', rec), m = get('A1', '', 'Masculino', rec);
@@ -880,7 +894,7 @@
       const its = respList('A3', ['Branca', 'Preta', 'Parda', 'Amarela', 'Indígena'], rec);
       bars(el, its, rec, anim);
       const pr = its.filter((x) => x.label === 'Preta' || x.label === 'Parda');
-      if (pr.length === 2) { const n = document.createElement('p'); n.className = 'tg-say'; n.style.fontSize = 'var(--cds-font-size-body)'; n.textContent = 'Somados, gestores pretos e pardos são ' + freqTxt(pr[0].row.pct + pr[1].row.pct, false) + '.'; el.prepend(n); }
+      if (pr.length === 2) lead('ch-raca', ['Somados, gestores pretos e pardos são ', negrito(freqTxt(pr[0].row.pct + pr[1].row.pct, false)), '.']);
     })();
 
     bars(document.getElementById('ch-formacao'), listFrom('A4', ['Especialização ou pós-graduação', 'Mestrado', 'Doutorado'], 'Sim', rec).map((x) => ({ ...x, icon: 'livro' })), rec, anim);
@@ -991,6 +1005,7 @@
   // ---------- page: escolas ----------
   const drawEscolas = (rec, anim) => {
     CUR = 'escolas';
+    limpaFrases('escolas');
     const yes = (ind, label, icon) => { const row = get(ind, '', 'Sim', rec); return row ? { label, icon, row, br: get(ind, '', 'Sim', TOTAL), ind } : null; };
 
     isoRows(document.getElementById('ch-camadas'), [

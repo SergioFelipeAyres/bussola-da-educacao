@@ -225,7 +225,7 @@ No CSS, `--font-sans` é a família e `--font-display` (a mesma família) marca 
 - **Headline** (800; 2.16rem, ou 1.65rem abaixo de 620px; 1.15): títulos das capas de Escolas, Gestores e Sobre, com no máximo 20ch.
 - **Title** (800; 1.6rem; 1.2; -0.02em): títulos de seção, sempre sublinhados pelo filete de 4px na cor do tema.
 - **Number** (800; 2rem; 1.1; algarismos tabulares): números-chave dos destaques, na cor do tema.
-- **Statement** (400, com negrito 600; 1.0625rem; 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…"), com no máximo 62ch e 0.875rem de respiro até a figura.
+- **Statement** (400, com negrito 600; 1.0625rem; 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…"), com no máximo 62ch, logo abaixo do título do cartão; a nota sobre as cores vem depois dela, encostada no gráfico (título → frase → nota → gráfico).
 - **Body** (400; 0.9375rem; 1.5): texto corrente, rótulos de barra e controles. Textos longos ficam em 62ch no máximo.
 - **Label** (600; 0.8125rem; 0.06em; caixa alta): sobretítulos. Na mesma medida, sem caixa alta e em Tinta Suave, a linha de base e margem de erro.
 
@@ -243,6 +243,7 @@ No CSS, `--font-sans` é a família e `--font-display` (a mesma família) marca 
 - **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px. Abaixo de 560px, os links da navegação vão para uma segunda linha e perdem os ícones.
 - **Ordem de leitura em Escolas e Gestores:** capa, filtro de recorte, destaques, índice de seções ("Ir para") e as seções na ordem do índice, terminando em "Compare grupos".
 - **Navegação fixa no topo** e, ao rolar Escolas e Gestores, um filtro de recorte compacto fixo logo abaixo dela, com o botão "Topo". As âncoras compensam essa altura.
+- **Celular (até 560px):** o filtro principal começa recolhido, com "Você está vendo" e o botão "Mudar grupo" (vira "Fechar" quando aberto); os destaques ficam em 2 colunas, e o total vira uma faixa de uma linha ("129,7 mil Escolas representadas").
 - **Fim do Início:** duas portas lado a lado (colunas de no mínimo 22rem), que viram uma coluna no celular.
 
 ## Elevation & Depth

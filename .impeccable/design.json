@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-14T23:38:31.166Z",
+  "generatedAt": "2026-11-14T23:51:33.010Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -350,6 +350,16 @@
         "name": "filtro-fixo",
         "value": "0 10px 28px -12px rgba(20,30,70,.35)",
         "purpose": "Barra de recorte fixa, com desfoque de fundo de 10px."
+      },
+      {
+        "name": "guia",
+        "value": "0 30px 80px -20px rgba(var(--sombra-escura),.5)",
+        "purpose": "Janela \"Como ler este painel\"; --sombra-escura é 5,12,45."
+      },
+      {
+        "name": "porta-hover",
+        "value": "0 2px 4px rgba(20,30,70,.06),0 18px 36px -18px rgba(20,30,70,.3)",
+        "purpose": "Portas do Início ao passar o mouse (sobem 2px)."
       },
       {
         "name": "guia",
