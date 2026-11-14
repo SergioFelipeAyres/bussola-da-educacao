@@ -359,11 +359,6 @@
         "purpose": "Revelação de blocos e crescimento de barras (0.7s a 1s)."
       },
       {
-        "name": "cds-ease-out",
-        "value": "cubic-bezier(.2,.7,.2,1)",
-        "purpose": "Transições gerais de estado."
-      },
-      {
         "name": "pop",
         "value": "cubic-bezier(.34,1.56,.64,1)",
         "purpose": "Pontos da comparação surgindo (0.6s)."
