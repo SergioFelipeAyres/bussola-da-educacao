@@ -62,7 +62,7 @@
 
   const CAT = {
     'TOTAL': 'Brasil', 'SEXO': 'Sexo do gestor', 'COR OU RAÇA': 'Cor ou raça do gestor', 'FAIXA ETÁRIA': 'Idade do gestor',
-    'REGIÃO': 'Região', 'ÁREA': 'Área da escola', 'LOCALIZAÇÃO': 'Localização', 'DEPENDÊNCIA ADMINISTRATIVA': 'Rede de ensino',
+    'REGIÃO': 'Região', 'ÁREA': 'Urbana ou rural', 'LOCALIZAÇÃO': 'Capital ou interior', 'DEPENDÊNCIA ADMINISTRATIVA': 'Rede de ensino',
     'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Nível de ensino mais alto da escola', 'PORTE': 'Porte da escola',
     'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Internet e computador para os alunos'
   };
@@ -276,6 +276,8 @@
   const DEFINE_G = { A1: 'SEXO', A2: 'FAIXA ETÁRIA', A3: 'COR OU RAÇA' };
   const definitional = (r) => (r._ds === 'gestores' && DEFINE_G[r.ind] === r.cat) ||
     (r._ds === 'escolas' && r.cat === 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS' && ['A1', 'A6', 'A7', 'A8'].includes(r.ind));
+  // valor que não vale como achado: grupo sem o dado, ou 0%/100% (quase sempre porque o próprio grupo define a resposta)
+  const extremo = (r) => !r || r.pct >= 99 || r.pct <= 1;
   const noMoe = (r) => !!r && r.moe === 0 && (r.pct === 0 || r.pct === 100) && !definitional(r);
   const noMoeTxt = (ds, short) => short
     ? '* Margem de erro não estimada: ninguém da amostra deste grupo respondeu de outro jeito.'
@@ -748,8 +750,8 @@
   // ---------- seletor de recorte (Escolas e Gestores): etapa 1 = dimensão, etapa 2 = grupo; um recorte por vez ----------
   // todas as dimensões das tabelas continuam disponíveis; a lista muda com a aba (perfil do gestor só existe em Gestores)
   const DIM = {
-    'TOTAL': 'Brasil', 'REGIÃO': 'Região', 'ÁREA': 'Área', 'LOCALIZAÇÃO': 'Localização', 'DEPENDÊNCIA ADMINISTRATIVA': 'Rede',
-    'PORTE': 'Porte', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Nível de ensino', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Internet e computador',
+    'TOTAL': 'Brasil', 'REGIÃO': 'Região', 'ÁREA': 'Urbana ou rural', 'LOCALIZAÇÃO': 'Capital ou interior', 'DEPENDÊNCIA ADMINISTRATIVA': 'Pública ou particular',
+    'PORTE': 'Tamanho da escola', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Até que série vai', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Computador para alunos',
     'SEXO': 'Sexo', 'COR OU RAÇA': 'Cor ou raça', 'FAIXA ETÁRIA': 'Idade'
   };
   // rótulo curto do botão (etapa 2)
@@ -784,7 +786,13 @@
     return ESC[rec] || segName(rec).toLowerCase();
   };
   const semAcento = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const slugRec = (rec) => { const [c, s] = rec.split('|'); return semAcento((DIM[c] || c) + ' ' + s); };
+  // nomes fixos para o endereço (?grupo=area-rural): os rótulos da tela podem mudar sem quebrar links já compartilhados
+  const DIM_URL = {
+    'REGIÃO': 'Região', 'ÁREA': 'Área', 'LOCALIZAÇÃO': 'Localização', 'DEPENDÊNCIA ADMINISTRATIVA': 'Rede', 'PORTE': 'Porte',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Nível de ensino', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Internet e computador',
+    'SEXO': 'Sexo', 'COR OU RAÇA': 'Cor ou raça', 'FAIXA ETÁRIA': 'Idade'
+  };
+  const slugRec = (rec) => { const [c, s] = rec.split('|'); return semAcento((DIM_URL[c] || DIM[c] || c) + ' ' + s); };
   // troca feita pelo leitor: entra no histórico (o Voltar desfaz)
   const mudaGrupo = (rec) => {
     grupoUrl = rec === TOTAL ? '' : slugRec(rec);
@@ -795,8 +803,8 @@
   // filtro em duas etapas: tocar numa dimensão só mostra os grupos dela; os dados mudam ao escolher o grupo
   let dimAberta = null;
   const PEDIDO = {
-    'REGIÃO': 'Escolha a região:', 'ÁREA': 'Escolha a área:', 'LOCALIZAÇÃO': 'Escolha a localização:', 'DEPENDÊNCIA ADMINISTRATIVA': 'Escolha a rede:',
-    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Escolha o nível de ensino:', 'PORTE': 'Escolha o porte da escola:',
+    'REGIÃO': 'Escolha a região:', 'ÁREA': 'Escolas urbanas ou rurais:', 'LOCALIZAÇÃO': 'Escolas da capital ou do interior:', 'DEPENDÊNCIA ADMINISTRATIVA': 'Escolha a rede:',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Escolas que vão até:', 'PORTE': 'Escolha pelo número de matrículas:',
     'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Escolas com internet e computador para os alunos:',
     'SEXO': 'Escolha o sexo:', 'COR OU RAÇA': 'Escolha a cor ou raça:', 'FAIXA ETÁRIA': 'Escolha a idade:'
   };
@@ -1082,12 +1090,15 @@
     limpaFrases('escolas');
     const yes = (ind, label, icon) => { const row = get(ind, '', 'Sim', rec); return row ? { label, icon, row, br: get(ind, '', 'Sim', TOTAL), ind } : null; };
 
-    isoRows(document.getElementById('ch-camadas'), [
+    // as quatro etapas do funil e a frase do cartão usam a mesma base ("em cada 10" ou "em cada 100")
+    const camadas = [
       yes('A1', 'Têm acesso à internet', 'escola'),
       yes('A6', 'Têm computador e internet', 'desktop'),
       yes('A7', 'Oferecem internet para os alunos', 'pessoa'),
       yes('A8', 'Oferecem computador e internet para os alunos', 'notebook')
-    ].filter(Boolean), rec, '', SCHOOL, 'tg-cols4');
+    ].filter(Boolean);
+    const baseCamadas = camadas.map((x) => x.row.pct);
+    comBase(baseCamadas, () => isoRows(document.getElementById('ch-camadas'), camadas, rec, '', SCHOOL, 'tg-cols4'));
 
     bars(document.getElementById('ch-tipo-conexao'), respList('A2', Object.keys(A2L), rec, A2L, true), rec, anim);
 
@@ -1182,7 +1193,7 @@
     // frases de abertura
     (() => {
       const a1 = get('A1', '', 'Sim', rec), a8 = get('A8', '', 'Sim', rec);
-      if (a1 && a8) lead('ch-camadas', comBase([a1.pct, a8.pct], () => ['Da internet na escola ao uso pelos alunos, a parcela cai de ', negrito(freqTxt(a1.pct, false)), ' para ', negrito(freqTxt(a8.pct, false)), '.']));
+      if (!extremo(a1) && !extremo(a8) && a8.pct < a1.pct) lead('ch-camadas', comBase(baseCamadas, () => ['A cada etapa, menos escolas: ', negrito(freqTxt(a1.pct, false)), ' têm internet, mas só ', negrito(freqTxt(a8.pct, false)), ' oferecem computador e internet aos alunos.']));
     })();
     (() => {
       const its = [['C3C', 'regras para o celular dos alunos'], ['E1D', 'sistemas digitais na gestão escolar'], ['I5', 'projetos de educação digital e midiática'], ['H1', 'política de proteção de dados'], ['E5B', 'permissão para alunos usarem IA'], ['E5A', 'guia sobre o uso de IA']]
@@ -1273,10 +1284,10 @@
     const axt = document.createElement('div'); axt.className = 'tg-dot-track';
     ticks.forEach((t) => { const s = document.createElement('span'); s.className = 'tg-tick'; s.style.left = pos(t); s.textContent = t + '%'; axt.append(s); });
     const axv = document.createElement('div'); axv.className = 'tg-dot-val';
-    const bl = document.createElement('span'); bl.className = 'tg-verdict'; bl.append(document.createTextNode('Nacional ')); const bv = document.createElement('span'); bv.textContent = pct(br.pct); markRow(bv, br); bl.append(bv); axv.append(bl);
+    const bl = document.createElement('span'); bl.className = 'tg-verdict'; bl.append(document.createTextNode('Brasil ')); const bv = document.createElement('span'); bv.textContent = pct(br.pct); markRow(bv, br); bl.append(bv); axv.append(bl);
     ax.append(axl, axt, axv); w.append(ax);
     for (const { s, row } of rows) {
-      // todos os grupos são descritos do mesmo jeito: acima ou abaixo da estimativa nacional, com a diferença em p.p.
+      // todos os grupos são descritos do mesmo jeito: quantos pontos a mais ou a menos que o Brasil
       // uma cor só (a do tema): a direção vem das setas e do sinal, sem verde/vermelho de julgamento
       const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0, col = 'var(--sec)';
       const r = document.createElement('div'); r.className = 'tg-dot-row';
@@ -1289,11 +1300,9 @@
       const v = document.createElement('div'); v.className = 'tg-dot-val';
       const vl = document.createElement('span'); vl.className = 'tg-dot-num';
       const b = document.createElement('b'); b.textContent = pct(row.pct); markRow(b, row);
-      const ppN = Math.abs(dd).toFixed(1).replace('.', ',');
-      const pp = document.createElement('span'); pp.className = 'tg-pp';
-      pp.textContent = (dir > 0 ? '+' : dir < 0 ? '−' : '') + ppN + ' p.p.';
-      vl.append(b, pp);
-      const lado = dir > 0 ? 'acima da estimativa nacional' : dir < 0 ? 'abaixo da estimativa nacional' : 'igual à estimativa nacional';
+      const ppN = Math.abs(dd).toFixed(1).replace('.', ','), pontos = Math.abs(dd) < 2 ? ' ponto ' : ' pontos ';
+      vl.append(b);
+      const lado = dir ? ppN + pontos + (dir > 0 ? 'a mais' : 'a menos') + ' que o Brasil' : 'igual ao Brasil';
       const vd = document.createElement('span'); vd.className = 'tg-verdict';
       if (dir) { const ar = document.createElement('span'); ar.className = 'tg-arrow'; ar.setAttribute('aria-hidden', 'true'); ar.textContent = dir > 0 ? '▲' : '▼'; vd.append(ar); }
       vd.append(lado);
@@ -1301,14 +1310,23 @@
       // versão por extenso, usada no texto alternativo, no áudio e na dica ao passar o mouse
       const quem = cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
       const frase = 'A estimativa para ' + quem + ' é de ' + pct(row.pct) +
-        (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? ' (margem de erro não estimada)' : '') + ', ' +
-        (dir ? ppN + (Math.abs(dd) < 2 ? ' ponto percentual ' : ' pontos percentuais ') + lado : lado) + ', de ' + pct(br.pct) + '.';
+        (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? ' (margem de erro não estimada)' : '') + ': ' +
+        lado + ' (Brasil: ' + pct(br.pct) + ').';
       r.append(l, t, v); setTip(r, [m.label, frase]); w.append(r);
     }
     const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.style.marginTop = 'var(--cds-gap-sm)';
-    lg.innerHTML = '<span><span class="tg-sw" style="background:var(--sec);border-radius:50%"></span>ponto = estimativa</span><span><span class="tg-sw" style="background:var(--sec);opacity:.45;width:1.1rem;height:4px;border-radius:2px"></span>faixa = margem de erro</span><span><span class="tg-refkey"></span>linha = estimativa nacional</span>';
+    lg.innerHTML = '<span><span class="tg-sw" style="background:var(--sec);border-radius:50%"></span>ponto = estimativa</span><span><span class="tg-sw" style="background:var(--sec);opacity:.45;width:1.1rem;height:4px;border-radius:2px"></span>faixa = margem de erro</span><span><span class="tg-refkey"></span>linha = Brasil</span>';
     if (rows.some((x) => noMoe(x.row))) { const s = document.createElement('span'); s.textContent = '* sem margem de erro estimada'; lg.append(s); }
-    w.append(lg); el.replaceChildren(w);
+    w.append(lg);
+    // frase antes do gráfico: o maior e o menor grupo, e o Brasil como referência
+    const ord = rows.slice().sort((a, b) => b.row.pct - a.row.pct), alto = ord[0], baixo = ord[ord.length - 1];
+    const quemCurto = (s) => cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
+    const frase = document.createElement('p'); frase.className = 'tg-say tg-lead tg-cmp-lead';
+    if (ord.length > 1 && alto.row.pct !== baixo.row.pct) comBase([alto.row.pct, baixo.row.pct, br.pct], () => {
+      const tx = quemCurto(alto.s);
+      frase.append('Em “' + m.label + '”, ' + tx + ' tem a maior parcela (', negrito(freqTxt(alto.row.pct, false)), ') e ' + quemCurto(baixo.s) + ', a menor (', negrito(freqTxt(baixo.row.pct, false)), '). No Brasil, ', negrito(freqTxt(br.pct, false)), '.');
+    });
+    el.replaceChildren(...(frase.childNodes.length ? [frase] : []), w);
   };
 
   // ---------- page: início ----------
@@ -1316,6 +1334,9 @@
   const drawFact = () => {
     const f = FACTS[factIdx], txt = document.getElementById('fato-txt');
     const st = dash.data(f.ds).status;
+    // sem dados, "Outro dado" e "Ver no painel" não têm o que mostrar: saem até o carregamento dar certo
+    document.getElementById('fato-outro').hidden = st !== 'ok';
+    document.getElementById('fato-link').hidden = st !== 'ok';
     if (st !== 'ok') {
       const meta = document.getElementById('fato-meta');
       if (isErro(st)) { txt.classList.remove('dash-skeleton'); txt.textContent = ERRO; meta.replaceChildren(btnRetry()); }
@@ -1483,7 +1504,7 @@
       meta.replaceChildren(exato, row.moe ? ' · pode variar ' + faixa(row) : noMoe(row) ? ' · margem de erro não estimada' : '');
       const vs = document.getElementById('mapa-vs'); vs.replaceChildren(); vs.className = 'tg-mapa-vs';
       if (mapaReg && br) {
-        // mesmo padrão de Compare grupos: comparação descritiva, diferença em p.p. e seta neutra
+        // mesmo padrão de Compare grupos: comparação descritiva, diferença em pontos e seta neutra
         const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0;
         if (dir) { vs.classList.add('tg-dir'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.setAttribute('aria-hidden', 'true'); a.textContent = dir > 0 ? '▲' : '▼'; vs.append(a); }
         vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + ' pontos percentuais ' + (dir > 0 ? 'acima' : 'abaixo') + ' do Brasil' : 'Igual ao Brasil') + ' (' + pct(br.pct) + ')');
@@ -1609,11 +1630,21 @@
 
     if (g.status === 'ok' || e.status === 'ok') drawCompare(params); else fail(document.getElementById('ch-comparar'), g.status);
 
+    // falha no carregamento: uma mensagem só, no topo, com "Tentar de novo"; os destaques somem em vez de mostrar "—"
+    const kpiBox = document.querySelector('#' + view + ' .tg-kpis');
     if (d.status !== 'ok') {
       pageCharts.forEach((c) => fail(c, d.status));
-      [take, ...kpis.map((k) => k.querySelector('.tg-kpi-num')), document.querySelector('#' + view + ' .tg-total')].filter(Boolean).forEach((x) => { x.classList.toggle('dash-skeleton', d.status === 'loading'); if (d.status !== 'loading') x.textContent = '—'; });
+      if (isErro(d.status)) {
+        take.classList.remove('dash-skeleton'); take.classList.add('tg-take-erro'); take.setAttribute('role', 'status');
+        take.replaceChildren(document.createTextNode(ERRO + ' '), btnRetry());
+        if (kpiBox) kpiBox.hidden = true;
+      } else {
+        [take, ...kpis.map((k) => k.querySelector('.tg-kpi-num')), document.querySelector('#' + view + ' .tg-total')].filter(Boolean).forEach((x) => x.classList.add('dash-skeleton'));
+      }
       return;
     }
+    take.classList.remove('tg-take-erro'); take.removeAttribute('role');
+    if (kpiBox) kpiBox.hidden = false;
     pageCharts.forEach((c) => c.classList.remove('dash-skeleton'));
 
     // effective slice for this page
@@ -1651,11 +1682,22 @@
       const ia = get('D9A', '', 'Sim', recEff);
       add((br ? ' gestores' : '') + ' já usam inteligência artificial na gestão da escola', ia);
     } else {
+      // o contraste "têm internet, mas só … oferecem aos alunos" só faz sentido quando os dois números variam.
+      // Num grupo definido pela própria resposta (ex.: escolas com internet e computador) ou com 0%/100%,
+      // a frase viraria "100 em cada 100 …, mas só 100 em cada 100": aí a manchete usa outro achado.
       const a1 = get('A1', '', 'Sim', recEff), a8 = get('A8', '', 'Sim', recEff);
-      comBase([a1 && a1.pct, a8 && a8.pct], () => {
-        add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
-        add(' oferecem computador e internet aos alunos', a8);
-      });
+      if (!extremo(a1) && !extremo(a8) && a8.pct < a1.pct) {
+        comBase([a1.pct, a8.pct], () => {
+          add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
+          add(' oferecem computador e internet aos alunos', a8);
+        });
+      } else {
+        const alt = [[a1, ' têm internet'], [a8, ' oferecem computador e internet aos alunos'],
+          [get('C3C', '', 'Sim', recEff), ' têm regras para o uso do celular pelos alunos'],
+          [get('E5A', '', 'Sim', recEff), ' têm um guia sobre o uso de inteligência artificial']]
+          .find(([r]) => !extremo(r));
+        if (alt) add(alt[1], alt[0]);
+      }
     }
     take.append(document.createTextNode('.'));
 
@@ -1667,7 +1709,13 @@
       if (!row) { num.textContent = '—'; unmark(num); svg.innerHTML = ''; cmp.textContent = 'Sem dados para este grupo'; return; }
       num.textContent = pct(row.pct); markRow(num, row);
       iso10(svg, row.pct, k.dataset.color || dash.colors[0], view + 'k' + i, view === 'escolas' ? SCHOOL : P);
-      cmp.textContent = freqTxt(row.pct) + (recEff !== TOTAL && br ? ' · Brasil: ' + pct(br.pct) : '') + (row.moe ? ' · pode variar ' + faixa(row) : '');
+      // a faixa vem logo depois do número do grupo (é dele); o Brasil vai numa linha à parte, mais discreta
+      cmp.replaceChildren();
+      if (definitional(row) && extremo(row)) cmp.append(row.pct >= 50 ? 'Todas as escolas deste grupo, por definição' : 'Nenhuma escola deste grupo, por definição');
+      else {
+        cmp.append(freqTxt(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : ''));
+        if (recEff !== TOTAL && br) { const s = document.createElement('span'); s.className = 'tg-kpi-br'; s.textContent = 'No Brasil: ' + pct(br.pct); cmp.append(s); }
+      }
     });
 
     if (view === 'gestores') drawGestores(recEff, anim); else drawEscolas(recEff, anim);

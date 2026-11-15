@@ -64,6 +64,11 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-kpi-label{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
 .tg-kpi-num{font-family:var(--font-display);font-weight:400;font-size:calc(var(--cds-font-size-title) * 1.25);line-height:1.1;font-variant-numeric:tabular-nums;min-height:1.1em}
 .tg-kpi-cmp{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);min-height:1.3em}
+.tg-kpi-br{display:block;margin-top:.2rem;padding-top:.2rem;border-top:1px solid var(--color-border-line);font-variant-numeric:tabular-nums}
+/* frase antes do gráfico de Compare grupos */
+.tg-cmp-lead{margin-bottom:var(--cds-gap-md)}
+/* texto corrido sem palavra sozinha na última linha (os títulos já usam balance) */
+:where(.tg) p{text-wrap:pretty}
 .tg-iso10{display:block;width:100%;max-width:15rem;height:auto;min-height:1.6rem}
 .tg-sec{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
 .tg-sec-head{display:flex;gap:var(--cds-gap-sm);align-items:flex-start}
@@ -122,7 +127,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-lik-cap{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
 .tg-cmp-ctrl{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center;font-size:var(--cds-font-size-body)}
 .tg-dots{display:flex;flex-direction:column}
-.tg-dot-row{display:grid;grid-template-columns:minmax(6rem,13rem) minmax(0,1fr) 11rem;gap:var(--cds-gap-md);align-items:center;padding-block:.45rem;border-bottom:1px solid var(--color-border-line)}
+.tg-dot-row{display:grid;grid-template-columns:minmax(6rem,13rem) minmax(0,1fr) 15.5rem;gap:var(--cds-gap-md);align-items:center;padding-block:.45rem;border-bottom:1px solid var(--color-border-line)}
 .tg-dot-row.tg-axis{border-bottom:none;padding-block:0 .3rem}
 .tg-dot-lab{font-size:var(--cds-font-size-body);line-height:1.25}
 .tg-dot-track{position:relative;height:1.3rem}
@@ -217,9 +222,10 @@ body:has(.tg-guide[open]){overflow:hidden}
 [data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
 [data-dash-source-state=empty]{color:transparent}
 @media (max-width:720px){
-  .tg-dot-row{grid-template-columns:minmax(0,1fr) 9.5rem;row-gap:.2rem}
-  .tg-dot-lab{grid-column:1/-1}
-  .tg-axis .tg-dot-lab{display:none}
+  /* celular: nome, escala na largura toda e, embaixo, o valor e a diferença para o Brasil lado a lado */
+  .tg-dot-row{grid-template-columns:minmax(0,1fr);row-gap:.25rem}
+  .tg-axis .tg-dot-lab,.tg-axis .tg-dot-val{display:none}
+  .tg-dot-val{flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.1rem .75rem;text-align:left}
 }
 /* ---------- Animações (js/animacao.js liga .tg-reveal / .tg-in) ----------
    --d: atraso do bloco ao entrar na tela; --i: posição da linha ou figura dentro do gráfico. */
@@ -411,6 +417,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* números da frase de abertura: branco em 800 (4.7:1 no ponto mais claro do degradê).
    Amarelo como cor de texto só no título grande; sublinhado ficaria parecido com link. */
 .tg-head .tg-take b{color:#fff;font-weight:800}
+.tg-head .tg-take.tg-take-erro{display:flex;flex-direction:column;align-items:flex-start;gap:.75rem}
+.tg .tg-head .tg-retry{border:0;background:#fff;color:var(--hero-a)}
+.tg .tg-head .tg-retry:focus-visible{outline:3px solid var(--hero-hi,#ffd166);outline-offset:3px}
 .tg-head .tg-take.dash-skeleton{background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.24),rgba(255,255,255,.12));background-size:200% 100%}
 .tg-hero > *,.tg-head > *{max-width:min(100%,46rem)}
 @media (max-width:620px){.tg-hero::after,.tg-head::after{right:-5rem;top:.5rem;width:10rem;transform:rotate(-12deg);opacity:.35}.tg-title{font-size:1.65rem}}
@@ -555,12 +564,13 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg .tg-rec-dims button{flex:0 0 auto;margin-bottom:-1px;padding:.5rem .75rem;border:0;border-bottom:2.5px solid transparent;border-radius:0;background:transparent;font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg-muted);transition:color .15s ease,border-color .2s ease}
 .tg .tg-rec-dims button:hover{color:var(--color-fg)}
 .tg .tg-rec-dims button[aria-checked=true]{border-bottom-color:var(--sec);color:var(--color-fg);font-weight:700}
-.tg-rec-opts{display:flex;flex-wrap:wrap;gap:.2rem;align-self:flex-start;padding:.2rem;border-radius:10px;background:var(--cds-chart-grid)}
+.tg-rec-opts{display:flex;flex-wrap:wrap;gap:.4rem;align-self:flex-start}
 .tg-rec-opts.tg-troca{animation:tg-rec-in .25s ease-out}
 .tg-rec-opts[hidden]{display:none}
-.tg .tg-rec-opts button{padding:.35rem .75rem;border:0;border-radius:8px;background:transparent;font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
-.tg .tg-rec-opts button:hover{color:var(--color-fg)}
-.tg .tg-rec-opts button[aria-checked=true]{background:var(--color-panel);color:var(--color-fg);font-weight:700;box-shadow:0 1px 3px rgba(20,30,70,.14)}
+/* etapa 2: as mesmas pílulas com borda da etapa 1, para os grupos parecerem tocáveis */
+.tg .tg-rec-opts button{min-height:2.5rem;padding:.4rem .9rem;border:1px solid var(--color-border-line);border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg)}
+.tg .tg-rec-opts button:hover{border-color:var(--sec-texto,var(--color-fg-muted))}
+.tg .tg-rec-opts button[aria-checked=true]{border-color:var(--sec-texto,var(--v-blue));background:color-mix(in srgb,var(--sec,var(--v-blue)) 10%,var(--color-panel));font-weight:700}
 .tg .tg-rec-dims button:focus-visible,.tg .tg-rec-opts button:focus-visible{outline:2px solid var(--sec);outline-offset:2px}
 .tg .tg-rec-nota{display:flex;align-items:center;gap:.3rem;margin:0;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg button.tg-rec-info{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;padding:0;border:0;border-radius:50%;background:transparent;font-size:.95rem;line-height:1;color:var(--color-fg-muted)}
@@ -595,7 +605,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg .tg-rec-fixo .tg-rec-dims button{padding:.35rem .6rem;font-size:.8125rem}
 .tg-rec-fixo .tg-rec-opts{flex:1 1 100%;max-width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .tg-rec-fixo .tg-rec-opts::-webkit-scrollbar{display:none}
-.tg .tg-rec-fixo .tg-rec-opts button{flex:none;white-space:nowrap;padding:.28rem .65rem}
+.tg .tg-rec-fixo .tg-rec-opts button{flex:none;white-space:nowrap;min-height:0;padding:.28rem .7rem;font-size:.8125rem}
 .tg-rec-opts.tg-rola{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .tg-rec-opts.tg-rola.tg-fim{-webkit-mask-image:none;mask-image:none}
 @media (max-width:560px){.tg-rec-fixo-in{padding:.4rem .6rem .45rem;gap:.25rem}.tg .tg-rec-fixo-tit{font-size:.875rem}.tg-rec-fixo-tit span{display:none}.tg-rec-fixo .tg-rec-dims{flex-basis:100%}}
@@ -708,13 +718,16 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg button.tg-rec-info{width:2.75rem;height:2.75rem;margin:-.6rem -.5rem}
   .tg button.tg-sec-toggle{min-height:2.75rem;min-width:2.75rem;justify-content:center}
   .nav-link{min-height:2.75rem}
-  .tg .tg-rec-opts button{min-height:2.75rem}
+  .tg .tg-rec-opts button,.tg .tg-rec-dims.tg-agrupado button{min-height:2.75rem}
+  .tg .tg-ouvir,.tg-indice a,.tg .tg-rec-mudar,.tg .tg-hero-home #fato-outro,.tg .tg-retry{min-height:2.75rem}
+  .tg .tg-ouvir{display:inline-flex;align-items:center;padding-inline:1.1rem}
 }
 /* "Mudar" leva ao filtro principal: ele para logo abaixo do menu fixo, não por baixo dele */
 #filtro{scroll-margin-top:calc(var(--nav-h,3.6rem) + .75rem)}
 
 /* asterisco do mapa explicado */
-.tg-mapa-ast{flex-basis:100%;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-mapa-ast{flex-basis:100%;max-width:100%;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-mapa-nota .tg-mapa-ast{white-space:normal;text-align:center}
 /* celular: título de seção sem quebrar em três linhas (pastilha menor, título um pouco menor) */
 @media (max-width:560px){
   .tg-sec-head{gap:.65rem;align-items:flex-start}

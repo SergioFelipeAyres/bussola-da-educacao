@@ -8,6 +8,15 @@
         "value": "plus jakarta sans",
         "createdAt": "2026-11-14T21:30:38.478Z",
         "reason": "Fonte única do sistema registrada no DESIGN.md (Typography), extraída do site existente; não é escolha nova desta sessão"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-15T01:41:17.537Z",
+        "reason": "Claude triage: .tg-fact has padding 1.5rem (css/painel.css:324, clamp 1.25-1.75rem in hero); browser overlay did not flag it in 5 views; static analysis fails to resolve padding"
       }
     ]
   }
