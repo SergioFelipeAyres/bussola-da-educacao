@@ -319,6 +319,7 @@
     </div>
     <div class="tg-rec-corpo" id="rec-corpo">
     <div class="tg-rec-dims" id="rec-dims" role="radiogroup" aria-label="Ver os números de"></div>
+    <p class="tg-rec-pedido" id="rec-pedido" aria-live="polite" hidden></p>
     <div class="tg-rec-opts" id="rec-opts" role="radiogroup" hidden></div>
     <p class="tg-rec-nota">Um grupo por vez <button type="button" class="tg-rec-info" id="rec-info" aria-expanded="false" aria-controls="rec-info-txt" aria-label="Por que um grupo por vez?">ⓘ</button></p>
     <p class="tg-rec-info-txt" id="rec-info-txt" hidden>A pesquisa não publica combinações, como "rural do Norte", porque a amostra fica pequena demais para um número confiável.</p>
@@ -332,6 +333,7 @@
       <p class="tg-rec-fixo-tit"><span>Você está vendo</span> <b id="rec-titulo2">Brasil</b></p>
       <div class="tg-rec-dims" id="rec-dims2" role="radiogroup" aria-label="Ver os números de"></div>
       <div class="tg-rec-opts" id="rec-opts2" role="radiogroup" hidden></div>
+      <button type="button" class="tg-rec-mudar2" id="rec-mudar2" aria-controls="rec-corpo"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg><span>Mudar</span></button>
       <button type="button" class="tg-topo" id="ir-topo" aria-label="Voltar ao topo da página"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>Topo</span></button>
     </div>
   </div>
@@ -385,7 +387,7 @@
       <div class="tg-grid">
         <article class="tg-card tg-wide" id="card-camadas"><h3 class="tg-card-title">Da internet na escola ao uso pelos alunos</h3><p class="tg-card-note">Cada prédio representa 10% das escolas.</p><div class="tg-chart" id="ch-camadas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A1"></p></article>
         <article class="tg-card" id="card-tipo-conexao"><h3 class="tg-card-title">Principal tipo de conexão</h3><p class="tg-card-note">Entre as escolas com internet.</p><div class="tg-chart" id="ch-tipo-conexao" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A2"></p></article>
-        <article class="tg-card" id="card-velocidade"><h3 class="tg-card-title">Velocidade da conexão</h3><p class="tg-card-note">Do tom mais claro (mais lenta) ao mais escuro (mais rápida). Em cinza, quem não soube informar.</p><div class="tg-chart" id="ch-velocidade" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A3_1"></p></article>
+        <article class="tg-card" id="card-velocidade"><h3 class="tg-card-title">Velocidade da conexão</h3><p class="tg-card-note">Do tom mais claro (mais lenta) ao mais escuro (mais rápida). Em cinza, quem não soube informar. As sete faixas da pesquisa, com a margem de erro, estão em “Ver em texto ou ouvir”.</p><div class="tg-chart" id="ch-velocidade" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A3_1"></p></article>
         <article class="tg-card" id="card-sem-internet"><h3 class="tg-card-title">Por que algumas escolas não têm internet</h3><p class="tg-card-note">Motivos citados pelas escolas sem conexão. Por serem poucas, as margens de erro são grandes.</p><div class="tg-chart" id="ch-sem-internet" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A20"></p></article>
         <article class="tg-card tg-wide" id="card-problemas"><h3 class="tg-card-title">Com que frequência a internet dá problema</h3><p class="tg-card-note">Do tom mais escuro (sempre) ao mais claro (nunca), ordenado pelos problemas mais frequentes.</p><div class="tg-chart" id="ch-problemas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A19"></p></article>
       </div>
@@ -500,7 +502,7 @@
   <!-- ===================== COMPARAR (compartilhado) ===================== -->
   <section class="tg-sec tg-dash-only" id="comparar">
     <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-      <div><h2 class="tg-sec-title">Compare grupos</h2><p class="tg-sec-sub">Escolha um indicador e um tipo de grupo. A linha vertical é a estimativa nacional (Brasil); a faixa clara em volta de cada ponto é a margem de erro.</p></div></div>
+      <div><h2 class="tg-sec-title">Compare grupos</h2><p class="tg-sec-sub">Escolha um indicador e um tipo de grupo. A linha vertical é o valor do Brasil; a faixa clara em volta de cada ponto é a margem de erro.</p></div></div>
     <article class="tg-card" id="card-comparar">
       <div class="tg-cmp-ctrl">
         <label for="tg-cmp-ind">Indicador</label>
@@ -512,6 +514,11 @@
       <p class="tg-card-note" style="margin-top:0">Cada ponto é a estimativa do grupo, e a faixa, sua margem de erro. As diferenças em relação à estimativa nacional são descritivas: o painel não testa se elas são estatisticamente significativas.</p>
     </article>
   </section>
+
+  <nav class="tg-fim tg-dash-only" aria-label="Continue">
+    <a class="tg-fim-outra" id="fim-outra" href="gestores"><span class="tg-fim-tit">Agora veja quem dirige as escolas</span><span class="tg-fim-txt"></span><span class="tg-fim-ir" aria-hidden="true">→</span></a>
+    <a class="tg-fim-citar" href="sobre#sobre-citar">Vai usar estes números? Veja como citar a pesquisa <span aria-hidden="true">→</span></a>
+  </nav>
 
   <p class="tg-base tg-dash-only tg-fonte">Fonte: NIC.br/Cetic.br, Pesquisa TIC Educação 2025, tabelas de gestores escolares e de escolas (v1.0). Proporções, margens de erro e totais estimados.</p>
 

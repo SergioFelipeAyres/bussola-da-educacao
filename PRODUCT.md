@@ -29,10 +29,11 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 ## Operating Context
 
 - Site estático, sem etapa de build, publicado no GitHub Pages com domínio próprio (`CNAME`).
-- Páginas: Início (fato aleatório "Você sabia?", mapa das 5 regiões, como ler), Escolas, Gestores, Sobre. `escolas.html`, `gestores.html` e `sobre.html` só redirecionam para a aba certa de `index.html`.
+- Páginas: Início (fato aleatório "Você sabia?", mapa das 5 regiões, portas para Escolas e Gestores), Escolas, Gestores, Sobre. `escolas.html`, `gestores.html` e `sobre.html` só redirecionam para a aba certa de `index.html`.
 - Dados em formato longo em `data/*.json`, gerados por `scripts/atualizar_dados.py` a partir das tabelas .xlsx do Cetic.br.
 - Filtro de recorte (região, área, rede, porte etc.) e comparação entre grupos com margem de erro.
-- Gráficos desenhados com d3 7.9.0 vendorizado (`vendor/`), lógica em `js/painel.js` e `js/dash-shim.js`.
+- Gráficos desenhados em HTML/SVG sem biblioteca externa (o d3 saiu; a escala do Compare grupos é uma função própria), lógica em `js/painel.js` e `js/dash-shim.js`.
+- O grupo escolhido vai no endereço (`?grupo=regiao-norte`), para links compartilhados mostrarem o mesmo número.
 - Servidor local: `.claude/serve.ps1` na porta 8000 (ou `python -m http.server 8000`).
 
 ## Capabilities and Constraints

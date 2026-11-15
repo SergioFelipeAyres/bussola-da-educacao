@@ -37,7 +37,7 @@
     const f = document.getElementById('filtro');
     return (f && f.dataset.recorte) || 'Brasil';
   };
-  const linkOf = (card) => location.origin + location.pathname + '#' + card.id;
+  const linkOf = (card) => location.origin + location.pathname + location.search + '#' + card.id; // ?grupo= vai junto
   const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
 
   // monta uma cópia do cartão com cabeçalho e rodapé, fora da tela

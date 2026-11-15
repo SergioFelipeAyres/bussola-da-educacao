@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-14T23:51:33.010Z",
+  "generatedAt": "2026-11-15T00:12:18.138Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -380,6 +380,16 @@
         "name": "porta-hover",
         "value": "0 2px 4px rgba(20,30,70,.06),0 18px 36px -18px rgba(20,30,70,.3)",
         "purpose": "Portas do Início ao passar o mouse (sobem 2px)."
+      },
+      {
+        "name": "guia",
+        "value": "0 30px 80px -20px rgba(var(--sombra-escura),.5)",
+        "purpose": "Janela \"Como ler este painel\"; --sombra-escura é 5,12,45."
+      },
+      {
+        "name": "porta-hover",
+        "value": "0 2px 4px rgba(20,30,70,.06),0 18px 36px -18px rgba(20,30,70,.3)",
+        "purpose": "Portas do Início ao passar o mouse (sobem 2px)."
       }
     ],
     "motion": [
@@ -555,7 +565,7 @@
       },
       {
         "name": "The Frase Primeiro Rule",
-        "body": "Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em \"N em cada 10\"; \"o mais citado\" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois.",
+        "body": "Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em \"N em cada 10\"; \"o mais citado\" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois ou diz a faixa (\"vai de … a …\"). Numa frase com dois números, os dois usam a mesma base (`comBase`): \"95 em cada 100 … mas só 62 em cada 100\", nunca \"95 em cada 100 … 6 em cada 10\". O painel não usa \"metade\": 50% é \"5 em cada 10\", como nos destaques.",
         "section": "typography"
       },
       {
@@ -576,7 +586,7 @@
       "**Do** use Plus Jakarta Sans em 800 para títulos e números, e algarismos tabulares em todo valor.",
       "**Do** use sombras azul-marinho translúcidas e os raios da escala (8, 14, 16, 22, 24px e pílula).",
       "**Do** coloque toda animação dentro de `prefers-reduced-motion: no-preference` e garanta que impressão e imagem de compartilhamento saiam completas.",
-      "**Do** mantenha contraste WCAG 2.2 AA: texto sobre o degradê só em branco (ou branco a 82% ou mais), Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`."
+      "**Do** mantenha contraste WCAG 2.2 AA: texto corrido sobre o degradê sempre em branco pleno (branco translúcido só no sobretítulo curto em caixa alta; a 88%, o texto cai para 4,3–4,5:1 no trecho mais claro do degradê), Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`."
     ],
     "donts": [
       "**Don't** faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.",

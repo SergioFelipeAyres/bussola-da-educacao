@@ -230,7 +230,7 @@ No CSS, `--font-sans` é a família e `--font-display` (a mesma família) marca 
 - **Label** (600; 0.8125rem; 0.06em; caixa alta): sobretítulos. Na mesma medida, sem caixa alta e em Tinta Suave, a linha de base e margem de erro.
 
 ### Named Rules
-**The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em "N em cada 10"; "o mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois.
+**The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em "N em cada 10"; "o mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois ou diz a faixa ("vai de … a …"). Numa frase com dois números, os dois usam a mesma base (`comBase`): "95 em cada 100 … mas só 62 em cada 100", nunca "95 em cada 100 … 6 em cada 10". O painel não usa "metade": 50% é "5 em cada 10", como nos destaques.
 
 **The Números Tabulares Rule.** Todo valor numérico (barras, comparações, legendas, destaques) usa `font-variant-numeric: tabular-nums`, para que as colunas de números se alinhem.
 
@@ -243,7 +243,10 @@ No CSS, `--font-sans` é a família e `--font-display` (a mesma família) marca 
 - **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px. Abaixo de 560px, os links da navegação vão para uma segunda linha e perdem os ícones.
 - **Ordem de leitura em Escolas e Gestores:** capa, filtro de recorte, destaques, índice de seções ("Ir para") e as seções na ordem do índice, terminando em "Compare grupos".
 - **Navegação fixa no topo** e, ao rolar Escolas e Gestores, um filtro de recorte compacto fixo logo abaixo dela, com o botão "Topo". As âncoras compensam essa altura.
-- **Celular (até 560px):** o filtro principal começa recolhido, com "Você está vendo" e o botão "Mudar grupo" (vira "Fechar" quando aberto); os destaques ficam em 2 colunas, e o total vira uma faixa de uma linha ("129,7 mil Escolas representadas").
+- **Toque:** com dedo (`pointer: coarse`), os controles pequenos (Ver em texto, compartilhar, ⓘ, Recolher, links da navegação, grupos) têm pelo menos 44px.
+- **Celular (até 560px):** a barra fixa vira uma linha só, "<grupo> · Mudar · Topo", e "Mudar" leva ao filtro principal já aberto; o filtro principal começa recolhido, com "Você está vendo" e o botão "Mudar grupo" (vira "Fechar" quando aberto); os destaques ficam em 2 colunas, e o total vira uma faixa de uma linha ("129,7 mil Escolas representadas").
+- **Fim das abas de dados:** depois de "Compare grupos", um bloco leva à outra aba com um dado real ("Agora veja quem dirige as escolas") e a "Como citar".
+- **Chegada:** ao ir para um cartão pelo endereço (Ver no painel, link compartilhado), ele ganha um anel na cor do capítulo por um instante.
 - **Fim do Início:** duas portas lado a lado (colunas de no mínimo 22rem), que viram uma coluna no celular.
 
 ## Elevation & Depth
@@ -278,6 +281,8 @@ Formas arredondadas e amigáveis, em uma escala clara: 8px para opções do cont
 ### Chips (seletor de recorte)
 - **Abas de dimensão:** texto Tinta Suave em 500 e sublinhado de 2.5px na cor do tema quando selecionadas (texto em Tinta, 700). No filtro principal, ficam em blocos rotulados e todos à vista: "Ver os números de" (Brasil), "Onde fica a escola", "Tipo de escola" e, em Gestores, "Quem dirige"; o rótulo do bloco vai em 0.75rem 600 Tinta Suave, sem caixa alta. Na barra fixa compacta, as abas seguem numa linha que rola de lado, com esmaecimento na borda.
 - **Vocabulário:** a interface diz "grupo", nunca "recorte" (o termo da pesquisa fica explicado no guia).
+- **Duas etapas:** tocar numa dimensão só mostra os grupos dela, com o pedido "Escolha a região:" (lido pelo leitor de tela); os dados mudam ao escolher o grupo. No celular, o filtro recolhe depois da escolha e o foco volta para "Mudar grupo". As dimensões do filtro principal têm forma de pílula com borda.
+- **Grupo no endereço:** o grupo vai na URL (`/escolas?grupo=regiao-norte`); o link compartilhado, "Copiar link", recarregar e o Voltar do navegador mantêm ou desfazem o grupo.
 - **Controle segmentado de grupo:** trilho em Trilho com raio de 10px. A opção ativa vira uma pastilha branca de 8px com sombra mínima e texto em 700.
 
 ### Cards / Containers
@@ -314,6 +319,9 @@ Fim da página inicial: duas portas (Escolas em teal, Gestores em roxo), cada um
 ### Notas e avisos
 Caixa em Trilho com raio de 8px e padding de 0.45rem 0.7rem, texto 0.8125rem em Tinta Suave, sem borda lateral. Usada na nota "sem margem de erro estimada" (o asterisco no valor fica em Tinta, negrito) e na explicação de "Um recorte por vez".
 
+### Barra empilhada de faixas ordenadas
+Até 4 faixas à vista para o leitor leigo. Quando a pesquisa tem mais (Velocidade: 7), faixas vizinhas são somadas (Até 50 Mbps, 51 a 250 Mbps, Mais de 250 Mbps) e as faixas originais, com a margem de erro de cada uma, ficam em "Ver em texto ou ouvir"; a nota do cartão avisa isso.
+
 ### Pastilha de ícone de seção
 Ícone de traço de 1.9 em pastilha de 3rem com raio de 14px, fundo na cor do tema a 15% sobre branco e traço na cor do tema, ao lado do título com filete.
 
@@ -326,7 +334,7 @@ Caixa em Trilho com raio de 8px e padding de 0.45rem 0.7rem, texto 0.8125rem em 
 - **Do** use Plus Jakarta Sans em 800 para títulos e números, e algarismos tabulares em todo valor.
 - **Do** use sombras azul-marinho translúcidas e os raios da escala (8, 14, 16, 22, 24px e pílula).
 - **Do** coloque toda animação dentro de `prefers-reduced-motion: no-preference` e garanta que impressão e imagem de compartilhamento saiam completas.
-- **Do** mantenha contraste WCAG 2.2 AA: texto sobre o degradê só em branco (ou branco a 82% ou mais), Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`.
+- **Do** mantenha contraste WCAG 2.2 AA: texto corrido sobre o degradê sempre em branco pleno (branco translúcido só no sobretítulo curto em caixa alta; a 88%, o texto cai para 4,3–4,5:1 no trecho mais claro do degradê), Amarelo Norte só sobre o azul e só no título grande; texto pequeno na cor do capítulo sempre em `--sec-texto`.
 
 ### Don't:
 - **Don't** faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.

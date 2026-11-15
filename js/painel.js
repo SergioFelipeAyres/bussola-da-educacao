@@ -48,9 +48,14 @@
   const enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
   const em10 = (v) => Math.round(v / 10);
   // frase arredondada: "Cerca de 7 em cada 10"; sem "cerca de" só quando o número é exato (ex.: 100%). ini = false no meio da frase
+  // numa frase com dois números, os dois usam a mesma base (comBase); senão, cada um escolhe a sua
+  let baseCem = null;
+  const precisaCem = (v) => v != null && (v >= 90 || v < 10);
+  const seguro = (fn) => { try { return fn(); } catch (e) { return null; } };
+  const comBase = (vals, fn) => { const ant = baseCem; baseCem = vals.some(precisaCem); try { return fn(); } finally { baseCem = ant; } };
   const freqTxt = (v, ini = true) => {
     if (v >= 99.5 && v < 100) return (ini ? 'Quase' : 'quase') + ' 100 em cada 100';
-    const cem = v >= 90 || v < 10, n = cem ? Math.round(v) : em10(v), s = n + (cem ? ' em cada 100' : ' em cada 10');
+    const cem = baseCem != null ? baseCem || precisaCem(v) : precisaCem(v), n = cem ? Math.round(v) : em10(v), s = n + (cem ? ' em cada 100' : ' em cada 10');
     return Math.abs(v - (cem ? n : n * 10)) < 0.05 ? s : (ini ? 'Cerca de ' : 'cerca de ') + s;
   };
   const root = document.getElementById('painel');
@@ -318,7 +323,7 @@
   root.addEventListener('pointerleave', () => { tip.hidden = true; });
   const rowTip = (label, row, br, rec) => [
     label,
-    recName(rec) + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? '*' : ''),
+    (rec === TOTAL ? 'Brasil' : recTitulo(rec, row._ds)) + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? '*' : ''),
     br && rec !== TOTAL ? 'Brasil: ' + pct(br.pct) : '',
     row.n ? 'Cerca de ' + nfc.format(row.n) + ' ' + (row._ds === 'escolas' ? 'escolas' : 'gestores') : '',
     noMoe(row) ? noMoeTxt(row._ds, true) : ''
@@ -484,7 +489,13 @@
   // ---------- ordered stacked bar ----------
   const stack = (el, ind, resps, rec, opts = {}) => {
     const extra = opts.extra || [], all = resps.concat(extra), rev = !!opts.reverse;
-    const cur = all.map((r) => get(ind, '', r, rec)), br = all.map((r) => get(ind, '', r, TOTAL));
+    // opts.grupos: { "Até 50 Mbps": ["Até 10 Mbps", "De 11 Mbps a 50 Mbps"], ... } soma faixas vizinhas (sem margem própria)
+    const pega = (r, recX) => {
+      const g = opts.grupos && opts.grupos[r]; if (!g) return get(ind, '', r, recX);
+      const rows = g.map((x) => get(ind, '', x, recX)); if (!rows.every(Boolean)) return null;
+      return { pct: rows.reduce((s, x) => s + x.pct, 0), moe: null, n: null, _ds: rows[0]._ds, key: rows.map((x) => x.key).join(' + ') };
+    };
+    const cur = all.map((r) => pega(r, rec)), br = all.map((r) => pega(r, TOTAL));
     if (cur.slice(0, resps.length).some((x) => !x)) return emptyMsg(el, NODATA);
     const k = resps.length;
     const op = () => '1';
@@ -509,7 +520,14 @@
       if (rec !== TOTAL && br[i]) { const s = document.createElement('span'); s.textContent = 'Brasil: ' + pct(br[i].pct); d.append(s); }
       lg.append(d);
     });
-    w.append(lg); el.replaceChildren(w);
+    w.append(lg);
+    // detalhe das faixas somadas: invisível na tela, entra em "Ver em texto ou ouvir" com a margem de erro de cada faixa
+    if (opts.grupos) {
+      const det = document.createElement('div'); det.hidden = true;
+      Object.values(opts.grupos).flat().forEach((r) => { const row = get(ind, '', r, rec); if (!row) return; const sp = document.createElement('span'); setTip(sp, rowTip(r, row, get(ind, '', r, TOTAL), rec)); det.append(sp); });
+      w.append(det);
+    }
+    el.replaceChildren(w);
   };
 
   // ---------- acessibilidade: versão em texto (e em voz) de cada gráfico ----------
@@ -554,7 +572,7 @@
     if (groups.size) {
       for (const [head, items] of groups) {
         const li = document.createElement('li'), b = document.createElement('b');
-        if (items.length === 1) { b.textContent = head + ': '; li.append(b, items[0].join('; ')); }
+        if (items.length === 1) { b.textContent = head + '. '; li.append(b, items[0].join('; ')); } // ponto, não dois-pontos: a linha já traz 'Grupo: valor'
         else {
           b.textContent = head + ':'; const sub = document.createElement('ul');
           items.forEach((it) => { const s = document.createElement('li'); s.textContent = it.join('; '); sub.append(s); });
@@ -585,7 +603,12 @@
   const DASH = ['escolas', 'gestores'];
   // pasta onde o site está publicado (a raiz no domínio próprio; funciona também numa subpasta)
   const BASE = location.pathname.replace(/(escolas|gestores|sobre)(\.html)?\/?$|index\.html$/, '').replace(/[^/]*$/, '') || '/';
-  const urlDe = (v, hash) => BASE + (v === 'inicio' ? '' : v) + (hash ? '#' + hash : '');
+  // o grupo escolhido vai no endereço (?grupo=regiao-norte) nas abas de dados: link compartilhado,
+  // "Copiar link", recarregar e Voltar mostram o mesmo grupo
+  let grupoUrl = new URLSearchParams(location.search).get('grupo') || '';
+  let grupoPendente = grupoUrl || null; // aplicado quando os dados chegam
+  const urlDe = (v, hash) => BASE + (v === 'inicio' ? '' : v) + (grupoUrl && DASH.includes(v) ? '?grupo=' + encodeURIComponent(grupoUrl) : '') + (hash ? '#' + hash : '');
+  const aqui = () => location.pathname + location.search + location.hash;
   const viewDoCaminho = () => {
     const q = new URLSearchParams(location.search).get('v'); // vindo das páginas de entrada (escolas.html etc.)
     if (VIEWS.includes(q)) return q;
@@ -620,7 +643,7 @@
     const cur = dash.params().recorte || TOTAL;
     showView(v);
     if (SEGS[v] && !SEGS[v].includes(cur)) {
-      resetNote = 'O grupo "' + recName(cur) + '" só existe para gestores. Voltamos para Brasil; escolha um grupo de escolas.';
+      resetNote = 'O grupo "' + recTitulo(cur, 'gestores') + '" só existe para gestores. Voltamos para Brasil; escolha um grupo de escolas.';
       dash.setParams({ recorte: TOTAL });
     } else draw();
   };
@@ -648,13 +671,18 @@
   // ao fechar, tira #como-ler do endereço para o mesmo link poder abrir de novo
   guia.addEventListener('close', () => { if (guia.contains(document.getElementById(location.hash.slice(1)))) history.replaceState(null, '', urlDe(view)); });
 
+  const marcaChegada = (el) => {
+    if (!el.classList.contains('tg-card')) return;
+    el.classList.remove('tg-chegada'); void el.offsetWidth; el.classList.add('tg-chegada');
+    setTimeout(() => el.classList.remove('tg-chegada'), 2400);
+  };
   // muda de aba sem recarregar a página; o endereço vira /escolas, /sobre etc.
   const irPara = (v, hash, trocar) => {
     const url = urlDe(v, hash);
-    if (url !== location.pathname + location.hash) history[trocar ? 'replaceState' : 'pushState'](null, '', url);
+    if (url !== aqui()) history[trocar ? 'replaceState' : 'pushState'](null, '', url);
     if (v !== view) setView(v);
     const el = hash && document.getElementById(hash);
-    if (el) { if (!openGuide(el)) { abreSecao(el); el.scrollIntoView(); } } else window.scrollTo(0, 0);
+    if (el) { if (!openGuide(el)) { abreSecao(el); el.scrollIntoView(); marcaChegada(el); } } else window.scrollTo(0, 0);
   };
   window.navegar = (v) => irPara(v);
   document.addEventListener('click', (e) => {
@@ -683,6 +711,14 @@
     document.getElementById('filtro').classList.toggle('tg-rec-aberto', aberto);
     if (aberto) { const b = document.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true }); }
   });
+  // celular: "Mudar" na barra fixa leva ao filtro principal, já aberto, com o foco na dimensão atual
+  document.getElementById('rec-mudar2')?.addEventListener('click', () => {
+    const mudar = document.getElementById('rec-mudar');
+    if (mudar.getAttribute('aria-expanded') !== 'true') mudar.click();
+    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('filtro').scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
+    const b = document.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true });
+  });
   // "Topo", no filtro fixo: volta ao início da aba sem passar pelo roteamento por âncora
   document.getElementById('ir-topo')?.addEventListener('click', () => {
     const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -692,6 +728,8 @@
   // voltar/avançar do navegador
   window.addEventListener('popstate', () => {
     const h = decodeURIComponent(location.hash.slice(1));
+    const g = new URLSearchParams(location.search).get('grupo') || '';
+    if (g !== grupoUrl) { grupoUrl = g; grupoPendente = g; }
     setView(viewDaAncora(h) || viewDoCaminho());
     const el = h && document.getElementById(h);
     if (el && !guia.contains(el)) { abreSecao(el); el.scrollIntoView(); }
@@ -745,6 +783,23 @@
     if (c === 'PORTE') return 'escolas ' + (/^Até|^Mais/.test(s) ? 'com ' + s.toLowerCase() : s.replace(/^De /, 'de '));
     return ESC[rec] || segName(rec).toLowerCase();
   };
+  const semAcento = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const slugRec = (rec) => { const [c, s] = rec.split('|'); return semAcento((DIM[c] || c) + ' ' + s); };
+  // troca feita pelo leitor: entra no histórico (o Voltar desfaz)
+  const mudaGrupo = (rec) => {
+    grupoUrl = rec === TOTAL ? '' : slugRec(rec);
+    const h = decodeURIComponent(location.hash.slice(1));
+    history.pushState(null, '', urlDe(view, guia.contains(document.getElementById(h)) ? '' : h));
+    dash.setParams({ recorte: rec });
+  };
+  // filtro em duas etapas: tocar numa dimensão só mostra os grupos dela; os dados mudam ao escolher o grupo
+  let dimAberta = null;
+  const PEDIDO = {
+    'REGIÃO': 'Escolha a região:', 'ÁREA': 'Escolha a área:', 'LOCALIZAÇÃO': 'Escolha a localização:', 'DEPENDÊNCIA ADMINISTRATIVA': 'Escolha a rede:',
+    'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Escolha o nível de ensino:', 'PORTE': 'Escolha o porte da escola:',
+    'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Escolas com internet e computador para os alunos:',
+    'SEXO': 'Escolha o sexo:', 'COR OU RAÇA': 'Escolha a cor ou raça:', 'FAIXA ETÁRIA': 'Escolha a idade:'
+  };
   const recTitulo = (rec, v) => {
     if (rec === TOTAL) return v === 'escolas' ? 'Brasil (todas as escolas)' : 'Brasil (todos os gestores)';
     if (v === 'gestores') return GEST[rec] || 'Gestores de ' + escDe(rec);
@@ -782,6 +837,7 @@
       });
       box.replaceChildren(...blocos.values());
     } else box.replaceChildren(...itens.map(botao));
+    if (!box.querySelector('[aria-checked=true]')) { const p = box.querySelector('[role=radio]'); if (p) p.tabIndex = 0; }
     if (tinhaFoco) { const on = box.querySelector('[aria-checked=true]'); if (on) on.focus(); }
     if (!box.dataset.teclas) {
       box.dataset.teclas = '1';
@@ -810,20 +866,38 @@
   REC_SETS.forEach(({ dims }) => dims.addEventListener('scroll', () => marcaRola(dims), { passive: true }));
   window.addEventListener('resize', () => REC_SETS.forEach(({ dims }) => marcaRola(dims)));
   const drawRecorte = (v, rec) => {
-    const dim = rec === TOTAL ? 'TOTAL' : rec.split('|')[0], segs = SEGS[v] || [];
+    const dimAtual = rec === TOTAL ? 'TOTAL' : rec.split('|')[0], segs = SEGS[v] || [];
     const dims = CATS[v].filter((c) => segs.some((s) => s.split('|')[0] === c));
+    if (dimAberta && (dimAberta === dimAtual || !dims.includes(dimAberta))) dimAberta = null;
+    const dim = dimAberta || dimAtual;
+    // endereço sempre em dia com o grupo (troca feita pelo mapa, pela aba etc.)
+    grupoUrl = rec === TOTAL ? '' : slugRec(rec);
+    const hAt = decodeURIComponent(location.hash.slice(1)), u = urlDe(v, guia.contains(document.getElementById(hAt)) ? '' : hAt);
+    if (u !== aqui()) history.replaceState(null, '', u);
+    const escolheDim = (c) => {
+      if (c === 'TOTAL') { dimAberta = null; if (rec !== TOTAL) mudaGrupo(TOTAL); else drawRecorte(v, rec); return; }
+      dimAberta = c === dimAtual ? null : c;
+      drawRecorte(v, rec);
+    };
+    const escolheGrupo = (s) => {
+      dimAberta = null;
+      if (s !== rec) mudaGrupo(s); else drawRecorte(v, rec);
+      // celular: depois da escolha, o filtro recolhe e o foco volta para "Mudar grupo"
+      const mudar = document.getElementById('rec-mudar');
+      if (filtro.classList.contains('tg-rec-aberto') && mudar.offsetParent) { mudar.click(); mudar.focus({ preventScroll: true }); }
+    };
     for (const set of REC_SETS) {
-      // trocar de dimensão substitui o recorte: entra o primeiro grupo da nova dimensão
-      radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim,
-        (c) => { if (c !== dim) dash.setParams({ recorte: c === 'TOTAL' ? TOTAL : segs.find((s) => s.split('|')[0] === c) }); }, set === REC_SETS[0]);
+      radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim, escolheDim, set === REC_SETS[0]);
       mostraAtiva(set.dims);
       const opts = set.opts;
-      opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', DIM[dim] || '');
+      opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', PEDIDO[dim] || DIM[dim] || '');
       if (opts.dataset.dim !== v + dim) { opts.dataset.dim = v + dim; opts.classList.remove('tg-troca'); void opts.offsetWidth; opts.classList.add('tg-troca'); }
-      radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), rec,
-        (s) => { if (s !== rec) dash.setParams({ recorte: s }); });
+      radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), dimAberta ? null : rec, escolheGrupo);
       mostraAtiva(opts);
     }
+    // pedido da etapa 2 ("Escolha a região:"), lido pelo leitor de tela
+    const pedido = document.getElementById('rec-pedido');
+    pedido.hidden = !dimAberta; pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:') : '';
     const novo = recTitulo(rec, v);
     document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
     document.getElementById('rec-titulo2').textContent = novo;
@@ -955,9 +1029,9 @@
       const w = document.createElement('div'); w.className = 'tg-isowrap';
       w.innerHTML = isoParts([{ v: s.pct, color: dash.colors[0] }]);
       const say = document.createElement('div'); say.className = 'tg-say';
-      const b = document.createElement('b'); b.textContent = (em10(s.pct) === 5 ? 'Cerca de metade' : freqTxt(s.pct));
+      const b = document.createElement('b'); b.textContent = freqTxt(s.pct);
       const v = document.createElement('span'); v.textContent = pct(s.pct); markRow(v, s);
-      say.append(b, document.createTextNode(' dos gestores já usam IA na gestão ('), v, document.createTextNode(').'));
+      say.append(b, document.createTextNode(' gestores já usam IA na gestão ('), v, document.createTextNode(').'));
       if (n) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.style.marginTop = 'var(--cds-gap-xs)'; const nv = document.createElement('span'); nv.textContent = pct(n.pct); markRow(nv, n); p.append(document.createTextNode('Não usam: '), nv); say.append(p); }
       const br = get('D9A', '', 'Sim', TOTAL);
       setTip(v, rowTip('Usam IA na gestão', s, br, rec));
@@ -978,13 +1052,13 @@
     })();
     (() => {
       const esp = get('A4', 'Especialização ou pós-graduação', 'Sim', rec), mes = get('A4', 'Mestrado', 'Sim', rec);
-      if (esp) lead('ch-formacao', [negrito(freqTxt(esp.pct)), ' gestores ' + vb(esp.pct, 'têm', 'tem') + ' especialização ou pós-graduação' +
-        (mes ? '; ' + freqTxt(mes.pct, false) + ' ' + vb(mes.pct, 'têm', 'tem') + ' mestrado.' : '.')]);
+      if (esp) lead('ch-formacao', comBase([seguro(() => esp.pct), seguro(() => mes.pct)], () => [negrito(freqTxt(esp.pct)), ' gestores ' + vb(esp.pct, 'têm', 'tem') + ' especialização ou pós-graduação' +
+        (mes ? '; ' + freqTxt(mes.pct, false) + ' ' + vb(mes.pct, 'têm', 'tem') + ' mestrado.' : '.')]));
     })();
     (() => {
       const ate2 = soma('D2', ['Há menos de um ano', 'Entre 1 e 2 anos'], rec), mais10 = get('D2', '', 'Há mais de 10 anos', rec);
-      if (ate2 != null) lead('ch-tempo', [negrito(freqTxt(ate2)), ' gestores ' + vb(ate2, 'estão', 'está') + ' na direção da escola há até 2 anos' +
-        (mais10 ? '; ' + freqTxt(mais10.pct, false) + ', há mais de 10 anos.' : '.')]);
+      if (ate2 != null) lead('ch-tempo', comBase([seguro(() => ate2), seguro(() => mais10.pct)], () => [negrito(freqTxt(ate2)), ' gestores ' + vb(ate2, 'estão', 'está') + ' na direção da escola há até 2 anos' +
+        (mais10 ? '; ' + freqTxt(mais10.pct, false) + ', há mais de 10 anos.' : '.')]));
     })();
     (() => {
       const a = respList('D1', ['Diretor ou diretora', 'Vice-diretor ou vice-diretora', 'Professor ou professora', 'Coordenador ou coordenadora', 'Supervisor ou supervisora', 'Outra função'], rec, null, true)[0];
@@ -995,8 +1069,8 @@
       const its = Object.keys(D8).map((g) => ({ g, c: get('D8', g, 'Concorda', rec) })).filter((x) => x.c).sort((a, b) => b.c.pct - a.c.pct);
       if (its.length < 2) return;
       const p = its[0], u = its[its.length - 1];
-      lead('ch-percepcao', ['Há mais concordância com ', negrito('“' + D8[p.g] + '”'), ' (' + freqTxt(p.c.pct, false) + ' gestores) e menos com ',
-        negrito('“' + D8[u.g] + '”'), ' (' + freqTxt(u.c.pct, false) + ').']);
+      lead('ch-percepcao', comBase([seguro(() => p.c.pct), seguro(() => u.c.pct)], () => ['Há mais concordância com ', negrito('“' + D8[p.g] + '”'), ' (' + freqTxt(p.c.pct, false) + ' gestores) e menos com ',
+        negrito('“' + D8[u.g] + '”'), ' (' + freqTxt(u.c.pct, false) + ').']));
     })();
     maisCitado('ch-ia-usos', listFrom('D9B', Object.keys(D9B), 'Sim', rec, D9B, true), 'Entre quem usa IA, o uso mais citado é ', 'Entre quem usa IA, os usos mais citados são ');
     maisCitado('ch-ia-contrib', listFrom('D9C', Object.keys(D9C), 'Sim', rec, D9C, true), 'A contribuição da IA mais citada é ', 'As contribuições da IA mais citadas são ');
@@ -1017,9 +1091,10 @@
 
     bars(document.getElementById('ch-tipo-conexao'), respList('A2', Object.keys(A2L), rec, A2L, true), rec, anim);
 
-    stack(document.getElementById('ch-velocidade'), 'A3_1',
-      ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps', 'De 51 Mbps a 100 Mbps', 'De 101 Mbps a 250 Mbps', 'De 251 Mbps a 500 Mbps', 'De 501 Mbps a 1 Gbps', 'Mais de 1 Gbps'], rec,
-      { extra: ['Não sabe'], labels: { 'Não sabe': 'Não sabe a velocidade' } });
+    // três faixas para o leitor leigo; as sete faixas da pesquisa, com margem, ficam em "Ver em texto ou ouvir"
+    stack(document.getElementById('ch-velocidade'), 'A3_1', ['Até 50 Mbps', 'De 51 a 250 Mbps', 'Mais de 250 Mbps'], rec,
+      { extra: ['Não sabe'], labels: { 'Não sabe': 'Não sabe a velocidade' },
+        grupos: { 'Até 50 Mbps': ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], 'De 51 a 250 Mbps': ['De 51 Mbps a 100 Mbps', 'De 101 Mbps a 250 Mbps'], 'Mais de 250 Mbps': ['De 251 Mbps a 500 Mbps', 'De 501 Mbps a 1 Gbps', 'Mais de 1 Gbps'] } });
 
     (() => {
       const el = document.getElementById('ch-problemas');
@@ -1106,13 +1181,24 @@
 
     // frases de abertura
     (() => {
+      const a1 = get('A1', '', 'Sim', rec), a8 = get('A8', '', 'Sim', rec);
+      if (a1 && a8) lead('ch-camadas', comBase([a1.pct, a8.pct], () => ['Da internet na escola ao uso pelos alunos, a parcela cai de ', negrito(freqTxt(a1.pct, false)), ' para ', negrito(freqTxt(a8.pct, false)), '.']));
+    })();
+    (() => {
+      const its = [['C3C', 'regras para o celular dos alunos'], ['E1D', 'sistemas digitais na gestão escolar'], ['I5', 'projetos de educação digital e midiática'], ['H1', 'política de proteção de dados'], ['E5B', 'permissão para alunos usarem IA'], ['E5A', 'guia sobre o uso de IA']]
+        .map(([ind, label]) => ({ label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct);
+      const a = its[0], u = its[its.length - 1]; if (!a || a === u) return;
+      // faixa (de … a …) em vez de 'o mais comum': no Brasil as duas primeiras ficam dentro da margem uma da outra
+      lead('ch-politicas', comBase([a.row.pct, u.row.pct], () => ['Vai de ', negrito(freqTxt(u.row.pct, false)), ' escolas (' + u.label + ') a ', negrito(freqTxt(a.row.pct, false)), ' (' + a.label + ').']));
+    })();
+    (() => {
       const a = respList('A2', Object.keys(A2L), rec, A2L, true)[0];
       if (a) lead('ch-tipo-conexao', [negrito(freqTxt(a.row.pct)), ' escolas com internet ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) + ' como principal conexão.']);
     })();
     (() => {
       const ate50 = soma('A3_1', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], rec), ns = get('A3_1', '', 'Não sabe', rec);
-      if (ate50 != null) lead('ch-velocidade', [negrito(freqTxt(ate50)), ' escolas com internet ' + vb(ate50, 'têm', 'tem') + ' velocidade de até 50 Mbps' +
-        (ns && ns.pct >= 5 ? '; ' + freqTxt(ns.pct, false) + ' não ' + vb(ns.pct, 'sabem', 'sabe') + ' informar a velocidade.' : '.')]);
+      if (ate50 != null) lead('ch-velocidade', comBase([seguro(() => ate50), seguro(() => ns.pct)], () => [negrito(freqTxt(ate50)), ' escolas com internet ' + vb(ate50, 'têm', 'tem') + ' velocidade de até 50 Mbps' +
+        (ns && ns.pct >= 5 ? '; ' + freqTxt(ns.pct, false) + ' não ' + vb(ns.pct, 'sabem', 'sabe') + ' informar a velocidade.' : '.')]));
     })();
     maisCitado('ch-sem-internet', listFrom('A20', Object.keys(A20L), 'Sim', rec, A20L, true).filter((x) => x.full !== 'Outros motivos'),
       'O motivo mais citado pelas escolas sem internet é ', 'Os motivos mais citados pelas escolas sem internet são ');
@@ -1128,20 +1214,20 @@
     (() => {
       const its = listFrom('B2', ['Computador de mesa', 'Computador portátil', 'Tablet'], 'Sim', rec).sort((a, b) => b.row.pct - a.row.pct);
       const a = its[0], u = its[its.length - 1]; if (!a) return;
-      lead('ch-computadores', [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
-        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]);
+      lead('ch-computadores', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
+        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]));
     })();
     (() => {
       const its = [['B17', 'Equipamentos audiovisuais'], ['B14', 'Smart TV ou conversor'], ['B15', 'Material para aulas de robótica'], ['B18', 'Material para atividades maker'], ['B16', 'Celulares para alunos e professores']]
         .map(([ind, label]) => ({ label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct);
       const a = its[0], u = its[its.length - 1]; if (!a) return;
-      lead('ch-recursos', [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
-        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]);
+      lead('ch-recursos', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
+        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]));
     })();
     (() => {
       const ate10 = soma('B4C', ['Até 5 alunos', 'De 5,1 a 10 alunos'], rec), sem = get('B4C', '', 'Não possui computador disponível para uso dos alunos', rec);
-      if (ate10 != null) lead('ch-alunos-pc', [negrito(freqTxt(ate10)), ' escolas ' + vb(ate10, 'têm', 'tem') + ' até 10 alunos por computador' +
-        (sem ? '; ' + freqTxt(sem.pct, false) + ' não ' + vb(sem.pct, 'têm', 'tem') + ' computador para os alunos.' : '.')]);
+      if (ate10 != null) lead('ch-alunos-pc', comBase([seguro(() => ate10), seguro(() => sem.pct)], () => [negrito(freqTxt(ate10)), ' escolas ' + vb(ate10, 'têm', 'tem') + ' até 10 alunos por computador' +
+        (sem ? '; ' + freqTxt(sem.pct, false) + ' não ' + vb(sem.pct, 'têm', 'tem') + ' computador para os alunos.' : '.')]));
     })();
     (() => {
       const rec5 = soma('K1_1', ['Há menos de 1 ano', 'Entre 1 e 5 anos'], rec);
@@ -1149,8 +1235,8 @@
     })();
     (() => {
       const cam = get('E3', '', 'Sim', rec), fac = get('E4B', '', 'Sim', rec);
-      if (cam) lead('ch-vigilancia', [negrito(freqTxt(cam.pct)), ' escolas ' + vb(cam.pct, 'têm', 'tem') + ' câmeras de vídeo' +
-        (fac ? ', e ' + freqTxt(fac.pct, false) + ' ' + vb(fac.pct, 'usam', 'usa') + ' reconhecimento facial.' : '.')]);
+      if (cam) lead('ch-vigilancia', comBase([seguro(() => cam.pct), seguro(() => fac.pct)], () => [negrito(freqTxt(cam.pct)), ' escolas ' + vb(cam.pct, 'têm', 'tem') + ' câmeras de vídeo' +
+        (fac ? ', e ' + freqTxt(fac.pct, false) + ' ' + vb(fac.pct, 'usam', 'usa') + ' reconhecimento facial.' : '.')]));
     })();
     (() => {
       const its = [...listFrom('F4A', ['WhatsApp', 'Telegram'], 'Sim', rec), ...[['G4A', 'Plataforma ou ambiente virtual de aprendizagem'], ['F5', 'Aplicativo próprio da escola']]
@@ -1278,7 +1364,14 @@
   let mapaInd = 0, mapaReg = null;
   const mapaSvg = document.getElementById('mapa-svg'), mapaInds = document.getElementById('mapa-inds');
   const mapaRow = (m, reg) => get(m.ind, '', m.resp, reg ? regRec(reg) : TOTAL, m.ds);
-  const mapaPick = (reg) => { pararFala(); mapaReg = reg === mapaReg ? null : reg; drawMapa(); };
+  const mapaPick = (reg) => {
+    pararFala(); mapaReg = reg === mapaReg ? null : reg; drawMapa();
+    const painel = document.querySelector('.tg-mapa-painel'), r = painel && painel.getBoundingClientRect();
+    if (mapaReg && r && r.top > innerHeight * 0.6) {
+      const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      painel.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
+    }
+  };
 
   // desenha o mapa e a lista de indicadores uma vez; depois só atualiza valores
   const buildMapa = () => {
@@ -1367,6 +1460,11 @@
       const ext = (rotulo, x) => { const s = document.createElement('span'); const k = document.createElement('small'); k.textContent = rotulo; const b = document.createElement('b'); b.textContent = x.r; s.append(k, b, ' ' + pct(x.row.pct)); return s; };
       nota.append(ext('Maior', top[0]), ext('Menor', top[top.length - 1]));
     }
+    if (rows.some((x) => noMoe(x.row))) {
+      const a = document.createElement('span'); a.className = 'tg-mapa-ast';
+      a.textContent = '* ' + rows.filter((x) => noMoe(x.row)).map((x) => x.r).join(' e ') + ': sem margem de erro estimada (o valor ficou em ' + pct(rows.find((x) => noMoe(x.row)).row.pct) + ' na amostra).';
+      nota.append(a);
+    }
     document.getElementById('mapa-alt-lista').replaceChildren(...[{ r: 'Brasil', row: br }, ...top].filter((x) => x.row).map((x) => {
       const li = document.createElement('li'); li.textContent = x.r + ': ' + pct(x.row.pct) + (x.row.moe ? ' (pode variar ' + faixa(x.row) + ')' : ''); return li;
     }));
@@ -1436,7 +1534,7 @@
   const drawPortas = () => {
     const portas = [
       ['escolas', 'A8', 'porta-escolas', SCHOOL, (r) => [freqTxt(r.pct), ' escolas ' + vb(r.pct, 'oferecem', 'oferece') + ' computador e internet aos alunos.']],
-      ['gestores', 'D9A', 'porta-gestores', P, (r) => [em10(r.pct) === 5 ? 'Cerca de metade' : freqTxt(r.pct), ' dos gestores já usam IA na gestão.']]
+      ['gestores', 'D9A', 'porta-gestores', P, (r) => [freqTxt(r.pct), ' gestores já usam IA na gestão.']]
     ];
     for (const [ds, ind, id, shape, frase] of portas) {
       const el = document.getElementById(id); if (!el) continue;
@@ -1447,6 +1545,17 @@
       el.classList.remove('dash-skeleton'); el.replaceChildren(negrito(b), document.createTextNode(t));
       iso10(document.getElementById(id + '-iso'), r.pct, 'var(--sec)', id, shape);
     }
+  };
+  // fim das abas de dados: a outra aba, com um dado real, e o caminho para citar
+  const drawFim = () => {
+    const outra = view === 'escolas' ? 'gestores' : 'escolas', a = document.getElementById('fim-outra');
+    if (!a || !DASH.includes(view)) return;
+    a.href = outra; a.style.setProperty('--sec', outra === 'escolas' ? 'var(--v-teal)' : 'var(--v-purple)');
+    a.querySelector('.tg-fim-tit').textContent = outra === 'escolas' ? 'Agora veja as escolas' : 'Agora veja quem dirige as escolas';
+    const r = outra === 'escolas' ? get('A8', '', 'Sim', TOTAL, 'escolas') : get('D9A', '', 'Sim', TOTAL, 'gestores');
+    a.querySelector('.tg-fim-txt').textContent = !r ? '' : outra === 'escolas'
+      ? freqTxt(r.pct) + ' escolas ' + vb(r.pct, 'oferecem', 'oferece') + ' computador e internet aos alunos.'
+      : freqTxt(r.pct) + ' gestores já usam IA na gestão.';
   };
   const drawHome = () => {
     drawFact();
@@ -1488,9 +1597,15 @@
     if (g.status === 'ok' && e.status === 'ok') buildControls();
     if (view === 'inicio') { drawHome(); return; }
     if (!DASH.includes(view)) return;
+    if (grupoPendente != null && SEGS[view]) {
+      const g = grupoPendente; grupoPendente = null;
+      const alvo = g ? SEGS[view].find((s) => slugRec(s) === g) : TOTAL;
+      if (alvo && alvo !== (params.recorte || TOTAL)) { dash.setParams({ recorte: alvo }); return; }
+    }
     let rec = params.recorte || TOTAL;
     if (SEGS[view] && !SEGS[view].includes(rec)) rec = TOTAL;
     if (SEGS[view]) drawRecorte(view, rec);
+    drawFim();
 
     if (g.status === 'ok' || e.status === 'ok') drawCompare(params); else fail(document.getElementById('ch-comparar'), g.status);
 
@@ -1534,12 +1649,13 @@
     }
     if (view === 'gestores') {
       const ia = get('D9A', '', 'Sim', recEff);
-      if (ia && em10(ia.pct) === 5) { const b = document.createElement('b'); b.textContent = 'cerca de metade'; markRow(b, ia); take.append(b, document.createTextNode((br ? ' dos gestores' : '') + ' já usam inteligência artificial na gestão da escola')); }
-      else add((br ? ' gestores' : '') + ' já usam inteligência artificial na gestão da escola', ia);
+      add((br ? ' gestores' : '') + ' já usam inteligência artificial na gestão da escola', ia);
     } else {
       const a1 = get('A1', '', 'Sim', recEff), a8 = get('A8', '', 'Sim', recEff);
-      add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
-      add(' oferecem computador e internet aos alunos', a8);
+      comBase([a1 && a1.pct, a8 && a8.pct], () => {
+        add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
+        add(' oferecem computador e internet aos alunos', a8);
+      });
     }
     take.append(document.createTextNode('.'));
 

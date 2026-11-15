@@ -69,14 +69,14 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-sec-head{display:flex;gap:var(--cds-gap-sm);align-items:flex-start}
 .tg-sec-head .tg-ic{width:1.6rem;height:1.6rem;flex:none;margin-top:.15rem;color:var(--color-fg-muted)}
 .tg-sec-title{font-family:var(--font-display);font-weight:400;font-size:var(--cds-font-size-title);text-wrap:balance}
-.tg-sec-sub{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
+.tg-sec-sub{font-size:var(--cds-font-size-body);color:var(--color-fg-muted);text-wrap:pretty}
 .tg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
 /* ocupa duas colunas quando a grade tem três (telas largas), para não deixar buraco */
 @media (min-width:73rem){.tg-card.tg-span2{grid-column:span 2}}
 .tg-card{display:flex;flex-direction:column;gap:var(--cds-gap-md);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
 .tg-card.tg-wide{grid-column:1/-1}
 .tg-card-title{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);text-wrap:balance}
-.tg-card-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-top:calc(var(--cds-gap-md) * -0.6)}
+.tg-card-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);text-wrap:pretty;margin-top:calc(var(--cds-gap-md) * -0.6)}
 .tg-base{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);border-top:1px solid var(--color-border-line);padding-top:var(--cds-pad-sm);margin-top:auto}
 .tg .tg-base-link{color:inherit;text-decoration:underline;text-underline-offset:2px;white-space:nowrap}
 .tg .tg-base-link::after{content:" ↗";font-size:.9em}
@@ -182,7 +182,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-lesson .tg-card-title{display:flex;align-items:center;gap:.55rem}
 .tg-lesson-n{display:grid;place-items:center;width:1.6rem;height:1.6rem;flex:none;border-radius:50%;background:var(--cds-chart-categorical-1);color:var(--color-panel);font-size:.8125rem;font-weight:700}
 .tg-lesson-vis{position:relative;display:flex;flex-direction:column;justify-content:center;gap:var(--cds-gap-sm);min-height:8.5rem;padding:1.6rem 1rem 1rem;background:var(--color-bg);border:1px solid var(--color-border-line);border-radius:var(--cds-radius)}
-.tg-lesson-ex{position:absolute;top:.45rem;right:.6rem;font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted);opacity:.8}
+.tg-lesson-ex{position:absolute;top:.45rem;right:.6rem;font-size:.6875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-lesson-vis .tg-iso10{max-width:100%}
 .tg-lesson-eq{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;font-size:1.05rem}
 .tg-lesson-eq b{color:var(--cds-chart-categorical-1);font-weight:700}
@@ -204,7 +204,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-lesson-cmprow .tg-verdict{font-size:var(--cds-font-size-caption);white-space:nowrap}
 .tg-lesson-cmprow .tg-dot{border-color:var(--color-bg)}
 .tg-lesson-tip{display:flex;gap:.5rem;align-items:flex-start;font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
-.tg-lesson-ast{color:var(--cds-chart-categorical-2)}
+.tg-lesson-ast{color:var(--color-fg)}
 .tg-lesson-cores{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .6rem}
 .tg-lesson-cores span{display:inline-flex;align-items:center;gap:.45rem;padding:.35rem .75rem .35rem .45rem;border-radius:999px;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);background:color-mix(in srgb,var(--sec) 13%,var(--color-panel));color:var(--color-fg)}
 .tg-lesson-cores i{width:.9rem;height:.9rem;border-radius:50%;background:var(--sec);flex:none}
@@ -239,7 +239,7 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg-in .tg-iso10 .tg-c{animation:tg-fadein .4s ease-out both;animation-delay:calc(var(--d,0ms) + 150ms + var(--i,0) * 70ms)}
   /* comparação: faixa da margem de erro abre a partir do ponto, e o ponto surge */
   .tg-in .tg-ci{animation:tg-grow-c .8s var(--tg-ease) both;animation-delay:calc(var(--d,0ms) + 200ms + var(--i,0) * 70ms)}
-  .tg-in .tg-dot{animation:tg-pop .6s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--d,0ms) + 300ms + var(--i,0) * 70ms)}
+  .tg-in .tg-dot{animation:tg-pop .6s var(--tg-ease) both;animation-delay:calc(var(--d,0ms) + 300ms + var(--i,0) * 70ms)}
   /* cartões da tela inicial: leve elevação ao passar o mouse */
   #fato-txt,#fato-ic{animation:tg-rise .5s var(--tg-ease) both}
   @keyframes tg-grow{from{transform:scaleX(0)}}
@@ -402,8 +402,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-hero .tg-eyebrow,.tg-head .tg-eyebrow{color:rgba(255,255,255,.82);font-weight:600}
 .tg-hero-title,.tg-title{font-weight:800;letter-spacing:-.025em;color:#fff;max-width:20ch}
 .tg-hero-title span{color:var(--hero-hi);font-weight:800}
-.tg-hero-lead{font-weight:600;color:#fff;max-width:34ch}
-.tg-hero-text,.tg-head .tg-take{color:rgba(255,255,255,.88);max-width:62ch}
+.tg-hero-lead{font-weight:600;color:#fff;max-width:34ch;text-wrap:balance}
+/* texto corrido sobre o degradê: branco pleno (a 88% ficava entre 4,3 e 4,5:1 no trecho mais claro) */
+.tg-hero-text,.tg-head .tg-take{color:#fff;max-width:62ch}
 /* manchete da capa de Escolas e Gestores: frase maior e linha curta (~60 caracteres) */
 .tg-head .tg-take{font-size:clamp(1.0625rem,1.6vw,1.25rem);max-width:min(100%,40ch)}
 .tg .tg-hero-text{max-width:min(100%,52ch)}
@@ -496,7 +497,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-reg.tg-off text{fill:var(--color-fg-muted)}
 .tg-mapa-reg.tg-off:hover path{opacity:.55}
 .tg-mapa-sel{pointer-events:none}
-.tg-mapa-pick{transform-box:fill-box;transform-origin:center;transform:scale(1.06);filter:drop-shadow(0 6px 14px rgba(10,20,50,.32));animation:tg-mapa-pop .4s cubic-bezier(.2,.9,.3,1.25)}
+.tg-mapa-pick{transform-box:fill-box;transform-origin:center;transform:scale(1.06);filter:drop-shadow(0 6px 14px rgba(10,20,50,.32));animation:tg-mapa-pop .4s var(--tg-ease,ease-out)}
 .tg-mapa-pick path{stroke:#fff;stroke-width:2.6;stroke-linejoin:round}
 .tg-mapa-svg:has(.tg-on:focus-visible) .tg-mapa-pick path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
 @keyframes tg-mapa-pop{from{transform:scale(1);filter:drop-shadow(0 0 0 rgba(10,20,50,0))}}
@@ -632,7 +633,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg .tg-topo{display:inline-flex;align-items:center;gap:.3rem;margin-left:auto;padding:.35rem .7rem .35rem .55rem;font-size:.8125rem;font-weight:600;color:var(--color-fg-muted)}
 .tg .tg-topo:hover{color:var(--color-fg)}
 .tg-topo .tg-ic{width:1rem;height:1rem}
-@media (max-width:560px){.tg .tg-rec-fixo .tg-topo{position:absolute;top:.4rem;right:.5rem;padding:.3rem .5rem}.tg-rec-fixo-in{position:relative;padding-right:5rem}}
+
 /* portas do fim do Início: um dado real de cada público e o caminho para o painel */
 .tg-portas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-lg)}
 .tg-porta{display:flex;flex-direction:column;gap:.6rem;padding:clamp(1.25rem,2.5vw,1.75rem);border:1px solid color-mix(in srgb,var(--sec) 22%,var(--color-panel));border-radius:calc(var(--cds-radius) * 1.25);background:linear-gradient(160deg,color-mix(in srgb,var(--sec) 9%,var(--color-panel)),var(--color-panel) 70%);color:var(--color-fg);text-decoration:none;box-shadow:var(--v-shadow);transition:transform .2s var(--tg-ease,ease-out),box-shadow .2s ease}
@@ -680,3 +681,56 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg-kpi .tg-iso10{min-height:0}
   .tg-kpi-cmp{font-size:.75rem;line-height:1.35}
 }
+
+/* filtro em duas etapas: as dimensões do filtro principal têm forma de botão; o pedido da etapa 2 vem antes dos grupos */
+.tg .tg-rec-dims.tg-agrupado button{margin:0 .3rem .45rem 0;padding:.4rem .8rem;border:1px solid var(--color-border-line);border-radius:999px;background:var(--color-panel);color:var(--color-fg);font-weight:500;min-height:2.5rem}
+.tg .tg-rec-dims.tg-agrupado button:hover{border-color:var(--sec-texto,var(--color-fg-muted))}
+.tg .tg-rec-dims.tg-agrupado button[aria-checked=true]{border-color:var(--sec-texto,var(--v-blue));background:color-mix(in srgb,var(--sec,var(--v-blue)) 10%,var(--color-panel));color:var(--color-fg);font-weight:700}
+.tg-rec-dims.tg-agrupado .tg-rec-g{border-bottom:0;column-gap:0}
+.tg-rec-dims.tg-agrupado .tg-rec-g-lab{padding:0 0 .3rem}
+.tg .tg-rec-pedido{margin:0;font-size:var(--cds-font-size-body);font-weight:700;color:var(--sec-texto,var(--color-fg))}
+
+/* celular: a barra fixa vira uma linha só, "Você está vendo: <grupo> · Mudar · Topo"; "Mudar" reabre o filtro principal */
+.tg .tg-rec-mudar2{display:none}
+@media (max-width:560px){
+  .tg-rec-fixo-in{flex-wrap:nowrap;align-items:center;gap:.4rem;padding:.35rem .4rem .35rem .8rem}
+  .tg-rec-fixo .tg-rec-dims,.tg-rec-fixo .tg-rec-opts{display:none!important}
+  .tg .tg-rec-fixo-tit{flex:1 1 auto;min-width:0}
+  .tg-rec-fixo-tit b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tg .tg-rec-mudar2{display:inline-flex;align-items:center;gap:.3rem;flex:none;min-height:2.75rem;padding:.4rem .75rem .4rem .6rem;border:1px solid var(--color-border-line);background:var(--color-panel);color:var(--sec-texto,var(--color-fg));font-size:.875rem;font-weight:700}
+  .tg-rec-mudar2 .tg-ic{width:1rem;height:1rem}
+  .tg .tg-rec-fixo .tg-topo{flex:none;min-height:2.75rem;margin-left:0;padding:.4rem .55rem}
+}
+/* toque (dedo): alvos de pelo menos 44px nos controles pequenos; o mouse mantém o tamanho atual */
+@media (pointer:coarse){
+  .tg-alt summary{display:flex;align-items:center;min-height:2.75rem}
+  .tg .tg-share{width:2.75rem;height:2.75rem;top:.45rem;right:.45rem}
+  .tg button.tg-rec-info{width:2.75rem;height:2.75rem;margin:-.6rem -.5rem}
+  .tg button.tg-sec-toggle{min-height:2.75rem;min-width:2.75rem;justify-content:center}
+  .nav-link{min-height:2.75rem}
+  .tg .tg-rec-opts button{min-height:2.75rem}
+}
+/* "Mudar" leva ao filtro principal: ele para logo abaixo do menu fixo, não por baixo dele */
+#filtro{scroll-margin-top:calc(var(--nav-h,3.6rem) + .75rem)}
+
+/* asterisco do mapa explicado */
+.tg-mapa-ast{flex-basis:100%;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+/* celular: título de seção sem quebrar em três linhas (pastilha menor, título um pouco menor) */
+@media (max-width:560px){
+  .tg-sec-head{gap:.65rem;align-items:flex-start}
+  .tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem;border-radius:12px}
+  .tg-sec-head .tg-ic.tg-solid{padding:.6rem}
+  .tg-sec-head .tg-sec-title{font-size:1.4rem;padding-right:.75rem}
+}
+/* chegada: o cartão de destino ganha um anel na cor do capítulo por um instante */
+.tg-card.tg-chegada{box-shadow:inset 0 4px 0 var(--sec),0 0 0 3px color-mix(in srgb,var(--sec) 55%,transparent),var(--v-shadow)}
+@media (prefers-reduced-motion:no-preference){.tg-card{transition:box-shadow .6s ease}}
+/* fim das abas: a outra aba com um dado real e o caminho para citar */
+.tg-fim{display:flex;flex-direction:column;gap:var(--cds-gap-md);max-width:76rem;margin-inline:auto;width:100%}
+.tg-fim-outra{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.2rem 1rem;padding:clamp(1.1rem,2.5vw,1.6rem);border:1px solid color-mix(in srgb,var(--sec) 22%,var(--color-panel));border-radius:calc(var(--cds-radius) * 1.25);background:linear-gradient(160deg,color-mix(in srgb,var(--sec) 9%,var(--color-panel)),var(--color-panel) 70%);color:var(--color-fg);text-decoration:none;box-shadow:var(--v-shadow)}
+.tg-fim-tit{font-size:clamp(1.15rem,2vw,1.35rem);font-weight:800;letter-spacing:-.015em;color:var(--sec-texto)}
+.tg-fim-txt{grid-column:1;color:var(--color-fg-muted)}
+.tg-fim-ir{grid-column:2;grid-row:1/span 2;font-size:1.6rem;font-weight:700;color:var(--sec-texto)}
+.tg-fim-outra:hover .tg-fim-tit{text-decoration:underline;text-underline-offset:3px}
+.tg-fim-outra:focus-visible,.tg-fim-citar:focus-visible{outline:2px solid var(--color-fg);outline-offset:3px}
+.tg-fim-citar{align-self:flex-start;font-weight:600;color:var(--v-blue);text-underline-offset:3px}
