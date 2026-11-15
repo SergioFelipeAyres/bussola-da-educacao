@@ -48,11 +48,15 @@
   const enc = (s) => String(s).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
   const em10 = (v) => Math.round(v / 10);
   // frase arredondada: "Cerca de 7 em cada 10"; sem "cerca de" só quando o número é exato (ex.: 100%). ini = false no meio da frase
-  // numa frase com dois números, os dois usam a mesma base (comBase); senão, cada um escolhe a sua
+  // uma base só por bloco: a frase, as linhas e os destaques de um mesmo cartão (ou da capa) dizem
+  // todos "em cada 10" ou todos "em cada 100" (comBase); a base escolhida para o gráfico de um cartão
+  // fica guardada em BASES e a frase do cartão a reutiliza
   let baseCem = null;
   const precisaCem = (v) => v != null && (v >= 90 || v < 10);
   const seguro = (fn) => { try { return fn(); } catch (e) { return null; } };
-  const comBase = (vals, fn) => { const ant = baseCem; baseCem = vals.some(precisaCem); try { return fn(); } finally { baseCem = ant; } };
+  const fixaBase = (cem, fn) => { const ant = baseCem; baseCem = cem; try { return fn(); } finally { baseCem = ant; } };
+  const comBase = (vals, fn) => fixaBase(vals.some(precisaCem), fn);
+  const BASES = new Map();
   const freqTxt = (v, ini = true) => {
     if (v >= 99.5 && v < 100) return (ini ? 'Quase' : 'quase') + ' 100 em cada 100';
     const cem = baseCem != null ? baseCem || precisaCem(v) : precisaCem(v), n = cem ? Math.round(v) : em10(v), s = n + (cem ? ' em cada 100' : ' em cada 10');
@@ -320,9 +324,18 @@
     if (x + tip.offsetWidth > r.width - 4) x = Math.max(4, e.clientX - r.left - tip.offsetWidth - 14);
     tip.style.left = x + 'px'; tip.style.top = y + 'px';
   };
-  root.addEventListener('pointermove', showTip);
-  root.addEventListener('pointerdown', showTip);
-  root.addEventListener('pointerleave', () => { tip.hidden = true; });
+  // mouse: a dica segue o cursor. Toque: abre no toque e fica até o próximo toque (no mesmo lugar, fecha) ou até rolar
+  let tipAlvo = null;
+  root.addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') showTip(e); });
+  root.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'touch') return showTip(e);
+    const el = e.target.closest && e.target.closest('[data-tip]');
+    if (el && el === tipAlvo && !tip.hidden) { tip.hidden = true; tipAlvo = null; return; }
+    tipAlvo = el; showTip(e);
+  });
+  root.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') tip.hidden = true; });
+  document.addEventListener('pointerdown', (e) => { if (!root.contains(e.target)) { tip.hidden = true; tipAlvo = null; } });
+  window.addEventListener('scroll', () => { if (!tip.hidden && tipAlvo) { tip.hidden = true; tipAlvo = null; } }, { passive: true });
   const rowTip = (label, row, br, rec) => [
     label,
     (rec === TOTAL ? 'Brasil' : recTitulo(rec, row._ds)) + ': ' + pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? '*' : ''),
@@ -393,6 +406,10 @@
   let uidN = 0;
   const isoRows = (el, items, rec, verb, shape, cls) => {
     if (!items.length) return emptyMsg(el, NODATA);
+    // todas as linhas (e a frase do cartão, depois) usam a mesma base; inclui o Brasil quando aparece ao lado
+    const cem = baseCem != null ? baseCem : items.some((it) => precisaCem(it.row.pct) || (rec !== TOTAL && it.br && precisaCem(it.br.pct)));
+    const chave = el.id || el.dataset.base; if (chave) BASES.set(chave, cem);
+    if (baseCem !== cem) return fixaBase(cem, () => isoRows(el, items, rec, verb, shape, cls));
     const w = document.createElement('div'); w.className = cls || (items.length > 2 ? 'tg-cols2' : 'tg-isorows');
     for (const it of items) {
       const box = document.createElement('div'); box.className = 'tg-isorow';
@@ -466,6 +483,9 @@
   const lead = (id, partes) => {
     const el = document.getElementById(id);
     if (!el || !partes || el.querySelector('.tg-empty, .tg-fail')) return;
+    // partes como função: é montada na mesma base que o gráfico do cartão usou
+    if (typeof partes === 'function') partes = BASES.has(id) ? fixaBase(BASES.get(id), partes) : partes();
+    if (!partes) return;
     const p = document.createElement('p'); p.className = 'tg-say tg-lead';
     partes.forEach((x) => p.append(typeof x === 'string' ? document.createTextNode(x) : x));
     const card = el.closest('.tg-card'), tit = card && card.querySelector(':scope > .tg-card-title');
@@ -542,21 +562,68 @@
     const ind = document.getElementById('tg-cmp-ind').selectedOptions[0], cat = document.getElementById('tg-cmp-cat').selectedOptions[0];
     return 'Compare grupos' + (ind && cat ? ': ' + ind.textContent + ', por ' + cat.textContent : '');
   };
-  const pararFala = () => { if (!fala) return; fala.cancel(); if (falando) falando.textContent = 'Ouvir'; falando = null; };
+  const rotulo = (btn, txt) => { btn.querySelector('span').textContent = txt; };
+  const pararFala = () => { if (!fala) return; fala.cancel(); if (falando) { rotulo(falando, 'Ouvir'); falando.setAttribute('aria-pressed', 'false'); } falando = null; };
+  // voz: a mais natural em português do Brasil que o aparelho tiver. As vozes "Natural"/"Online" (Edge, Windows)
+  // e as do Google soam bem melhor que as vozes locais antigas; sem nenhuma pt-BR, fica a padrão do sistema
+  let voz = null;
+  const escolheVoz = () => {
+    const vs = fala.getVoices().filter((v) => /^pt[-_]?BR/i.test(v.lang) || /brasil|brazil/i.test(v.name));
+    // entre as naturais, o Antonio (Edge) vem primeiro; depois as demais vozes naturais, a do Google e as locais
+    const nota = (v) => (/natural|neural/i.test(v.name) ? 4 : 0) + (/online/i.test(v.name) ? 2 : 0) + (/google/i.test(v.name) ? 3 : 0) + (/ant[oô]nio/i.test(v.name) ? 3 : /francisca|thalita|luciana/i.test(v.name) ? 1 : 0) + (v.localService ? 0 : 1);
+    voz = vs.sort((a, b) => nota(b) - nota(a))[0] || null;
+  };
+  if (fala) { escolheVoz(); fala.addEventListener('voiceschanged', escolheVoz); }
+  // texto pensado para o ouvido: símbolos por extenso, sem setas nem separadores visuais
+  const praFala = (t) => t.trim()
+    .replace(/↗/g, '').replace(/\s·\s/g, '. ').replace(/NIC\.br\/Cetic\.br/g, 'NIC ponto br e Cetic ponto br')
+    .replace(/±/g, 'mais ou menos ').replace(/p\.p\./g, 'pontos percentuais').replace(/\*/g, '')
+    .replace(/[:.;]$/, '');
   const ouvir = (btn, card) => {
     if (falando === btn) return pararFala();
     pararFala();
+    // ordem de leitura: título, a frase do cartão, os números e, por fim, a fonte
     const parts = [tituloDe(card)];
+    const frase = card.querySelector(':scope > .tg-lead, .tg-cmp-lead'); if (frase) parts.push(frase.textContent);
     card.querySelectorAll('.tg-alt > ul > li').forEach((li) => {
       const sub = li.querySelector('ul');
       if (sub) parts.push(li.querySelector('b').textContent, ...[...sub.children].map((s) => s.textContent));
       else parts.push(li.textContent);
     });
     const base = card.querySelector('.tg-base'); if (base) parts.push(base.textContent);
-    const u = new SpeechSynthesisUtterance(parts.map((p) => p.trim().replace(/[:.]$/, '')).filter(Boolean).join('. ').replace(/±/g, 'mais ou menos ').replace(/p\.p\./g, 'pontos percentuais'));
-    u.lang = 'pt-BR';
-    u.onend = u.onerror = () => { if (falando === btn) pararFala(); };
-    falando = btn; btn.textContent = 'Parar'; fala.speak(u);
+    // uma fala por frase (e por trecho separado por ";"): a pausa entre elas dá o ritmo, em vez de um bloco corrido
+    const trechos = parts.flatMap((p) => p.split(/;\s*/)).map(praFala).filter(Boolean);
+    falando = btn; rotulo(btn, 'Parar'); btn.setAttribute('aria-pressed', 'true');
+    trechos.forEach((t, i) => {
+      const u = new SpeechSynthesisUtterance(t + '.');
+      u.lang = 'pt-BR'; if (voz) u.voice = voz;
+      u.rate = 0.92; u.pitch = 1;
+      if (i === trechos.length - 1) u.onend = () => { if (falando === btn) pararFala(); };
+      u.onerror = (e) => { if (falando === btn && e.error !== 'interrupted' && e.error !== 'canceled') pararFala(); };
+      fala.speak(u);
+    });
+  };
+  // duas ações com nome, lado a lado, logo abaixo do gráfico: "Ouvir" toca na hora (um toque só)
+  // e "Ler em texto" abre a lista com os números logo abaixo. O painel (.tg-alt) é o mesmo que "Ouvir" lê.
+  const IC_OUVIR = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+  const IC_LER = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h14M5 10.5h14M5 14.5h14M5 18.5h9"/></svg>';
+  let altN = 0;
+  const acoesTexto = (card, painel) => {
+    const row = document.createElement('div'); row.className = 'tg-acoes';
+    if (fala) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-ouvir'; b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = IC_OUVIR + '<span>Ouvir</span>'; b.addEventListener('click', () => ouvir(b, card)); row.append(b);
+    }
+    if (!painel.id) painel.id = 'alt-' + (altN++);
+    const l = document.createElement('button'); l.type = 'button'; l.className = 'tg-ler';
+    l.setAttribute('aria-expanded', 'false'); l.setAttribute('aria-controls', painel.id);
+    l.innerHTML = IC_LER + '<span>Ler em texto</span>';
+    l.addEventListener('click', () => {
+      const abre = painel.hidden; painel.hidden = !abre;
+      l.setAttribute('aria-expanded', abre ? 'true' : 'false'); rotulo(l, abre ? 'Fechar texto' : 'Ler em texto');
+    });
+    row.append(l);
+    return row;
   };
   const textAlt = (card) => {
     const chart = card && card.querySelector('.tg-chart'); if (!chart) return;
@@ -585,15 +652,8 @@
     } else chart.innerText.split('\n').map((t) => t.trim()).filter(Boolean).forEach((t) => { const li = document.createElement('li'); li.textContent = t; ul.append(li); });
     let det = card.querySelector('.tg-alt');
     if (!det) {
-      det = document.createElement('details'); det.className = 'tg-alt';
-      const s = document.createElement('summary'); s.textContent = fala ? 'Ver em texto ou ouvir' : 'Ver os dados em texto';
-      det.append(s);
-      if (fala) {
-        const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-ouvir'; b.textContent = 'Ouvir';        b.addEventListener('click', () => ouvir(b, card));
-        det.append(b);
-      }
-      det.addEventListener('toggle', () => { if (!det.open && falando && det.contains(falando)) pararFala(); });
-      chart.after(det);
+      det = document.createElement('div'); det.className = 'tg-alt'; det.hidden = true;
+      chart.after(acoesTexto(card, det), det);
     }
     const old = det.querySelector(':scope > ul'); if (old) old.replaceWith(ul); else det.append(ul);
   };
@@ -647,7 +707,7 @@
     if (SEGS[v] && !SEGS[v].includes(cur)) {
       resetNote = 'O grupo "' + recTitulo(cur, 'gestores') + '" só existe para gestores. Voltamos para Brasil; escolha um grupo de escolas.';
       dash.setParams({ recorte: TOTAL });
-    } else draw();
+    } else { resetNote = ''; draw(); }
   };
   // botões "Copiar" da tela Sobre
   document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
@@ -952,12 +1012,11 @@
       if (!f || !m) return emptyMsg(el, NODATA);
       const w = document.createElement('div'); w.className = 'tg-isowrap';
       w.innerHTML = isoParts([{ v: f.pct, color: 'var(--color-mulheres)' }, { v: m.pct, color: 'var(--color-homens)' }]);
+      // a frase vai para o topo do cartão (lead, mais abaixo); aqui ficam a legenda com os valores e as notas
       const say = document.createElement('div'); say.className = 'tg-say';
-      const b = document.createElement('b'); b.textContent = freqTxt(f.pct);
       const sf = document.createElement('span'); sf.textContent = pct(f.pct); markRow(sf, f);
       const sm = document.createElement('span'); sm.textContent = pct(m.pct); markRow(sm, m);
-      say.append(b, document.createTextNode(' gestores são mulheres.'));
-      const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.style.marginTop = 'var(--cds-gap-sm)';
+      const lg = document.createElement('div'); lg.className = 'tg-legend';
       const l1 = document.createElement('span'); l1.innerHTML = '<span class="tg-sw" style="background:var(--color-mulheres)"></span>Mulheres '; l1.append(sf);
       const l2 = document.createElement('span'); l2.innerHTML = '<span class="tg-sw" style="background:var(--color-homens)"></span>Homens '; l2.append(sm);
       lg.append(l1, l2); say.append(lg);
@@ -1036,14 +1095,19 @@
       if (!s) return emptyMsg(el, NODATA);
       const w = document.createElement('div'); w.className = 'tg-isowrap';
       w.innerHTML = isoParts([{ v: s.pct, color: dash.colors[0] }]);
+      // a frase vai para o topo do cartão (lead, mais abaixo); aqui ficam os valores e as notas
       const say = document.createElement('div'); say.className = 'tg-say';
-      const b = document.createElement('b'); b.textContent = freqTxt(s.pct);
       const v = document.createElement('span'); v.textContent = pct(s.pct); markRow(v, s);
-      say.append(b, document.createTextNode(' gestores já usam IA na gestão ('), v, document.createTextNode(').'));
-      if (n) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.style.marginTop = 'var(--cds-gap-xs)'; const nv = document.createElement('span'); nv.textContent = pct(n.pct); markRow(nv, n); p.append(document.createTextNode('Não usam: '), nv); say.append(p); }
+      const lg = document.createElement('div'); lg.className = 'tg-legend';
+      const l1 = document.createElement('span'); l1.innerHTML = '<span class="tg-sw" style="background:' + dash.colors[0] + '"></span>Usam '; l1.append(v); lg.append(l1);
       const br = get('D9A', '', 'Sim', TOTAL);
-      setTip(v, rowTip('Usam IA na gestão', s, br, rec));
-      if (n) setTip(say.querySelector('.tg-stack-cap span'), rowTip('Não usam', n, get('D9A', '', 'Não', TOTAL), rec));
+      setTip(l1, rowTip('Usam IA na gestão', s, br, rec));
+      if (n) {
+        const nv = document.createElement('span'); nv.textContent = pct(n.pct); markRow(nv, n);
+        const l2 = document.createElement('span'); l2.innerHTML = '<span class="tg-sw" style="background:var(--cds-chart-muted);opacity:.45"></span>Não usam '; l2.append(nv); lg.append(l2);
+        setTip(l2, rowTip('Não usam', n, get('D9A', '', 'Não', TOTAL), rec));
+      }
+      say.append(lg);
       if (rec !== TOTAL && br) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Brasil: ' + pct(br.pct); say.append(p); }
       if (s.moe) { const p = document.createElement('div'); p.className = 'tg-stack-cap'; p.textContent = 'Com a margem de erro, a parcela que usa IA fica ' + faixa(s) + '.'; say.append(p); }
       w.append(say); el.replaceChildren(w);
@@ -1053,6 +1117,17 @@
     bars(document.getElementById('ch-ia-contrib'), listFrom('D9C', Object.keys(D9C), 'Sim', rec, D9C, true), rec, anim);
 
     // frases de abertura
+    (() => {
+      const f = get('A1', '', 'Feminino', rec);
+      if (f) lead('ch-sexo', [negrito(freqTxt(f.pct)), ' gestores são mulheres.']);
+      const s = get('D9A', '', 'Sim', rec);
+      if (s) lead('ch-ia', [negrito(freqTxt(s.pct)), ' gestores já usam inteligência artificial na gestão da escola.']);
+      // reuniões: os números já estão nas duas linhas; a frase diz só a comparação, e só quando as margens não se tocam
+      const pr = get('D3_1', '', 'Sim', rec), pais = get('D6', '', 'Sim', rec);
+      if (pr && pais) lead('ch-reunioes', separa(pr, pais) ? ['Mais gestores conversaram sobre tecnologia com ', negrito('professores e funcionários'), ' do que com pais, mães e responsáveis.']
+        : separa(pais, pr) ? ['Mais gestores conversaram sobre tecnologia com ', negrito('pais, mães e responsáveis'), ' do que com professores e funcionários.']
+        : ['Os gestores conversaram sobre tecnologia com professores e com famílias em proporções parecidas.']);
+    })();
     (() => {
       const faixas = { 'Até 40 anos': 'até 40 anos', 'De 41 a 50 anos': 'de 41 a 50 anos', 'De 51 anos ou mais': '51 anos ou mais' };
       const m = Object.keys(faixas).map((r) => ({ r, row: get('A2', '', r, rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct)[0];
@@ -1177,7 +1252,7 @@
       const f2 = yes('F2', 'Têm perfil em alguma rede social', 'rede');
       const its = listFrom('F3', ['Instagram', 'Facebook', 'YouTube', 'TikTok', 'Twitter ou X'], 'Sim', rec,
         { Instagram: 'instagram', Facebook: 'facebook', YouTube: 'youtube', TikTok: 'tiktok', 'Twitter ou X': 'x' }, true);
-      const top = document.createElement('div'), bot = document.createElement('div');
+      const top = document.createElement('div'), bot = document.createElement('div'); top.dataset.base = 'ch-redes';
       if (f2) isoRows(top, [f2], rec, '', SCHOOL);
       bars(bot, its, rec, anim);
       const w = document.createElement('div'); w.className = 'tg-stack-wrap'; w.style.gap = 'var(--cds-gap-lg)'; w.append(top, bot);
@@ -1200,7 +1275,7 @@
         .map(([ind, label]) => ({ label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct);
       const a = its[0], u = its[its.length - 1]; if (!a || a === u) return;
       // faixa (de … a …) em vez de 'o mais comum': no Brasil as duas primeiras ficam dentro da margem uma da outra
-      lead('ch-politicas', comBase([a.row.pct, u.row.pct], () => ['Vai de ', negrito(freqTxt(u.row.pct, false)), ' escolas (' + u.label + ') a ', negrito(freqTxt(a.row.pct, false)), ' (' + a.label + ').']));
+      lead('ch-politicas', () => (['Vai de ', negrito(freqTxt(u.row.pct, false)), ' escolas (' + u.label + ') a ', negrito(freqTxt(a.row.pct, false)), ' (' + a.label + ').']));
     })();
     (() => {
       const a = respList('A2', Object.keys(A2L), rec, A2L, true)[0];
@@ -1225,8 +1300,18 @@
     (() => {
       const its = listFrom('B2', ['Computador de mesa', 'Computador portátil', 'Tablet'], 'Sim', rec).sort((a, b) => b.row.pct - a.row.pct);
       const a = its[0], u = its[its.length - 1]; if (!a) return;
-      lead('ch-computadores', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
-        (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]));
+      // se o 1º e o 2º ficam dentro da margem um do outro, a frase cita os dois em vez de escolher um
+      const b = its[1], empate = b && b !== u && !separa(a.row, b.row);
+      const tipos = empate ? (a.full === 'Tablet' || b.full === 'Tablet' ? minus(a.label) + ' e ' + minus(b.label) : 'computador portátil e de mesa') : minus(a.label);
+      lead('ch-computadores', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + tipos +
+        (empate ? ', em proporções parecidas' : '') + (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]));
+    })();
+    (() => {
+      const f2 = get('F2', '', 'Sim', rec); if (!f2) return;
+      const its = listFrom('F3', ['Instagram', 'Facebook', 'YouTube', 'TikTok', 'Twitter ou X'], 'Sim', rec).sort((a, b) => b.row.pct - a.row.pct);
+      const [a, b] = its;
+      lead('ch-redes', () => [negrito(freqTxt(f2.pct)), ' escolas ' + vb(f2.pct, 'têm', 'tem') + ' perfil em alguma rede social' +
+        (a ? (separa(a.row, b && b.row) ? '; a rede mais usada é o ' + a.label + '.' : '; as mais usadas são ' + a.label + ' e ' + b.label + '.') : '.')]);
     })();
     (() => {
       const its = [['B17', 'Equipamentos audiovisuais'], ['B14', 'Smart TV ou conversor'], ['B15', 'Material para aulas de robótica'], ['B18', 'Material para atividades maker'], ['B16', 'Celulares para alunos e professores']]
@@ -1266,8 +1351,11 @@
     const m = lista.find((x) => x.id === params.cmp_ind) || lista[0];
     if (!IDX[m.ds]) return fail(el, 'loading');
     el.classList.remove('dash-skeleton');
-    const cats = CATS[m.ds].filter((c) => c !== 'TOTAL');
-    if (cc.dataset.ds !== m.ds) { cc.replaceChildren(...cats.map((c) => new Option(CAT[c] || c, c))); cc.dataset.ds = m.ds; }
+    // fora da lista: o tipo de grupo que define a própria resposta (ex.: "Escolas com internet" por
+    // "Internet e computador para os alunos"), que só diria 100% ou 0%
+    const defineCat = (c) => (m.ds === 'gestores' && DEFINE_G[m.ind] === c) || (m.ds === 'escolas' && c === 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS' && ['A1', 'A6', 'A7', 'A8'].includes(m.ind));
+    const cats = CATS[m.ds].filter((c) => c !== 'TOTAL' && !defineCat(c));
+    if (cc.dataset.m !== m.id) { cc.replaceChildren(...cats.map((c) => new Option(CAT[c] || c, c))); cc.dataset.m = m.id; }
     const cat = cats.includes(params.cmp_cat) ? params.cmp_cat : 'REGIÃO';
     ci.value = m.id; cc.value = cat;
     const br = get(m.ind, m.grupo, m.resp, TOTAL, m.ds);
@@ -1318,13 +1406,20 @@
     lg.innerHTML = '<span><span class="tg-sw" style="background:var(--sec);border-radius:50%"></span>ponto = estimativa</span><span><span class="tg-sw" style="background:var(--sec);opacity:.45;width:1.1rem;height:4px;border-radius:2px"></span>faixa = margem de erro</span><span><span class="tg-refkey"></span>linha = Brasil</span>';
     if (rows.some((x) => noMoe(x.row))) { const s = document.createElement('span'); s.textContent = '* sem margem de erro estimada'; lg.append(s); }
     w.append(lg);
+    // a escala não começa no zero: dito por extenso, para ninguém ler a distância como proporção
+    if (ticks[0] > 0) { const z = document.createElement('p'); z.className = 'tg-cmp-zero'; z.textContent = 'A escala começa em ' + ticks[0] + '%, não em zero, para mostrar as diferenças entre os grupos.'; w.append(z); }
     // frase antes do gráfico: o maior e o menor grupo, e o Brasil como referência
     const ord = rows.slice().sort((a, b) => b.row.pct - a.row.pct), alto = ord[0], baixo = ord[ord.length - 1];
     const quemCurto = (s) => cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
     const frase = document.createElement('p'); frase.className = 'tg-say tg-lead tg-cmp-lead';
+    // "a maior parcela" só quando a margem do 1º não toca a do 2º (e o mesmo para "a menor");
+    // senão a frase dá só a faixa. O * acompanha o número que não tem margem estimada
+    const fq = (x) => negrito(freqTxt(x.row.pct, false) + (noMoe(x.row) ? '*' : ''));
     if (ord.length > 1 && alto.row.pct !== baixo.row.pct) comBase([alto.row.pct, baixo.row.pct, br.pct], () => {
-      const tx = quemCurto(alto.s);
-      frase.append('Em “' + m.label + '”, ' + tx + ' tem a maior parcela (', negrito(freqTxt(alto.row.pct, false)), ') e ' + quemCurto(baixo.s) + ', a menor (', negrito(freqTxt(baixo.row.pct, false)), '). No Brasil, ', negrito(freqTxt(br.pct, false)), '.');
+      const topo = separa(alto.row, ord[1].row), fundo = separa(ord[ord.length - 2].row, baixo.row);
+      if (topo && fundo) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' tem a maior parcela (', fq(alto), ') e ' + quemCurto(baixo.s) + ', a menor (', fq(baixo), ').');
+      else frase.append('Em “' + m.label + '”, os grupos vão de ', fq(baixo), ' (' + segName(baixo.s) + ') a ', fq(alto), ' (' + segName(alto.s) + '), mas as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
+      frase.append(' No Brasil, ', negrito(freqTxt(br.pct, false)), '.');
     });
     el.replaceChildren(...(frase.childNodes.length ? [frase] : []), w);
   };
@@ -1422,13 +1517,7 @@
     document.getElementById('mapa-reset').addEventListener('click', () => { pararFala(); mapaReg = null; drawMapa(); mapaSvg.querySelector('.tg-mapa-reg').focus(); });
     // versão em texto que também pode ser ouvida, como nos demais gráficos
     const alt = document.getElementById('mapa-alt'), card = mapaSvg.closest('.tg-card');
-    alt.querySelector('summary').textContent = fala ? 'Ver em texto ou ouvir' : 'Ver o mapa em texto';
-    if (fala) {
-      const ob = document.createElement('button'); ob.type = 'button'; ob.className = 'tg-ouvir'; ob.textContent = 'Ouvir';
-      ob.addEventListener('click', () => ouvir(ob, card));
-      alt.querySelector('summary').after(ob);
-    }
-    alt.addEventListener('toggle', () => { if (!alt.open && falando && alt.contains(falando)) pararFala(); });
+    alt.before(acoesTexto(card, alt));
     // abre o painel de escolas ou de gestores já com a região escolhida no filtro
     document.getElementById('mapa-ir').addEventListener('click', () => {
       const m = MAPA[mapaInd];
@@ -1453,7 +1542,8 @@
     const sec = document.getElementById('mapa'); sec.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
     mapaSvg.closest('.tg-card').dataset.titulo = 'O Brasil em 5 regiões: ' + m.label + ', por região';
     const br = mapaRow(m, null), rows = REGIOES.map((r) => ({ r, row: mapaRow(m, r) })).filter((x) => x.row);
-    const vals = rows.map((x) => x.row.pct), lo = Math.min(...vals), hi = Math.max(...vals);
+    const vals = rows.map((x) => x.row.pct), lo = Math.min(...vals), hi = Math.max(...vals); // a cor vai do menor ao maior valor (não do zero): a legenda diz onde começa e onde termina
+    if (rows.length) { document.getElementById('mapa-leg-lo').textContent = pct(lo); document.getElementById('mapa-leg-hi').textContent = pct(hi); }
     // regiões: do tom claro (menor valor) ao escuro (maior valor)
     for (const g of mapaSvg.querySelectorAll('.tg-mapa-reg')) {
       const x = rows.find((k) => k.r === g.dataset.reg), on = g.dataset.reg === mapaReg;
@@ -1622,6 +1712,12 @@
       const g = grupoPendente; grupoPendente = null;
       const alvo = g ? SEGS[view].find((s) => slugRec(s) === g) : TOTAL;
       if (alvo && alvo !== (params.recorte || TOTAL)) { dash.setParams({ recorte: alvo }); return; }
+      // link com um grupo que não existe (digitado errado ou de outra aba): avisa e mostra o Brasil, em vez de trocar calado
+      if (!alvo) {
+        resetNote = 'O link pedia um grupo que não existe nesta aba. Mostramos os números do Brasil; escolha um grupo abaixo.';
+        grupoUrl = ''; history.replaceState(null, '', urlDe(view, decodeURIComponent(location.hash.slice(1))));
+        if ((params.recorte || TOTAL) !== TOTAL) { dash.setParams({ recorte: TOTAL }); return; }
+      }
     }
     let rec = params.recorte || TOTAL;
     if (SEGS[view] && !SEGS[view].includes(rec)) rec = TOTAL;
@@ -1650,7 +1746,9 @@
     // effective slice for this page
     const recEff = rec;
     const note = document.getElementById('tg-filter-note');
-    if (resetNote && rec === TOTAL) { note.textContent = resetNote; resetNote = ''; }
+    // o aviso fica até o leitor escolher um grupo (a página redesenha mais de uma vez enquanto os dados chegam)
+    if (rec !== TOTAL) resetNote = '';
+    if (resetNote) note.textContent = resetNote;
     else note.textContent = rec === TOTAL
       ? 'Escolha o tipo de grupo e depois qual grupo ver. Todos os gráficos da aba mudam juntos.'
       : 'Todos os gráficos da aba mudam juntos. O traço escuro nas barras marca o valor do Brasil.';
@@ -1669,6 +1767,11 @@
       totEl.parentElement.querySelector('.tg-total-cmp').textContent = recEff === TOTAL ? (view === 'escolas' ? 'Estimativa de escolas de Ensino Fundamental e Médio' : 'Estimativa para escolas de Ensino Fundamental e Médio') : recName(recEff);
     }
 
+    // a manchete e os quatro destaques usam a mesma base: se algum número pede "em cada 100", todos dizem "em cada 100"
+    const kRows = kpis.map((k) => get(k.dataset.ind, k.dataset.grupo, k.dataset.resp, recEff));
+    const capaVals = [...kRows, ...(view === 'gestores' ? [get('D9A', '', 'Sim', recEff)]
+      : ['A1', 'A8', 'C3C', 'E5A'].map((x) => get(x, '', 'Sim', recEff)))].filter(Boolean).map((r) => r.pct);
+    comBase(capaVals, () => {
     // manchete da capa: um achado só por aba, em frase; os valores exatos ficam nos destaques logo abaixo
     take.classList.remove('dash-skeleton'); take.replaceChildren();
     const add = (txt, row) => { if (!row) return false; const b = document.createElement('b'); b.textContent = freqTxt(row.pct, false); markRow(b, row); take.append(b, document.createTextNode(txt)); return true; };
@@ -1687,10 +1790,8 @@
       // a frase viraria "100 em cada 100 …, mas só 100 em cada 100": aí a manchete usa outro achado.
       const a1 = get('A1', '', 'Sim', recEff), a8 = get('A8', '', 'Sim', recEff);
       if (!extremo(a1) && !extremo(a8) && a8.pct < a1.pct) {
-        comBase([a1.pct, a8.pct], () => {
-          add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
-          add(' oferecem computador e internet aos alunos', a8);
-        });
+        add((br ? ' escolas' : '') + ' têm internet', a1); take.append(document.createTextNode(', mas só '));
+        add(' oferecem computador e internet aos alunos', a8);
       } else {
         const alt = [[a1, ' têm internet'], [a8, ' oferecem computador e internet aos alunos'],
           [get('C3C', '', 'Sim', recEff), ' têm regras para o uso do celular pelos alunos'],
@@ -1716,6 +1817,7 @@
         cmp.append(freqTxt(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : ''));
         if (recEff !== TOTAL && br) { const s = document.createElement('span'); s.className = 'tg-kpi-br'; s.textContent = 'No Brasil: ' + pct(br.pct); cmp.append(s); }
       }
+    });
     });
 
     if (view === 'gestores') drawGestores(recEff, anim); else drawEscolas(recEff, anim);

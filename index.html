@@ -60,9 +60,9 @@
       <article class="tg-card tg-mapa-card">
         <div class="tg-mapa-fig">
           <svg class="tg-mapa-svg" id="mapa-svg" viewBox="-8 -8 316 316" role="group" aria-label="Mapa do Brasil dividido em cinco regiões. Cada região é um botão."></svg>
-          <div class="tg-mapa-leg" aria-hidden="true"><span>menor</span><i></i><span>maior</span></div>
+          <div class="tg-mapa-leg" aria-hidden="true"><span id="mapa-leg-lo">menor</span><i></i><span id="mapa-leg-hi">maior</span></div>
           <p class="tg-mapa-nota" id="mapa-nota"></p>
-          <details class="tg-alt" id="mapa-alt"><summary>Ver em texto ou ouvir</summary><ul id="mapa-alt-lista"></ul></details>
+          <div class="tg-alt" id="mapa-alt" hidden><ul id="mapa-alt-lista"></ul></div>
         </div>
         <div class="tg-mapa-painel">
           <div class="tg-mapa-onde">
@@ -126,8 +126,8 @@
           <li><b>Escolas</b> de Ensino Fundamental e Médio: conexão, equipamentos, regras, proteção de dados e comunicação.</li>
           <li><b>Gestores escolares</b>: perfil de quem dirige a escola, tecnologia na rotina da gestão e uso de inteligência artificial.</li>
         </ul>
-        <p>São proporções, margens de erro e totais estimados a partir de uma amostra. Recortes cruzados, como escolas particulares do Sudeste, não existem nas tabelas publicadas.</p>
-        <a class="tg-fact-link" href="https://cetic.br/pt/pesquisa/educacao/" rel="noopener">Conheça a pesquisa no Cetic.br <span aria-hidden="true">→</span></a>
+        <p>São proporções, margens de erro e totais estimados a partir de uma amostra. Grupos combinados, como escolas particulares do Sudeste, não existem nas tabelas publicadas.</p>
+        <a class="tg-fact-link" href="https://cetic.br/pt/pesquisa/educacao/" target="_blank" rel="noopener" aria-label="Conheça a pesquisa no Cetic.br (abre em nova guia)">Conheça a pesquisa no Cetic.br <span aria-hidden="true">→</span></a>
       </article>
 
       <article class="tg-card tg-about" id="sobre-design">
@@ -147,14 +147,14 @@
         <div class="tg-about-head"><span class="tg-door-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 7l3 3"/></svg></span><h2 class="tg-card-title">Autoria</h2></div>
         <div class="tg-autor">
           <img class="tg-autor-foto" src="img/autor.webp" width="400" height="400" alt="Foto de Sérgio Felipe Ayres" loading="lazy" decoding="async">
-          <p><span class="tg-autor-papel">Autor</span><b class="tg-autor-nome">Sérgio Felipe Ayres</b><br>Mestrado Profissional em Comunicação Digital e Cultura de Dados, Fundação Getulio Vargas (FGV).<br><a class="tg-fact-link" href="https://lattes.cnpq.br/6079656139399540" rel="noopener" aria-label="Currículo Lattes de Sérgio Felipe Ayres">Currículo Lattes <span aria-hidden="true">→</span></a> <a class="tg-fact-link" href="https://www.linkedin.com/in/sergiofelipeayres/" rel="noopener" aria-label="LinkedIn de Sérgio Felipe Ayres">LinkedIn <span aria-hidden="true">→</span></a></p>
+          <p><span class="tg-autor-papel">Autor</span><b class="tg-autor-nome">Sérgio Felipe Ayres</b><br>Mestrado Profissional em Comunicação Digital e Cultura de Dados, Fundação Getulio Vargas (FGV).<br><a class="tg-fact-link" href="https://lattes.cnpq.br/6079656139399540" target="_blank" rel="noopener" aria-label="Currículo Lattes de Sérgio Felipe Ayres (abre em nova guia)">Currículo Lattes <span aria-hidden="true">→</span></a> <a class="tg-fact-link" href="https://www.linkedin.com/in/sergiofelipeayres/" target="_blank" rel="noopener" aria-label="LinkedIn de Sérgio Felipe Ayres (abre em nova guia)">LinkedIn <span aria-hidden="true">→</span></a></p>
         </div>
         <div class="tg-autor">
           <img class="tg-autor-foto" src="img/orientadora.jpg" width="300" height="300" alt="Foto de Danielle Sanches de Almeida" loading="lazy" decoding="async">
-          <p><span class="tg-autor-papel">Orientadora</span><b class="tg-autor-nome">Danielle Sanches de Almeida</b><br>Orientação da dissertação no Mestrado Profissional em Comunicação Digital e Cultura de Dados, FGV.<br><a class="tg-fact-link" href="http://lattes.cnpq.br/1290893382232095" rel="noopener" aria-label="Currículo Lattes de Danielle Sanches de Almeida">Currículo Lattes <span aria-hidden="true">→</span></a> <a class="tg-fact-link" href="https://www.linkedin.com/in/danielle-sanches-de-almeida-2a225a107/" rel="noopener" aria-label="LinkedIn de Danielle Sanches de Almeida">LinkedIn <span aria-hidden="true">→</span></a></p>
+          <p><span class="tg-autor-papel">Orientadora</span><b class="tg-autor-nome">Danielle Sanches de Almeida</b><br>Orientação da dissertação no Mestrado Profissional em Comunicação Digital e Cultura de Dados, FGV.<br><a class="tg-fact-link" href="http://lattes.cnpq.br/1290893382232095" target="_blank" rel="noopener" aria-label="Currículo Lattes de Danielle Sanches de Almeida (abre em nova guia)">Currículo Lattes <span aria-hidden="true">→</span></a> <a class="tg-fact-link" href="https://www.linkedin.com/in/danielle-sanches-de-almeida-2a225a107/" target="_blank" rel="noopener" aria-label="LinkedIn de Danielle Sanches de Almeida (abre em nova guia)">LinkedIn <span aria-hidden="true">→</span></a></p>
         </div>
         <p>O código do site é aberto e pode ser consultado no GitHub.</p>
-        <a class="tg-fact-link" href="https://github.com/SergioFelipeAyres/bussola-da-educacao" rel="noopener">Ver o código no GitHub <span aria-hidden="true">→</span></a>
+        <a class="tg-fact-link" href="https://github.com/SergioFelipeAyres/bussola-da-educacao" target="_blank" rel="noopener" aria-label="Ver o código no GitHub (abre em nova guia)">Ver o código no GitHub <span aria-hidden="true">→</span></a>
       </article>
     </div>
 
@@ -211,11 +211,15 @@
 
         <article class="tg-lesson" id="ler-base">
           <h4 class="tg-lesson-t">Base: de quem estamos falando</h4>
-          <p class="tg-lesson-frase">Todo percentual fala de um grupo, a <b>base</b>. Ela aparece no rodapé de cada cartão.</p>
+          <p class="tg-lesson-frase">Todo percentual fala de um grupo, a <b>base</b>: é ela que vale 100%. A base aparece no rodapé de cada cartão.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
             <div class="tg-nest"><span>Todos os gestores</span>
-              <div class="tg-nest"><span>de escolas com internet</span>
-                <div class="tg-nest tg-nest-on"><span>que usam IA</span></div>
+              <div class="tg-nest tg-nest-base"><span><b>Base (100%)</b>: gestores de escolas com internet</span>
+                <svg class="tg-iso10" viewBox="0 0 240 26">
+                  <use href="#lp" x="0" y="1" style="fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="24" y="1" style="fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="48" y="1" style="fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="72" y="1" style="fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="96" y="1" style="fill:var(--cds-chart-categorical-1)"/>
+                  <use href="#lp" x="120" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="144" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="168" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="192" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/><use href="#lp" x="216" y="1" style="fill:var(--cds-chart-muted);opacity:.45"/>
+                </svg>
+                <span class="tg-nest-parte">que usam IA: 5 em cada 10 da base</span>
               </div>
             </div>
           </div>
@@ -452,7 +456,7 @@
   </div>
 
   <!-- ===================== GESTORES ===================== -->
-  <div class="tg-page" id="gestores" aria-label="Gestores">
+  <div class="tg-page" id="gestores" aria-label="Gestores" hidden>
     <section class="tg-kpis" id="destaques-gestores" aria-label="Destaques dos gestores">
       <div class="tg-kpi" id="kpi-total">
         <div class="tg-kpi-label">Gestores representados</div>
@@ -548,7 +552,6 @@
     <a class="tg-fim-citar" href="sobre#sobre-citar">Vai usar estes números? Veja como citar a pesquisa <span aria-hidden="true">→</span></a>
   </nav>
 
-  <p class="tg-base tg-dash-only tg-fonte">Fonte: NIC.br/Cetic.br, Pesquisa TIC Educação 2025, tabelas de gestores escolares e de escolas (v1.0). Proporções, margens de erro e totais estimados.</p>
 
   <div class="tg-tip" id="tg-tip" hidden></div>
 </div>

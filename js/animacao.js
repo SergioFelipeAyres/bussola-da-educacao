@@ -2,7 +2,7 @@
  * Animações do painel.
  * 1. Entrada ao rolar: cartões e blocos ganham .tg-reveal e, ao entrar na tela, .tg-in.
  *    As animações dos gráficos (CSS) só rodam dentro de .tg-in, então acontecem quando o leitor vê.
- * 2. Números contando: 0 → valor ao aparecer; valor antigo → novo quando o filtro muda.
+ * 2. Números dos destaques contando: 0 → valor ao aparecer; valor antigo → novo quando o filtro muda.
  * 3. Linhas de gráfico recebem --i (posição) para entrarem uma depois da outra.
  * Nada disso roda com "reduzir movimento" ativado no sistema.
  */
@@ -10,9 +10,11 @@
   if (!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
   const root = document.getElementById('painel');
   const REVEAL = '.tg-hero > *, .tg-fact, .tg-porta, .tg-indice, .tg-kpi, .tg-card, .tg-sec-head, .tg-cite, .tg-filter';
-  const NUMS = '.tg-kpi-num, .tg-val, .tg-stack-legend b, .tg-dot-val b';
+  // só os números grandes dos destaques contam; os valores dos gráficos aparecem já no valor final,
+  // para nunca mostrarem, durante a contagem, um número que contradiz a frase logo acima
+  const NUMS = '.tg-kpi-num';
   const ROWS = '.tg-bar-row, .tg-dot-row, .tg-lik-row, .tg-isorow, .tg-stack-legend > div, .tg-stack > div';
-  const DUR = 900;
+  const DUR = 650;
 
   // ---------- números ----------
   const RE = /^(\D*?)(\d{1,3}(?:\.\d{3})*(?:,\d+)?|\d+(?:,\d+)?)(.*)$/s;

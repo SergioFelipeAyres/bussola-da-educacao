@@ -35,7 +35,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .site{padding-block:2rem 3rem;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 @media (min-width:900px){.site{padding-left:max(2.5rem,env(safe-area-inset-left,0px));padding-right:max(2.5rem,env(safe-area-inset-right,0px))}}
 .site-foot{max-width:76rem;margin:2.5rem auto 0;padding-top:1rem;border-top:1px solid var(--color-border-line);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;justify-content:space-between}
-.site-foot a{color:inherit}
+.site-foot a{color:inherit;display:inline-block;padding-block:.25rem}
 .dash-skeleton{color:transparent!important;background:linear-gradient(90deg,var(--cds-chart-grid),var(--color-border-line),var(--cds-chart-grid));background-size:200% 100%;border-radius:6px;animation:sk 1.4s linear infinite}
 .dash-skeleton>*{visibility:hidden}
 .tg-chart.dash-skeleton{min-height:8rem}
@@ -172,7 +172,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-guide-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-bottom:calc(var(--cds-gap-xl) * -0.6)}
 @media (max-width:520px){.tg-guide{width:100vw;max-height:100dvh;height:100dvh;border-radius:0}.tg-guide-top{padding:var(--cds-pad-md)}.tg-guide-body{padding:var(--cds-pad-md)}}
 @media (prefers-reduced-motion:no-preference){.tg-guide[open]{animation:tg-rise .35s var(--tg-ease,ease-out) both}}
-.tg-fonte{border-top:none}
 /* ---------- Como ler este painel: guia visual ---------- */
 /* três blocos; cada lição: título, frase, exemplo e "Saiba mais". No desktop o exemplo vai à direita */
 .tg-learn{display:flex;flex-direction:column}
@@ -197,13 +196,17 @@ body:has(.tg-guide[open]){overflow:hidden}
 }
 .tg-learn .tg-lesson:last-child{padding-bottom:0}
 .tg-nw{white-space:nowrap}
+.tg-cmp-zero{margin-top:var(--cds-gap-xs);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-lesson-vis .tg-iso10{max-width:100%}
 .tg-lesson-eq{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;font-size:1.05rem}
 .tg-lesson-eq b{color:var(--cds-chart-categorical-1);font-weight:700}
 .tg-lesson-eq span{color:var(--color-fg-muted)}
 .tg-nest{display:flex;flex-direction:column;gap:.35rem;padding:.4rem .55rem .55rem;border:1.5px solid var(--cds-chart-axis);border-radius:8px;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg-nest .tg-nest{border-style:dashed}
-.tg-nest.tg-nest-on{border:none;background:var(--cds-chart-categorical-1);color:var(--color-panel);font-weight:var(--cds-font-weight-medium)}
+.tg-nest:not(.tg-nest-base){border-style:dashed}
+/* guia, lição Base: a caixa da base (100%) em traço cheio da cor; dentro dela, a parte que responde */
+.tg-nest.tg-nest-base{gap:.45rem;padding:.5rem .6rem .6rem;border:2px solid var(--cds-chart-categorical-1);background:var(--color-panel);color:var(--color-fg)}
+.tg-nest-base b{color:var(--cds-chart-categorical-1)}
+.tg-nest-parte{font-weight:var(--cds-font-weight-medium);color:var(--cds-chart-categorical-1)}
 .tg-lesson-bar{display:flex;flex-direction:column;gap:.45rem}
 .tg-lesson-bar .tg-track{flex:none}
 .tg-lesson-row{display:flex;justify-content:space-between;font-size:var(--cds-font-size-caption)}
@@ -280,7 +283,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav{position:sticky;top:0;z-index:20;background:var(--color-bg);background:color-mix(in srgb,var(--color-bg) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--color-border-line)}
 .nav-in{max-width:calc(76rem + 32px);margin-inline:auto;min-height:3.6rem;display:flex;align-items:center;justify-content:space-between;gap:var(--cds-gap-md);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 @media (min-width:900px){.nav-in{max-width:calc(76rem + 5rem);padding-left:max(2.5rem,env(safe-area-inset-left,0px));padding-right:max(2.5rem,env(safe-area-inset-right,0px))}}
-.nav-brand{display:inline-flex;align-items:center;gap:.55rem;color:var(--color-fg);text-decoration:none;font-family:var(--font-display);font-size:1.3rem;line-height:1;white-space:nowrap;flex:none}
+.nav-brand{display:inline-flex;align-items:center;min-height:1.75rem;gap:.55rem;color:var(--color-fg);text-decoration:none;font-family:var(--font-display);font-size:1.3rem;line-height:1;white-space:nowrap;flex:none}
 .nav-brand b{font-weight:600;color:var(--cds-chart-categorical-1)}
 .nav-logo{width:1.75rem;height:1.75rem;flex:none}
 .nav-logo rect{fill:var(--cds-chart-categorical-1)}
@@ -304,13 +307,16 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg .tg-share:hover,.tg .tg-share[aria-expanded=true]{color:var(--color-fg);border-color:var(--color-border-line);background:var(--color-bg)}
 .tg-share .tg-ic{width:1.1rem;height:1.1rem}
 .tg-alt{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg-alt summary{width:fit-content;cursor:pointer;font-weight:var(--cds-font-weight-medium);color:var(--sec-texto,var(--cds-chart-categorical-1))}
-.tg-alt summary:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px;border-radius:2px}
-.tg-alt[open] summary{margin-bottom:var(--cds-gap-sm)}
+/* Ouvir e Ler em texto: dois botões com ícone e nome, lado a lado; o texto abre logo abaixo */
+.tg-acoes{display:flex;flex-wrap:wrap;gap:.5rem}
+.tg .tg-acoes button{display:inline-flex;align-items:center;gap:.4rem;min-height:2.25rem;padding:.35rem .85rem .35rem .7rem;border:1px solid var(--color-border-line);border-radius:999px;background:var(--color-panel);color:var(--sec-texto,var(--cds-chart-categorical-1));font:inherit;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);cursor:pointer}
+.tg .tg-acoes button:hover{border-color:currentColor}
+.tg .tg-acoes button[aria-pressed=true],.tg .tg-acoes button[aria-expanded=true]{background:color-mix(in srgb,var(--sec,var(--v-blue)) 10%,var(--color-panel));border-color:currentColor}
+.tg .tg-acoes button:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.tg-acoes .tg-ic{width:1.05rem;height:1.05rem}
+.tg-alt[hidden]{display:none}
 .tg-alt ul{margin:0;padding-left:1.1rem;display:flex;flex-direction:column;gap:.3rem;color:var(--color-fg);line-height:1.45}
 .tg-alt ul ul{margin-top:.2rem;gap:.15rem}
-.tg .tg-ouvir{margin-bottom:var(--cds-gap-sm);padding:.3rem .8rem;border:1px solid var(--color-border-line);border-radius:999px;background:var(--color-bg);color:var(--color-fg);font:inherit;cursor:pointer}
-.tg .tg-ouvir:hover{border-color:var(--color-fg-muted)}
 .tg-share-menu{position:absolute;z-index:30;width:15rem;max-width:calc(100vw - 16px);display:flex;flex-direction:column;padding:.35rem;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);font-family:var(--font-sans)}
 .tg-share-item{display:flex;align-items:center;gap:.6rem;width:100%;padding:.55rem .6rem;border:none;border-radius:calc(var(--cds-radius) - 4px);background:none;color:var(--color-fg);font:inherit;font-size:var(--cds-font-size-body);text-align:left;cursor:pointer}
 .tg-share-item:hover,.tg-share-item:focus-visible{background:var(--cds-chart-grid);outline:none}
@@ -348,7 +354,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-fact-meta{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-fact-actions{display:flex;flex-wrap:wrap;align-items:center;gap:var(--cds-gap-md);margin-top:var(--cds-gap-xs)}
 .tg-fact-actions button{display:inline-flex;align-items:center;gap:.4rem}
-.tg-fact-link{font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);color:var(--cds-chart-categorical-1);text-decoration:none}
+.tg-fact-link{display:inline-flex;align-items:center;min-height:1.5rem;font-size:var(--cds-font-size-caption);font-weight:var(--cds-font-weight-medium);color:var(--cds-chart-categorical-1);text-decoration:none}
 .tg-fact-link:hover{text-decoration:underline}
 @media (max-width:520px){.tg-fact{padding:1.15rem;gap:var(--cds-gap-md)}.tg-fact-ic{width:2.75rem;height:2.75rem}.tg-fact-ic .tg-ic{width:1.35rem;height:1.35rem}}
 /* ---------- Sobre ---------- */
@@ -506,7 +512,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease,opacity .35s ease}
 .tg-mapa-reg text,.tg-mapa-pick text{fill:#fff;pointer-events:none;transition:fill .3s ease,opacity .35s ease}
 .tg-mapa-reg.tg-claro text,.tg-mapa-pick.tg-claro text{fill:#141a2e}
-.tg-mapa-nome{font-size:7.6px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
+.tg-mapa-nome{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
 .tg-mapa-val{font-size:13px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tg-mapa-reg:hover path{filter:brightness(1.08)}
 .tg-mapa-reg:focus-visible path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
@@ -553,7 +559,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 @media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}.tg-mapa-pick{animation:none}}
 [data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
 .tg-mapa-nota span{white-space:nowrap}
-@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:8.6px;letter-spacing:.04em}.tg-mapa-val{font-size:13.5px}[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
+@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:10px;letter-spacing:.03em}.tg-mapa-val{font-size:13.5px}[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
 
 /* "Você sabia?": o cartão usa a cor do tema do dado sorteado (--sec, definido pelo painel.js) */
 .tg-fact{--sec:var(--v-blue)}
@@ -722,14 +728,13 @@ body:has(.tg-guide[open]){overflow:hidden}
 }
 /* toque (dedo): alvos de pelo menos 44px nos controles pequenos; o mouse mantém o tamanho atual */
 @media (pointer:coarse){
-  .tg-alt summary{display:flex;align-items:center;min-height:2.75rem}
+  .tg .tg-acoes button{min-height:2.75rem;padding-inline:1rem .95rem}
   .tg .tg-share{width:2.75rem;height:2.75rem;top:.45rem;right:.45rem}
   .tg button.tg-rec-info{width:2.75rem;height:2.75rem;margin:-.6rem -.5rem}
   .tg button.tg-sec-toggle{min-height:2.75rem;min-width:2.75rem;justify-content:center}
   .nav-link{min-height:2.75rem}
   .tg .tg-rec-opts button,.tg .tg-rec-dims.tg-agrupado button{min-height:2.75rem}
-  .tg .tg-ouvir,.tg-indice a,.tg .tg-rec-mudar,.tg .tg-hero-home #fato-outro,.tg .tg-retry{min-height:2.75rem}
-  .tg .tg-ouvir{display:inline-flex;align-items:center;padding-inline:1.1rem}
+  .tg-indice a,.tg .tg-rec-mudar,.tg .tg-hero-home #fato-outro,.tg .tg-retry{min-height:2.75rem}
 }
 /* "Mudar" leva ao filtro principal: ele para logo abaixo do menu fixo, não por baixo dele */
 #filtro{scroll-margin-top:calc(var(--nav-h,3.6rem) + .75rem)}
@@ -756,3 +761,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-fim-outra:hover .tg-fim-tit{text-decoration:underline;text-underline-offset:3px}
 .tg-fim-outra:focus-visible,.tg-fim-citar:focus-visible{outline:2px solid var(--color-fg);outline-offset:3px}
 .tg-fim-citar{align-self:flex-start;font-weight:600;color:var(--v-blue);text-underline-offset:3px}
+
+/* página 404 */
+.tg-404{max-width:40rem;margin:3rem auto}
+.tg-404 .tg-card-title{font-size:var(--cds-font-size-title);font-weight:800;letter-spacing:-.02em}
+.tg-404-links{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem}
+.tg-404-links a{display:inline-flex;align-items:center;min-height:2.75rem;font-weight:700;color:var(--cds-chart-categorical-1)}
