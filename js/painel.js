@@ -667,7 +667,7 @@
     return true;
   };
   document.querySelectorAll('.tg-guide-btn').forEach((b) => b.addEventListener('click', () => openGuide(guia)));
-  guia.querySelector('.tg-guide-x').addEventListener('click', fecharGuia);
+  guia.querySelectorAll('.tg-guide-x, [data-fecha-guia]').forEach((b) => b.addEventListener('click', fecharGuia));
   // clique fora da caixa (no fundo escurecido) ou em um link interno fecha a janela
   guia.addEventListener('click', (e) => { if (e.target === guia || e.target.closest('a[href^="#"]')) fecharGuia(); });
   // ao fechar, tira #como-ler do endereço para o mesmo link poder abrir de novo

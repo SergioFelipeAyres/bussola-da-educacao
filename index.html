@@ -184,17 +184,19 @@
 
   <dialog class="tg-guide" id="como-ler" aria-labelledby="como-ler-titulo">
     <div class="tg-guide-top">
-      <span class="tg-guide-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg></span>
-      <div class="tg-guide-txt"><h2 class="tg-guide-title" id="como-ler-titulo">Como ler este painel</h2><p class="tg-guide-sub">Nove ideias para entender qualquer gráfico daqui: arredondamento, base, margem de erro, recortes, comparações, cores e mais.</p></div>
+      <h2 class="tg-guide-title" id="como-ler-titulo">Como ler este painel</h2>
       <button type="button" class="tg-guide-x" aria-label="Fechar o guia"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="tg-guide-body">
-      <p class="tg-guide-note">Os números dos desenhos são só exemplos.</p>
-      <div class="tg-learn" id="card-leitura">
+      <p class="tg-guide-note">Os números dos desenhos são exemplos.</p>
 
-        <article class="tg-card tg-lesson">
+      <section class="tg-learn" aria-labelledby="ler-numero">
+        <h3 class="tg-learn-h" id="ler-numero">Ler um número</h3>
+
+        <article class="tg-lesson" id="ler-percentual">
+          <h4 class="tg-lesson-t">Percentual em figuras e o "cerca de"</h4>
+          <p class="tg-lesson-frase">Cada figura acesa vale 10%. Arredondamos: 68,4% vira "cerca de 7 em cada 10", e o valor exato aparece ao lado.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
             <svg class="tg-iso10" viewBox="0 0 240 26">
               <defs><g id="lp"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></g></defs>
               <use href="#lp" x="0" y="1" class="tg-c" style="--i:0;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="24" y="1" class="tg-c" style="--i:1;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="48" y="1" class="tg-c" style="--i:2;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="72" y="1" class="tg-c" style="--i:3;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="96" y="1" class="tg-c" style="--i:4;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="120" y="1" class="tg-c" style="--i:5;fill:var(--cds-chart-categorical-1)"/><use href="#lp" x="144" y="1" class="tg-c" style="--i:6;fill:var(--cds-chart-categorical-1)"/>
@@ -202,95 +204,73 @@
             </svg>
             <div class="tg-lesson-eq"><b>68,4%</b><span>→</span><b>cerca de 7 em cada 10</b></div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">1</span>Percentual em figuras e o "cerca de"</h3>
-          <p>Um percentual diz quantos, a cada 100, estão numa situação. Para facilitar, arredondamos e mostramos figuras acesas, cada uma valendo 10%. A regra: entre 10% e 90%, arredondamos para a dezena mais próxima (68,4% vira <b>"cerca de 7 em cada 10"</b>); abaixo de 10% ou a partir de 90%, usamos a base 100 (95,1% vira <b>"cerca de 95 em cada 100"</b>). O <b>"cerca de"</b> avisa que houve arredondamento e só some quando o número é exato. O valor exato aparece sempre ao lado.</p>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Um percentual diz quantos, a cada 100, estão numa situação. Entre 10% e 90%, arredondamos para a dezena mais próxima. Abaixo de 10% ou a partir de 90%, contamos em 100: 95,1% vira "cerca de 95 em cada 100". O "cerca de" avisa que houve arredondamento e só some quando o número é exato.</p>
+          </details>
         </article>
 
-        <article class="tg-card tg-lesson">
+        <article class="tg-lesson" id="ler-base">
+          <h4 class="tg-lesson-t">Base: de quem estamos falando</h4>
+          <p class="tg-lesson-frase">Todo percentual fala de um grupo, a <b>base</b>. Ela aparece no rodapé de cada cartão.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
             <div class="tg-nest"><span>Todos os gestores</span>
               <div class="tg-nest"><span>de escolas com internet</span>
                 <div class="tg-nest tg-nest-on"><span>que usam IA</span></div>
               </div>
             </div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">2</span>Base: de quem estamos falando</h3>
-          <p>Todo percentual se refere a um grupo, a <b>base</b>. Ela aparece no rodapé de cada cartão e muda entre os gráficos: "metade de quem tem internet" não é o mesmo que "metade de todos".</p>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>A base muda de um gráfico para outro: "5 em cada 10 de quem tem internet" não é o mesmo que "5 em cada 10 de todos".</p>
+          </details>
         </article>
 
-        <article class="tg-card tg-lesson">
+        <article class="tg-lesson" id="ler-margem">
+          <h4 class="tg-lesson-t">Margem de erro</h4>
+          <p class="tg-lesson-frase">A pesquisa ouve uma amostra, não todas as escolas. Por isso cada número pode variar um pouco: é a <b>faixa clara</b> no fim da barra.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
             <div class="tg-lesson-bar">
               <div class="tg-track"><div class="tg-fill" style="width:62%;background:var(--cds-chart-categorical-1)"></div><div class="tg-moe" style="left:57%;width:10%"></div></div>
-              <div class="tg-lesson-ann" style="--x:62%"><span>62%</span>o valor real deve estar entre 57% e 67%</div>
+              <div class="tg-lesson-ann"><span>62%</span>pode variar entre <span class="tg-nw">57% e 67%</span></div>
             </div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">3</span>Margem de erro</h3>
-          <p>A pesquisa entrevista uma amostra, não todas as escolas. Por isso cada número tem uma <b>margem de erro</b>: a faixa clara em volta do fim da barra. Passe o cursor ou toque numa barra para ver a margem.</p>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Nos gráficos do painel, passe o cursor ou toque numa barra para ver a margem dela. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem não pôde ser estimada e o valor real pode ser um pouco diferente.</p>
+          </details>
         </article>
+      </section>
 
-        <article class="tg-card tg-lesson">
+      <section class="tg-learn" aria-labelledby="ler-grafico">
+        <h3 class="tg-learn-h" id="ler-grafico">Ler um gráfico</h3>
+
+        <article class="tg-lesson" id="ler-brasil">
+          <h4 class="tg-lesson-t">O traço do Brasil</h4>
+          <p class="tg-lesson-frase">Ao escolher um grupo, como uma região, o <b>traço escuro</b> na barra marca o valor do Brasil. Assim dá para comparar de relance.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
             <div class="tg-lesson-bar">
               <div class="tg-lesson-row"><span>Nordeste</span><b>45%</b></div>
               <div class="tg-track"><div class="tg-fill" style="width:45%;background:var(--cds-chart-categorical-1)"></div><div class="tg-ref" style="left:60%"></div></div>
               <div class="tg-lesson-ann tg-lesson-br" style="--x:60%"><span class="tg-refkey"></span>Brasil: 60%</div>
             </div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">4</span>O traço do Brasil</h3>
-          <p>Ao escolher um grupo no filtro, como uma região, a barra mostra aquele grupo e o <b>traço escuro</b> marca o valor do Brasil. Assim dá para comparar de relance.</p>
         </article>
 
-        <article class="tg-card tg-lesson">
-          <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
-            <ul class="tg-lesson-combo">
-              <li class="tg-ok"><span>✓</span>Escolas rurais</li>
-              <li class="tg-ok"><span>✓</span>Escolas da região Norte</li>
-              <li class="tg-nao"><span>✕</span>Escolas rurais do Norte</li>
-            </ul>
-          </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">5</span>Um grupo por vez</h3>
-          <p>O filtro mostra <b>um grupo de cada vez</b>: uma região, ou a área, ou a rede, e assim por diante. Na pesquisa, cada grupo desses é chamado de <b>recorte</b>. A pesquisa não publica combinações, como "rural do Norte", porque nesses cruzamentos a amostra fica pequena demais para um número confiável. Por isso, escolher outro tipo de grupo substitui o anterior.</p>
-        </article>
-
-        <article class="tg-card tg-lesson">
+        <article class="tg-lesson" id="ler-figuras">
+          <h4 class="tg-lesson-t">Pessoa ou prédio?</h4>
+          <p class="tg-lesson-frase">A <b>figura de pessoa</b> representa gestores escolares; o <b>prédio</b> representa escolas.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
             <div class="tg-lesson-who">
               <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><path d="M12 2.5L2.5 8.5h19z"/><path d="M4.5 9.5h15V21h-5.5v-5h-4v5H4.5z"/></svg><span>Escolas</span></div>
               <div><svg class="tg-ic tg-solid" viewBox="0 0 24 24"><circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/></svg><span>Gestores</span></div>
             </div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">6</span>Pessoa ou prédio?</h3>
-          <p>A <b>figura de pessoa</b> representa gestores escolares; o <b>prédio</b> representa escolas. Sexo, cor ou raça e idade são características do gestor e só existem na aba Gestores.</p>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Sexo, cor ou raça e idade são características do gestor e só aparecem na aba Gestores.</p>
+          </details>
         </article>
 
-        <article class="tg-card tg-lesson">
-          <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
-            <div class="tg-lesson-eq tg-lesson-pp"><b>96,5%</b><span>−</span><b>83,8%</b><span>=</span><b>12,7 p.p.</b></div>
-          </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">7</span>Pontos percentuais (p.p.)</h3>
-          <p>Para comparar dois percentuais, subtraímos um do outro. A diferença entre 96,5% e 83,8% é de <b>12,7 pontos percentuais</b>, e não "12,7%". Escrevemos "p.p." para não confundir: dizer que algo cresceu 12,7% seria uma conta diferente, proporcional ao valor de partida.</p>
-        </article>
-
-        <article class="tg-card tg-lesson">
-          <div class="tg-lesson-vis" aria-hidden="true">
-            <span class="tg-lesson-ex">exemplo</span>
-            <div class="tg-lesson-cmp">
-              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:62%;width:20%;background:var(--v-slate)"></span><span class="tg-dot" style="left:72%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>11 pontos a mais</span></div>
-              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:44%;width:24%;background:var(--v-slate)"></span><span class="tg-dot" style="left:56%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>3 pontos a mais</span></div>
-              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:18%;width:20%;background:var(--v-slate)"></span><span class="tg-dot" style="left:28%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-down"><span class="tg-arrow">▼</span>11 pontos a menos</span></div>
-            </div>
-          </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">8</span>Comparações descritivas</h3>
-          <p>Em <a href="#comparar">Compare grupos</a>, a linha vertical é o Brasil, e cada grupo mostra quantos pontos percentuais tem a mais ou a menos que ele. Essas comparações são <b>descritivas</b>: o painel não faz teste de significância estatística, então não afirma que uma diferença é "real". Por isso todos os grupos têm a mesma cor e as setas só indicam a direção. A faixa da margem de erro ajuda a pesar: se ela cruza a linha do Brasil, a diferença pode ser só efeito da amostra.</p>
-        </article>
-
-        <article class="tg-card tg-lesson tg-wide">
+        <article class="tg-lesson" id="ler-cores">
+          <h4 class="tg-lesson-t">Uma cor para cada tema</h4>
+          <p class="tg-lesson-frase">Cada seção tem uma cor, e os gráficos e destaques dela usam essa cor. Um número verde-água no topo é aprofundado em Conexão.</p>
           <div class="tg-lesson-vis" aria-hidden="true">
             <div class="tg-lesson-cores">
               <span style="--sec:var(--v-teal)"><i></i>Conexão</span>
@@ -301,12 +281,61 @@
               <span style="--sec:var(--v-blue)"><i></i>Quem são os gestores</span>
             </div>
           </div>
-          <h3 class="tg-card-title"><span class="tg-lesson-n">9</span>Uma cor para cada tema</h3>
-          <p>Cada seção tem uma <b>cor ligada ao seu tema</b>, e os gráficos e os destaques do topo usam essa mesma cor. Um número em verde-água no topo, por exemplo, é aprofundado na seção Conexão. Dentro dos gráficos, o <b>cinza</b> marca o que não é o foco, como "não sabe", e o <b>grafite</b> marca uma segunda resposta, como "discorda".</p>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Dentro dos gráficos, o cinza claro marca o que não é o foco, como "não sabe", e um cinza escuro marca uma segunda resposta, como "discorda". Os desenhos deste guia usam só azul, para não lembrar nenhum tema.</p>
+          </details>
         </article>
+      </section>
+
+      <section class="tg-learn" aria-labelledby="ler-comparar">
+        <h3 class="tg-learn-h" id="ler-comparar">Comparar grupos</h3>
+
+        <article class="tg-lesson" id="ler-grupo">
+          <h4 class="tg-lesson-t">Um grupo por vez</h4>
+          <p class="tg-lesson-frase">O filtro mostra <b>um grupo de cada vez</b>: uma região, ou a área, ou a rede. Escolher outro substitui o anterior.</p>
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <ul class="tg-lesson-combo">
+              <li class="tg-ok"><span>✓</span>Escolas rurais</li>
+              <li class="tg-ok"><span>✓</span>Escolas da região Norte</li>
+              <li class="tg-nao"><span>✕</span>Escolas rurais do Norte</li>
+            </ul>
+          </div>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>A pesquisa não publica combinações, como "escolas rurais do Norte": nesses cruzamentos a amostra fica pequena demais para um número confiável. Na pesquisa, cada grupo desses se chama <b>recorte</b>. Respostas "Não respondeu" ficam fora do filtro.</p>
+          </details>
+        </article>
+
+        <article class="tg-lesson" id="ler-pp">
+          <h4 class="tg-lesson-t">Pontos percentuais (p.p.)</h4>
+          <p class="tg-lesson-frase">Para comparar dois percentuais, subtraímos um do outro: de 83,8% para 96,5% são <b>12,7 pontos percentuais</b>, e não "12,7%".</p>
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <div class="tg-lesson-eq tg-lesson-pp"><b>96,5%</b><span>−</span><b>83,8%</b><span>=</span><b>12,7 p.p.</b></div>
+          </div>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Dizer que algo cresceu 12,7% seria outra conta, que compara com o valor de partida. O "p.p." evita essa confusão.</p>
+          </details>
+        </article>
+
+        <article class="tg-lesson" id="ler-setas">
+          <h4 class="tg-lesson-t">As setas mostram só a direção</h4>
+          <p class="tg-lesson-frase">Em <a href="#comparar">Compare grupos</a>, a linha vertical é o Brasil, e cada grupo mostra quantos pontos tem a mais ou a menos que ele.</p>
+          <div class="tg-lesson-vis" aria-hidden="true">
+            <div class="tg-lesson-cmp">
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:62%;width:20%;background:var(--v-slate)"></span><span class="tg-dot" style="left:72%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>11 pontos a mais</span></div>
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:44%;width:24%;background:var(--v-slate)"></span><span class="tg-dot" style="left:56%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-up"><span class="tg-arrow">▲</span>3 pontos a mais</span></div>
+              <div class="tg-lesson-cmprow"><div class="tg-dot-track"><span class="tg-ref" style="left:50%"></span><span class="tg-ci" style="left:18%;width:20%;background:var(--v-slate)"></span><span class="tg-dot" style="left:28%;background:var(--v-slate)"></span></div><span class="tg-verdict tg-down"><span class="tg-arrow">▼</span>11 pontos a menos</span></div>
+            </div>
+          </div>
+          <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <p>Essas comparações são <b>descritivas</b>: o painel não testa se uma diferença pode ser só acaso, então não diz que ela é "real". Por isso todos os grupos têm a mesma cor e as setas indicam só a direção. Se a faixa da margem de erro cruza a linha do Brasil, a diferença pode ser só efeito da amostra.</p>
+          </details>
+        </article>
+      </section>
+
+      <div class="tg-guide-fim">
+        <button type="button" class="tg-guide-volta" data-fecha-guia>Voltar ao painel</button>
+        <p class="tg-how-more">Por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design</a>, na página Sobre.</p>
       </div>
-      <p class="tg-lesson-tip"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.5h.01"/></svg><span>Respostas "Não respondeu" ficam fora do filtro. Um <b class="tg-lesson-ast">*</b> ao lado de 0% ou 100% indica que ninguém da amostra daquele grupo respondeu de outro jeito: a margem de erro não pôde ser estimada e o valor real pode ser um pouco diferente.</span></p>
-      <p class="tg-how-more">Quer saber por que o painel foi desenhado assim? Veja os <a href="#sobre-design">princípios de design aplicados</a>, na página Sobre.</p>
     </div>
   </dialog>
 
