@@ -36,7 +36,8 @@ src/caderno.css         a linguagem visual do caderno escolar (folha, lições, 
 css/site.css            CSS compilado a partir de src/ (vai versionado; não editar à mão)
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos
-js/pergunte.js          "Pergunte à Bússola": entende tema e grupo por palavras-chave e responde com os dados (sem IA)
+js/pergunte.js          "Pergunte à Bússola": entende tema e grupo por palavras-chave e responde com os dados
+workers/pergunte-ia/    Worker da Cloudflare: IA que só reescreve perguntas com erros de grafia (ver o README da pasta)
 testes/pergunte.html    testes do "Pergunte à Bússola": 71 perguntas e uma varredura de 634 comparações conferidas contra os dados (abra pelo servidor local)
 js/libras.js            "Ver em Libras": lista dos vídeos com intérprete (sem endereço, o botão mostra "em breve")
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)

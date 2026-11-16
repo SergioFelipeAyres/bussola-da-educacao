@@ -123,6 +123,29 @@ const CASOS = [
     tr.children[2].textContent = (passou ? '' : (falta.length ? 'faltou: ' + falta.join(' · ') + '. ' : '') + (sobra.length ? 'não devia ter: ' + sobra.join(' · ') + '. ' : '')) + r.slice(0, 260);
     corpo.append(tr);
   }
+  // ajuda da IA: com uma IA de mentira (window.__iaStub), confere o caminho sem gastar a cota do Worker:
+  // só chama a IA quando as palavras-chave não reconhecem, responde a versão reescrita com os dados e mostra como entendeu
+  // [o que o leitor escreve, o que a IA de mentira devolve, trechos que precisam aparecer, trechos proibidos]
+  const IA_CASOS = [
+    ['quantas escola tem conequissao no nordesti', 'quantas escolas têm internet no Nordeste?', ['Entendi sua pergunta como', 'Internet na escola', 'Região: Nordeste']],
+    ['as escola particulá tem qamera de vijilancia','as escolas particulares têm câmeras de vídeo?', ['Entendi sua pergunta como', 'Câmeras de vídeo', 'Pública ou particular: Particular']],
+    ['qual regiao os diretor usa mais o chatgepeté', 'qual região os gestores usam mais IA?', ['Gestores que usam IA', 'Comparar: Região']],
+    ['quem ganhou o jogo ontem', '', ['Ainda não sei responder essa'], ['Entendi sua pergunta como']],
+    ['Quantas escolas têm internet?', 'a IA não devia ser chamada aqui', ['Internet na escola'], ['Entendi sua pergunta como', 'não devia']]
+  ];
+  for (const [q, nova, tem, nao = []] of IA_CASOS) {
+    window.__iaStub = async () => nova;
+    const r = await window.__pergunte(q);
+    delete window.__iaStub;
+    const falta = tem.filter((x) => !r.includes(x)), sobra = nao.filter((x) => r.includes(x)), passou = !falta.length && !sobra.length;
+    if (passou) ok++;
+    const tr = document.createElement('tr'); if (!passou) tr.className = 'falha';
+    tr.innerHTML = '<td></td><td class="' + (passou ? 'ok">ok' : 'falha">falhou') + '</td><td></td>';
+    tr.children[0].textContent = '[IA] ' + q;
+    tr.children[2].textContent = (passou ? '' : (falta.length ? 'faltou: ' + falta.join(' · ') + '. ' : '') + (sobra.length ? 'não devia ter: ' + sobra.join(' · ') + '. ' : '')) + r.slice(0, 260);
+    corpo.append(tr);
+  }
+  CASOS.push(...IA_CASOS);
   document.getElementById('placar').textContent = ok + ' de ' + CASOS.length + ' passaram' + (ok === CASOS.length ? ' ✓' : '') + ' · varredura das comparações rodando…';
   // Varredura: para cada tema (e cada item citável dos rankings) e cada tipo de grupo, pergunta "qual <tipo> tem mais/menos <tema>?"
   // e confere, contra os dados, o tema entendido, o tipo comparado, o grupo apontado e se o empate pelas margens foi dito

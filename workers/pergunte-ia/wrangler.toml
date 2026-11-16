@@ -1,0 +1,11 @@
+name = "bussola-pergunte-ia"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+[ai]
+binding = "AI"
+
+[vars]
+# Modelo do Workers AI. O de 70B entende melhor português escrito com erros; se a cota gratuita
+# do dia estiver acabando, troque por "@cf/meta/llama-3.1-8b-instruct" (gasta bem menos).
+MODELO = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"

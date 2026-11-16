@@ -1,6 +1,6 @@
 /*
  * "Pergunte à Bússola": o leitor escreve uma pergunta do jeito dele e recebe o número da pesquisa.
- * Não usa IA: procura um TEMA e um GRUPO por palavras-chave e responde com os dados do próprio site,
+ * Procura um TEMA e um GRUPO por palavras-chave e responde com os dados do próprio site,
  * pelas mesmas regras do painel ("N em cada 10" ou "em cada 100", margem de erro como faixa, "o mais citado"
  * só quando as margens não se tocam). Cruzamentos que a pesquisa não publica (ex.: particulares do Nordeste)
  * são explicados, e cada grupo aparece separado.
@@ -11,6 +11,11 @@
  *
  * Para ensinar uma palavra nova, acrescente-a à expressão "kw" do tema ou à lista GRUPOS.
  * A ordem dos TEMAS importa: o primeiro que casar com a pergunta vence, então os mais específicos vêm antes.
+ *
+ * Ajuda da IA (opcional, IA_URL abaixo): quando as palavras-chave não reconhecem a pergunta, ou quando o leitor
+ * toca em "Não era isso?", a pergunta vai para o Worker em workers/pergunte-ia, que só a REESCREVE em português
+ * correto ("conequissao no nordesti" → "conexão no Nordeste"). A frase reescrita passa pelas mesmas palavras-chave
+ * e é respondida com os dados; a IA nunca produz números. O leitor vê "Entendi sua pergunta como: …".
  */
 (() => {
   const sem = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -322,7 +327,25 @@
     return c;
   };
 
-  const pergunta = async (txt, saida) => {
+  // ---------- ajuda da IA: só reescreve a pergunta; os números continuam vindo dos dados ----------
+  // Vazio = desligada (o site funciona só com as palavras-chave). Depois de publicar o Worker, cole o endereço dele aqui.
+  const IA_URL = 'https://bussola-pergunte-ia.sergiofelipeayresbr.workers.dev';
+  const iaLigada = () => !!(IA_URL || window.__iaStub);
+  const reescreve = async (txt) => {
+    if (window.__iaStub) return window.__iaStub(txt); // testes/pergunte.html
+    if (!IA_URL) return '';
+    const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 8000);
+    try {
+      const r = await fetch(IA_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ q: txt.slice(0, 300) }), signal: ctl.signal });
+      return r.ok ? String((await r.json()).q || '').slice(0, 300) : '';
+    } catch { return ''; } finally { clearTimeout(tm); }
+  };
+  const mudou = (a, b) => !!b && sem(a).replace(/\W+/g, ' ').trim() !== sem(b).replace(/\W+/g, ' ').trim();
+  let vezes = 0;
+
+  // "de": o texto original do leitor, quando "txt" é a versão reescrita pela IA
+  const pergunta = async (txt, saida, de) => {
+    const vez = saida.dataset.vez = String(++vezes);
     const q = ' ' + sem(txt) + ' ';
     pergunta.ultima = q;
     const cands = TEMAS.filter((x) => x.kw.test(q));
@@ -338,6 +361,7 @@
     }
     if (t) gs = gs.filter(([c]) => c !== t.propria && (t.ds === 'gestores' || !SO_GESTOR.includes(c)));
     saida.replaceChildren();
+    if (de) saida.append(el('p', 'tg-perg-var tg-perg-ia', 'Entendi sua pergunta como: <b>“' + esc(txt) + '”</b>'));
     const nota = t && t.nota && !t.nota[0].test(q) ? t.nota[1] : '';
     // "qual região tem mais…?", "onde…menos…?": compara todos os grupos daquele tipo
     // dois ou mais grupos do mesmo tipo e "mais/menos" ("Norte ou Sul: qual tem mais internet?"): compara só eles
@@ -354,6 +378,15 @@
     }
     if (aviso || nota) saida.append(el('p', 'tg-perg-var tg-perg-aviso', [aviso, nota].filter(Boolean).join(' ')));
     if (!t) {
+      // palavras-chave não reconheceram: pede à IA para reescrever (erros de grafia, gíria) e tenta de novo
+      if (!de && iaLigada()) {
+        const espera = el('p', 'tg-perg-var', 'Não reconheci de primeira. Tentando entender de outro jeito…');
+        saida.append(espera);
+        const nova = await reescreve(txt);
+        if (saida.dataset.vez !== vez) return; // o leitor já fez outra pergunta
+        espera.remove();
+        if (mudou(txt, nova)) return pergunta(nova, saida, txt);
+      }
       saida.append(el('article', 'tg-perg-res tg-perg-nao', '<p class="tg-perg-frase">Ainda não sei responder essa.</p><p class="tg-perg-var">Pergunte sobre um destes temas, com ou sem um grupo (uma região, escolas rurais ou particulares, escolas pequenas, gestoras, gestores jovens…):</p><ul>' + TEMAS.map((x) => '<li>' + x.nome + '</li>').join('') + '</ul>'));
       return;
     }
@@ -385,8 +418,23 @@
       '<button type="submit" class="tg-etq">Perguntar</button></div><div class="tg-perg-ex"><span class="tg-perg-ex-lab">Experimente:</span></div>';
     const saida = el('div', 'tg-perg-saida'); saida.setAttribute('aria-live', 'polite');
     const inp = form.querySelector('input'), ex = form.querySelector('.tg-perg-ex');
-    form.addEventListener('submit', (e) => { e.preventDefault(); if (inp.value.trim()) pergunta(inp.value, saida); });
-    EXEMPLOS.forEach((t) => { const b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = t; b.addEventListener('click', () => { inp.value = t; pergunta(t, saida); }); ex.append(b); });
+    // depois de uma resposta das palavras-chave, "Não era isso?" pede à IA para reescrever a pergunta
+    const faz = async (txt) => {
+      const p = pergunta(txt, saida), vez = saida.dataset.vez;
+      await p;
+      if (saida.dataset.vez !== vez || !iaLigada() || saida.querySelector('.tg-perg-ia') || !saida.querySelector('.tg-perg-entendi')) return;
+      const b = el('button', 'tg-perg-ir tg-perg-outro', 'Não era isso? Tentar entender de outro jeito'); b.type = 'button';
+      b.addEventListener('click', async () => {
+        b.disabled = true; b.textContent = 'Tentando entender de outro jeito…';
+        const nova = await reescreve(txt);
+        if (saida.dataset.vez !== vez) return;
+        if (mudou(txt, nova)) pergunta(nova, saida, txt);
+        else b.replaceWith(el('p', 'tg-perg-var', 'Não achei outro jeito de entender. Tente escrever com outras palavras.'));
+      });
+      saida.append(b);
+    };
+    form.addEventListener('submit', (e) => { e.preventDefault(); if (inp.value.trim()) faz(inp.value); });
+    EXEMPLOS.forEach((t) => { const b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = t; b.addEventListener('click', () => { inp.value = t; faz(t); }); ex.append(b); });
     alvo.append(form, saida);
     return inp;
   };
