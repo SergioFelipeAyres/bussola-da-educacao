@@ -1678,11 +1678,17 @@
 
   // ---------- main draw ----------
   const TITLES = { gestores: 'Quem dirige as escolas brasileiras e como usa a tecnologia', escolas: 'Como as escolas brasileiras estão conectadas e equipadas' };
+  const MARCA = { gestores: 'como usa a tecnologia', escolas: 'conectadas e equipadas' };
   function draw() {
     const params = dash.params();
     const meta = dash.data(META);
     const take = document.getElementById('tg-take');
-    if (TITLES[view]) document.getElementById('tg-h1').textContent = TITLES[view];
+    if (TITLES[view]) {
+      // o trecho em MARCA ganha o grifo de marca-texto do caderno
+      const h1 = document.getElementById('tg-h1'), t = TITLES[view], m = MARCA[view], i = m ? t.indexOf(m) : -1;
+      h1.textContent = i < 0 ? t : t.slice(0, i);
+      if (i >= 0) { const s = document.createElement('span'); s.className = 'tg-marca'; s.textContent = m; h1.append(s, t.slice(i + m.length)); }
+    }
 
     document.querySelectorAll('.tg-base[data-ind]').forEach((p) => {
       p.setAttribute('data-source', META);

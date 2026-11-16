@@ -7,8 +7,10 @@ Comunicação Digital e Cultura de Dados, FGV).
 
 O objetivo é tornar os dados compreensíveis para leitores não especializados, aplicando
 princípios de design da informação: pictogramas no estilo Isotype, uma cor de destaque,
-frases em linguagem simples ("7 em cada 10"), base e margem de erro sempre visíveis e
-leitura confortável no celular.
+frases em linguagem simples ("7 em cada 10"), base e margem de erro sempre visíveis,
+leitura confortável no celular e texto grande (nenhum texto abaixo de 14px), pensando
+em pessoas idosas e com baixa visão. O visual é o de um caderno escolar: folha pautada
+com margem, lições numeradas, marca-texto e uma pergunta "Para pensar" no fim de cada seção.
 
 ## O que tem no painel
 
@@ -28,14 +30,20 @@ leitura confortável no celular.
 index.html              página (o site inteiro; as abas abrem em /, /escolas, /gestores e /sobre)
 escolas.html, gestores.html, sobre.html
                         páginas de entrada dos endereços /escolas etc.: só abrem a aba certa do index.html
-css/painel.css          tokens de design e estilos
+src/site.css            entrada do Tailwind: paleta (@theme) e famílias de fonte
+src/painel.css          estilos do painel (gráficos, filtro, cartões, escala de texto)
+src/caderno.css         a linguagem visual do caderno escolar (folha, lições, marca-texto)
+css/site.css            CSS compilado a partir de src/ (vai versionado; não editar à mão)
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data
+DESIGN.md               sistema visual: cores, tipografia, componentes e regras
+PRODUCT.md              público, propósito e compromissos do produto
 ```
 
-Não há etapa de build: é um site estático.
+O site é estático e não precisa de build para ser publicado: o CSS compilado
+(`css/site.css`) vai no repositório.
 
 ## Ver localmente
 
@@ -46,6 +54,27 @@ arquivo direto no navegador não funciona):
 python -m http.server 8000
 # abra http://localhost:8000
 ```
+
+No Windows, sem Python:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .claude/serve.ps1 -Port 8000
+```
+
+## Mudar o visual
+
+O CSS é escrito em `src/` e compilado com o [Tailwind CSS](https://tailwindcss.com/) v4
+(precisa do Node.js):
+
+```bash
+npm install
+npm run css         # gera css/site.css uma vez
+npm run css:watch   # recompila a cada mudança em src/ ou no HTML
+```
+
+Depois de mudar `src/*.css` (ou classes do Tailwind no HTML), rode `npm run css` e
+versione o `css/site.css` junto. As regras do visual (paleta, tamanhos mínimos de texto,
+contraste) estão no `DESIGN.md`.
 
 ## Publicar no GitHub Pages
 

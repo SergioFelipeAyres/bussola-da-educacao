@@ -17,6 +17,36 @@
         ],
         "createdAt": "2026-11-15T01:41:17.537Z",
         "reason": "Claude triage: .tg-fact has padding 1.5rem (css/painel.css:324, clamp 1.25-1.75rem in hero); browser overlay did not flag it in 5 views; static analysis fails to resolve padding"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-16T01:48:18.200Z",
+        "reason": "user confirmed: escolheu 'Manter Jakarta + mono' (mono só em rótulos); DESIGN.md será atualizado"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-16T01:57:07.964Z",
+        "reason": "user confirmed: escolheu adicionar uma mono só nos rótulos; registrada no DESIGN.md"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-16T01:57:08.069Z",
+        "reason": "Claude triage: os acentos de cor ficam no TOPO (inset 0 5px nos marcadores do Ir para, inset 0 3px nas portas do Início e no fim das abas), como documentado no DESIGN.md; não há borda lateral"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-16T13:43:55.937Z",
+        "reason": "user confirmed: escolheu o caminho Caderno escolar; as listras repetidas são as pautas da folha, documentadas no DESIGN.md"
       }
     ]
   }

@@ -1,8 +1,8 @@
 /* ---------- Tokens de design ---------- */
 :root{
-  /* tipografia: uma família só (Plus Jakarta Sans); --font-display marca títulos e números */
-  --font-sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --font-display:var(--font-sans);
+  /* tipografia: Atkinson Hyperlegible Next no texto; --font-display (Bricolage Grotesque) marca títulos e números */
+  --font-sans:"Atkinson Hyperlegible Next",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display:"Bricolage Grotesque",var(--font-sans);
   /* superfícies e texto */
   --color-bg:#f4f6fb;--color-panel:#ffffff;--color-fg:#1b1d24;--color-fg-muted:#5d6170;--color-border-line:#e2e3ea;
   /* cores dos capítulos (DESIGN.md, regra do Capítulo) e da capa */
@@ -22,7 +22,7 @@
   --cds-shadow-popover:0 6px 24px rgba(20,24,40,.12);
   --sombra-escura:5,12,45;
   /* escala de texto, espaço e forma */
-  --cds-font-size-caption:.8125rem;--cds-font-size-body:.9375rem;--cds-font-size-heading:1.0625rem;--cds-font-size-title:1.6rem;--cds-font-weight-medium:600;
+  --cds-font-size-caption:.9375rem;--cds-font-size-body:1.0625rem;--cds-font-size-heading:1.1875rem;--cds-font-size-title:1.6rem;--cds-font-weight-medium:600;
   --cds-gap-xs:.25rem;--cds-gap-sm:.5rem;--cds-gap-md:.875rem;--cds-gap-lg:1.25rem;--cds-gap-xl:2.25rem;
   --cds-pad-xs:.3rem;--cds-pad-sm:.55rem;--cds-pad-md:.875rem;--cds-pad-lg:1.15rem;--cds-radius:16px;
   --cds-dur-slow:420ms;
@@ -129,7 +129,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-dots{display:flex;flex-direction:column}
 .tg-dot-row{display:grid;grid-template-columns:minmax(6rem,13rem) minmax(0,1fr) 15.5rem;gap:var(--cds-gap-md);align-items:center;padding-block:.45rem;border-bottom:1px solid var(--color-border-line)}
 .tg-dot-row.tg-axis{border-bottom:none;padding-block:0 .3rem}
-.tg-dot-lab{font-size:var(--cds-font-size-body);line-height:1.25}
+.tg-dot-lab{font-size:var(--cds-font-size-body);line-height:1.35}
 .tg-dot-track{position:relative;height:1.3rem}
 .tg-dot-track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--cds-chart-grid)}
 .tg-axis .tg-dot-track::before{display:none}
@@ -295,7 +295,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-link[aria-current=page] .tg-ic{color:var(--cds-chart-categorical-1)}
 .nav-links{margin-left:auto}
 .nav-brand:focus-visible,.nav-link:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
-@media (max-width:520px){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.8125rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}}
+@media (max-width:520px){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.9375rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}}
 @media (max-width:760px){.nav-link .tg-ic{display:none}}
 @media (max-width:560px){.nav-in{flex-wrap:wrap;row-gap:.65rem;padding-top:.6rem}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.5rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8rem}}
 .tg-sec,.tg-kpis,.tg-card{scroll-margin-top:5rem}
@@ -415,30 +415,6 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-link[aria-current=page]{background:var(--v-blue);color:#fff;box-shadow:0 4px 14px -6px var(--v-blue)}
 .nav-link[aria-current=page] .tg-ic{color:#fff}
 
-/* cabeçalhos em faixa colorida (início, sobre, escolas, gestores) */
-.tg-hero,.tg-head{position:relative;overflow:hidden;isolation:isolate;padding:clamp(1.6rem,4vw,3rem);border-radius:calc(var(--cds-radius) * 1.5);
-  background:radial-gradient(120% 140% at 100% 0%,var(--hero-c) 0%,transparent 55%),linear-gradient(135deg,var(--hero-a),var(--hero-b));
-  color:#fff;box-shadow:0 18px 40px -22px var(--hero-a)}
-.tg-hero::after,.tg-head::after{content:"";position:absolute;z-index:-1;right:-3rem;top:50%;width:clamp(11rem,28vw,19rem);aspect-ratio:1;transform:translateY(-50%) rotate(-12deg);opacity:.9;pointer-events:none;
-  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='none' stroke='%23fff' stroke-opacity='.18' stroke-width='3'/%3E%3Ccircle cx='50' cy='50' r='36' fill='none' stroke='%23fff' stroke-opacity='.12' stroke-width='1.5' stroke-dasharray='2 4'/%3E%3Cpath d='M50 8v8M50 84v8M8 50h8M84 50h8' stroke='%23fff' stroke-opacity='.3' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M50 18l9 32H41z' fill='%23ffd166'/%3E%3Cpath d='M50 82l-9-32h18z' fill='%23fff' fill-opacity='.45'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23fff'/%3E%3C/svg%3E")}
-.tg-hero .tg-eyebrow,.tg-head .tg-eyebrow{color:rgba(255,255,255,.82);font-weight:600}
-.tg-hero-title,.tg-title{font-weight:800;letter-spacing:-.025em;color:#fff;max-width:20ch}
-.tg-hero-title span{color:var(--hero-hi);font-weight:800}
-.tg-hero-lead{font-weight:600;color:#fff;max-width:34ch;text-wrap:balance}
-/* texto corrido sobre o degradê: branco pleno (a 88% ficava entre 4,3 e 4,5:1 no trecho mais claro) */
-.tg-hero-text,.tg-head .tg-take{color:#fff;max-width:62ch}
-/* manchete da capa de Escolas e Gestores: frase maior e linha curta (~60 caracteres) */
-.tg-head .tg-take{font-size:clamp(1.0625rem,1.6vw,1.25rem);max-width:min(100%,40ch)}
-.tg .tg-hero-text{max-width:min(100%,52ch)}
-/* números da frase de abertura: branco em 800 (4.7:1 no ponto mais claro do degradê).
-   Amarelo como cor de texto só no título grande; sublinhado ficaria parecido com link. */
-.tg-head .tg-take b{color:#fff;font-weight:800}
-.tg-head .tg-take.tg-take-erro{display:flex;flex-direction:column;align-items:flex-start;gap:.75rem}
-.tg .tg-head .tg-retry{border:0;background:#fff;color:var(--hero-a)}
-.tg .tg-head .tg-retry:focus-visible{outline:3px solid var(--hero-hi,#ffd166);outline-offset:3px}
-.tg-head .tg-take.dash-skeleton{background:linear-gradient(90deg,rgba(255,255,255,.12),rgba(255,255,255,.24),rgba(255,255,255,.12));background-size:200% 100%}
-.tg-hero > *,.tg-head > *{max-width:min(100%,46rem)}
-@media (max-width:620px){.tg-hero::after,.tg-head::after{right:-5rem;top:.5rem;width:10rem;transform:rotate(-12deg);opacity:.35}.tg-title{font-size:1.65rem}}
 
 /* cartões */
 .tg-card,.tg-kpi,.tg-filter,.tg-cite,.tg-fact{border-color:color-mix(in srgb,var(--color-border-line) 70%,transparent);box-shadow:var(--v-shadow)}
@@ -496,7 +472,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-fact-top{display:flex;align-items:center;gap:.7rem}
 .tg-hero-home .tg-fact-ic{width:2.75rem;height:2.75rem;border-radius:14px}
 .tg-hero-home .tg-fact-ic .tg-ic{width:1.4rem;height:1.4rem}
-.tg-hero-home .tg-fact-txt{font-size:clamp(1.35rem,2.2vw,1.7rem);line-height:1.25;max-width:none;min-height:3.75em}
+.tg-hero-home .tg-fact-txt{font-size:clamp(1.35rem,2.2vw,1.7rem);line-height:1.3;max-width:none;min-height:3.75em}
 .tg-hero-home .tg-fact-txt b{display:block;font-size:1.5em;font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:.15em}
 .tg-hero-home .tg-fact .tg-iso10{max-width:100%}
 .tg-hero-home .tg-fact-meta{min-height:2.6em}
@@ -512,8 +488,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease,opacity .35s ease}
 .tg-mapa-reg text,.tg-mapa-pick text{fill:#fff;pointer-events:none;transition:fill .3s ease,opacity .35s ease}
 .tg-mapa-reg.tg-claro text,.tg-mapa-pick.tg-claro text{fill:#141a2e}
-.tg-mapa-nome{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
-.tg-mapa-val{font-size:13px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tg-mapa-nome{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
+.tg-mapa-val{font-size:14px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tg-mapa-reg:hover path{filter:brightness(1.08)}
 .tg-mapa-reg:focus-visible path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
 /* região escolhida: as demais esmaecem e ela "salta" do mapa, com contorno escuro e sombra */
@@ -525,14 +501,14 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-pick path{stroke:#fff;stroke-width:2.6;stroke-linejoin:round}
 .tg-mapa-svg:has(.tg-on:focus-visible) .tg-mapa-pick path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
 @keyframes tg-mapa-pop{from{transform:scale(1);filter:drop-shadow(0 0 0 rgba(10,20,50,0))}}
-.tg-mapa-leg{display:flex;align-items:center;gap:.6rem;font-size:.75rem;letter-spacing:.04em;color:var(--color-fg-muted)}
+.tg-mapa-leg{display:flex;align-items:center;gap:.6rem;font-size:.875rem;letter-spacing:.04em;color:var(--color-fg-muted)}
 .tg-mapa-leg i{width:6.5rem;height:.4rem;border-radius:999px;background:linear-gradient(90deg,var(--seq-claro),var(--seq-escuro))}
 .tg-mapa-nota{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.75rem;font-size:var(--cds-font-size-body);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
-.tg-mapa-nota small{display:block;font-size:.6875rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
+.tg-mapa-nota small{display:block;font-size:.875rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
 .tg-mapa-nota b{color:var(--color-fg);font-weight:700}
 .tg-mapa-painel{display:flex;flex-direction:column;gap:var(--cds-gap-md);min-width:0}
 .tg-mapa-onde{display:flex;flex-wrap:wrap;align-items:center;gap:.1rem .9rem}
-.tg-mapa-onde .tg-eyebrow{flex-basis:100%;font-size:.6875rem;font-weight:600;letter-spacing:.1em}
+.tg-mapa-onde .tg-eyebrow{flex-basis:100%;font-size:.875rem;font-weight:600;letter-spacing:.1em}
 .tg-mapa-regiao{font-size:clamp(1.9rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.05}
 .tg button.tg-mapa-reset{padding:.3rem .75rem;border-color:transparent;background:var(--cds-chart-grid);font-weight:500;color:var(--color-fg-muted)}
 .tg button.tg-mapa-reset:hover{color:var(--color-fg)}
@@ -545,7 +521,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
 .tg-mapa-vs.tg-dir{color:var(--color-fg);font-weight:600}
 .tg-mapa-vs .tg-arrow{color:var(--color-fg-muted)}
-.tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.6875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-mapa-inds{display:flex;flex-direction:column}
 .tg button.tg-mapa-ind{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;width:100%;padding:.6rem .7rem;border:0;border-radius:10px;background:transparent;text-align:left;font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg-muted);transition:background .15s ease,color .15s ease}
 .tg-mapa-ind .tg-ic{width:1rem;height:1rem;color:var(--sec)}
@@ -557,9 +533,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-ind[aria-pressed=true] .tg-mapa-ind-bar i{opacity:1}
 .tg button.tg-mapa-ir{align-self:flex-start;margin-top:.25rem;padding:.65rem 1.2rem;border:0;background:var(--sec-texto);color:#fff;font-size:var(--cds-font-size-body);font-weight:600;transition:background .5s ease}
 @media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}.tg-mapa-pick{animation:none}}
-[data-reg="Sul"] .tg-mapa-val{font-size:11.5px}
+[data-reg="Sul"] .tg-mapa-val{font-size:12.5px}
 .tg-mapa-nota span{white-space:nowrap}
-@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:10px;letter-spacing:.03em}.tg-mapa-val{font-size:13.5px}[data-reg="Sul"] .tg-mapa-val{font-size:12px}.tg-mapa-nota{gap:.4rem 1.25rem}}
+@media (max-width:520px){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{font-size:11px;letter-spacing:.03em}.tg-mapa-val{font-size:14.5px}[data-reg="Sul"] .tg-mapa-val{font-size:13px}.tg-mapa-nota{gap:.4rem 1.25rem}}
 
 /* "Você sabia?": o cartão usa a cor do tema do dado sorteado (--sec, definido pelo painel.js) */
 .tg-fact{--sec:var(--v-blue)}
@@ -571,7 +547,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* seletor de recorte da tela inicial: etapa 1 em abas (dimensão), etapa 2 em controle segmentado (grupo) */
 .tg-filter.tg-rec{display:flex;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:.6rem}
 .tg-rec-onde{display:flex;flex-direction:column;gap:.1rem}
-.tg-rec-onde .tg-eyebrow{font-size:.6875rem;font-weight:600;letter-spacing:.1em}
+.tg-rec-onde .tg-eyebrow{font-size:.875rem;font-weight:600;letter-spacing:.1em}
 .tg .tg-rec-titulo{margin:0;font-size:clamp(1.35rem,2.6vw,1.75rem);font-weight:800;letter-spacing:-.025em;line-height:1.15}
 .tg-rec .tg-filter-note{margin:0}
 .tg-rec-dims{display:flex;gap:.15rem;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--color-border-line)}
@@ -595,7 +571,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 @keyframes tg-rec-tit{from{opacity:0;transform:translateY(.4em)}}
 @keyframes tg-rec-in{from{opacity:0;transform:translateY(-.25rem)}}
 @media (prefers-reduced-motion:reduce){.tg-rec-titulo.tg-troca,.tg-rec-opts.tg-troca{animation:none}}
-@media (max-width:480px){.tg .tg-rec-dims button{padding:.5rem .45rem;font-size:.8125rem}.tg .tg-rec-opts button{padding:.35rem .6rem}}
+@media (max-width:480px){.tg .tg-rec-dims button{padding:.5rem .45rem;font-size:.9375rem}.tg .tg-rec-opts button{padding:.35rem .6rem}}
 #filtro{--sec:var(--v-blue)}
 /* muitas dimensões: as abas rolam de lado; a borda direita esmaece para mostrar que há mais */
 .tg-rec-dims.tg-rola{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent);padding-right:1.5rem}
@@ -603,7 +579,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* guia: lição "um recorte por vez" e lição dos pontos percentuais */
 .tg-lesson-combo{display:flex;flex-direction:column;gap:.4rem;margin:0;padding:0;list-style:none;font-size:var(--cds-font-size-body);font-weight:500}
 .tg-lesson-combo li{display:flex;align-items:center;gap:.5rem}
-.tg-lesson-combo li span{display:inline-grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;font-size:.75rem;font-weight:700;color:#fff;background:var(--cds-chart-categorical-1)}
+.tg-lesson-combo li span{display:inline-grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;font-size:.875rem;font-weight:700;color:#fff;background:var(--cds-chart-categorical-1)}
 .tg-lesson-combo .tg-nao{color:var(--color-fg-muted);text-decoration:line-through;text-decoration-color:var(--cds-chart-muted)}
 .tg-lesson-combo .tg-nao span{background:var(--cds-chart-muted)}
 .tg-lesson-pp{font-variant-numeric:tabular-nums}
@@ -617,10 +593,10 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-rec-fixo-tit span{font-size:.625rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-rec-fixo-tit b{overflow:hidden;text-overflow:ellipsis;font-weight:800;letter-spacing:-.015em}
 .tg-rec-fixo .tg-rec-dims{flex:1 1 24rem;min-width:0;border-bottom:0}
-.tg .tg-rec-fixo .tg-rec-dims button{padding:.35rem .6rem;font-size:.8125rem}
+.tg .tg-rec-fixo .tg-rec-dims button{padding:.35rem .6rem;font-size:.9375rem}
 .tg-rec-fixo .tg-rec-opts{flex:1 1 100%;max-width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .tg-rec-fixo .tg-rec-opts::-webkit-scrollbar{display:none}
-.tg .tg-rec-fixo .tg-rec-opts button{flex:none;white-space:nowrap;min-height:0;padding:.28rem .7rem;font-size:.8125rem}
+.tg .tg-rec-fixo .tg-rec-opts button{flex:none;white-space:nowrap;min-height:0;padding:.28rem .7rem;font-size:.9375rem}
 .tg-rec-opts.tg-rola{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 .tg-rec-opts.tg-rola.tg-fim{-webkit-mask-image:none;mask-image:none}
 @media (max-width:560px){.tg-rec-fixo-in{padding:.4rem .6rem .45rem;gap:.25rem}.tg .tg-rec-fixo-tit{font-size:.875rem}.tg-rec-fixo-tit span{display:none}.tg-rec-fixo .tg-rec-dims{flex-basis:100%}}
@@ -655,7 +631,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-indice a:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
 @media (max-width:560px){.tg-indice{margin-top:calc(var(--cds-gap-xl) * -.35)}.tg-indice-lab{flex-basis:100%}}
 /* "Topo" no filtro fixo */
-.tg .tg-topo{display:inline-flex;align-items:center;gap:.3rem;margin-left:auto;padding:.35rem .7rem .35rem .55rem;font-size:.8125rem;font-weight:600;color:var(--color-fg-muted)}
+.tg .tg-topo{display:inline-flex;align-items:center;gap:.3rem;margin-left:auto;padding:.35rem .7rem .35rem .55rem;font-size:.9375rem;font-weight:600;color:var(--color-fg-muted)}
 .tg .tg-topo:hover{color:var(--color-fg)}
 .tg-topo .tg-ic{width:1rem;height:1rem}
 
@@ -678,7 +654,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* filtro principal em blocos rotulados ("Onde fica a escola", "Tipo de escola", "Quem dirige"): tudo à vista, sem rolagem lateral */
 .tg-rec-dims.tg-agrupado{flex-wrap:wrap;align-items:flex-end;gap:.6rem 1.75rem;overflow:visible;border-bottom:0}
 .tg-rec-g{display:flex;flex-wrap:wrap;align-items:flex-end;column-gap:.1rem;border-bottom:1px solid var(--color-border-line)}
-.tg-rec-g-lab{flex-basis:100%;padding:0 .75rem .1rem;font-size:.75rem;font-weight:600;color:var(--color-fg-muted)}
+.tg-rec-g-lab{flex-basis:100%;padding:0 .75rem .1rem;font-size:.875rem;font-weight:600;color:var(--color-fg-muted)}
 @media (max-width:480px){.tg-rec-dims.tg-agrupado{gap:.5rem 1rem}.tg-rec-g-lab{padding-inline:.45rem}}
 
 /* =====================================================================
@@ -704,7 +680,7 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg-kpi-label{font-size:.875rem;line-height:1.3}
   .tg-kpi-num{font-size:1.6rem}
   .tg-kpi .tg-iso10{min-height:0}
-  .tg-kpi-cmp{font-size:.75rem;line-height:1.35}
+  .tg-kpi-cmp{font-size:.875rem;line-height:1.35}
 }
 
 /* filtro em duas etapas: as dimensões do filtro principal têm forma de botão; o pedido da etapa 2 vem antes dos grupos */

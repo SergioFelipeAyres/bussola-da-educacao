@@ -10,8 +10,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232f5fd0'/%3E%3Cg fill='%23fff'%3E%3Cpath fill-rule='evenodd' d='M12 3.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 1 0 0-17zm0 1.7a6.8 6.8 0 1 1 0 13.6a6.8 6.8 0 1 1 0-13.6z'/%3E%3Cpath d='M16.6 7.4l-3.2 6-2.8-2.8z'/%3E%3Cpath d='M7.4 16.6l3.2-6 2.8 2.8z' opacity='.55'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/painel.css">
+<link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500&family=Caveat:wght@600&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" href="css/site.css">
 </head>
 <body>
 <a class="pular" href="#conteudo">Pular para o conteúdo</a>
@@ -35,10 +35,10 @@
   <div class="tg-page" id="inicio" hidden>
     <section class="tg-hero tg-hero-home">
       <div class="tg-hero-copy">
-        <span class="tg-eyebrow">TIC Educação 2025 · NIC.br/Cetic.br</span>
         <h1 class="tg-hero-title">Bússola da <span>Educação</span></h1>
         <p class="tg-hero-lead">A tecnologia nas escolas brasileiras, em linguagem simples.</p>
         <p class="tg-hero-text">Os números da pesquisa TIC Educação 2025 sobre quem dirige as escolas e sobre como elas estão conectadas e equipadas, contados com pictogramas, frases curtas e margem de erro sempre visível.</p>
+        <p class="tg-fonte">Fonte: TIC Educação 2025 · NIC.br/Cetic.br</p>
       </div>
       <section class="tg-fact" aria-labelledby="fato-titulo">
         <div class="tg-fact-top"><span class="tg-fact-ic" id="fato-ic" aria-hidden="true"></span><h2 class="tg-fact-eyebrow" id="fato-titulo">Você sabia?</h2></div>
@@ -62,10 +62,12 @@
           <svg class="tg-mapa-svg" id="mapa-svg" viewBox="-8 -8 316 316" role="group" aria-label="Mapa do Brasil dividido em cinco regiões. Cada região é um botão."></svg>
           <div class="tg-mapa-leg" aria-hidden="true"><span id="mapa-leg-lo">menor</span><i></i><span id="mapa-leg-hi">maior</span></div>
           <p class="tg-mapa-nota" id="mapa-nota"></p>
+          <span class="tg-anot tg-anot-mapa" aria-hidden="true">← toque numa região!</span>
           <div class="tg-alt" id="mapa-alt" hidden><ul id="mapa-alt-lista"></ul></div>
         </div>
         <div class="tg-mapa-painel">
           <div class="tg-mapa-onde">
+            <span class="tg-carimbo" aria-hidden="true">Visto ✓<small>2025</small></span>
             <span class="tg-eyebrow" id="mapa-eyebrow">Você está vendo</span>
             <h3 class="tg-mapa-regiao" id="mapa-regiao" aria-live="polite">Brasil</h3>
             <button type="button" class="tg-mapa-reset" id="mapa-reset" hidden><span aria-hidden="true">←</span> Voltar para o Brasil</button>
@@ -176,9 +178,9 @@
   </div>
 
   <header class="tg-head tg-dash-only" id="topo">
-    <span class="tg-eyebrow">TIC Educação 2025 · NIC.br/Cetic.br</span>
     <h1 class="tg-title" id="tg-h1">Quem dirige as escolas brasileiras e como usa a tecnologia</h1>
     <p class="tg-take dash-skeleton" id="tg-take">—</p>
+    <p class="tg-fonte">Fonte: TIC Educação 2025 · NIC.br/Cetic.br</p>
     <button type="button" class="tg-guide-btn" aria-haspopup="dialog" aria-controls="como-ler"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>Como ler este painel</button>
   </header>
 
@@ -350,6 +352,7 @@
       <button type="button" class="tg-rec-mudar" id="rec-mudar" aria-expanded="false" aria-controls="rec-corpo"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg><span>Mudar grupo</span></button>
     </div>
     <div class="tg-rec-corpo" id="rec-corpo">
+    <span class="tg-anot tg-anot-filtro" aria-hidden="true">marque só uma!</span>
     <div class="tg-rec-dims" id="rec-dims" role="radiogroup" aria-label="Ver os números de"></div>
     <p class="tg-rec-pedido" id="rec-pedido" aria-live="polite" hidden></p>
     <div class="tg-rec-opts" id="rec-opts" role="radiogroup" hidden></div>
@@ -423,6 +426,7 @@
         <article class="tg-card" id="card-sem-internet"><h3 class="tg-card-title">Por que algumas escolas não têm internet</h3><p class="tg-card-note">Motivos citados pelas escolas sem conexão. Por serem poucas, as margens de erro são grandes.</p><div class="tg-chart" id="ch-sem-internet" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A20"></p></article>
         <article class="tg-card tg-wide" id="card-problemas"><h3 class="tg-card-title">Com que frequência a internet dá problema</h3><p class="tg-card-note">Do tom mais escuro (sempre) ao mais claro (nunca), ordenado pelos problemas mais frequentes.</p><div class="tg-chart" id="ch-problemas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A19"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Ter internet na escola é só o primeiro passo. O que precisa acontecer para que essa conexão chegue às aulas dos alunos?</p></div>
     </section>
 
     <section class="tg-sec" id="equipamentos">
@@ -434,6 +438,7 @@
         <article class="tg-card" id="card-alunos-pc"><h3 class="tg-card-title">Quantos alunos por computador</h3><p class="tg-card-note">No turno com mais alunos. Em cinza, escolas sem computador para os alunos.</p><div class="tg-chart" id="ch-alunos-pc" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="B4C"></p></article>
         <article class="tg-card" id="card-renovacao"><h3 class="tg-card-title">Última compra ou doação de dispositivos</h3><p class="tg-card-note">Do tom mais escuro (recente) ao mais claro (há mais tempo).</p><div class="tg-chart" id="ch-renovacao" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="K1_1"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Na escola que você conhece, quantos alunos dividem cada computador? Isso muda quanto tempo cada um consegue usar?</p></div>
     </section>
 
     <section class="tg-sec" id="regras">
@@ -443,6 +448,7 @@
         <article class="tg-card" id="card-politicas"><h3 class="tg-card-title">O que as escolas já têm definido</h3><p class="tg-card-note">Cada prédio representa 10% das escolas.</p><div class="tg-chart" id="ch-politicas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="C3C"></p></article>
         <article class="tg-card" id="card-vigilancia"><h3 class="tg-card-title">Câmeras e identificação dos alunos</h3><p class="tg-card-note">Sistemas que coletam imagem ou dados do corpo dos alunos.</p><div class="tg-chart" id="ch-vigilancia" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="E3"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Que regras sobre celular, inteligência artificial e dados dos alunos você esperaria encontrar numa escola? Quem deveria participar dessa decisão?</p></div>
     </section>
 
     <section class="tg-sec" id="comunicacao">
@@ -452,6 +458,7 @@
         <article class="tg-card" id="card-redes"><h3 class="tg-card-title">Redes sociais da escola</h3><p class="tg-card-note">Entre todas as escolas.</p><div class="tg-chart" id="ch-redes" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="F3"></p></article>
         <article class="tg-card" id="card-canais"><h3 class="tg-card-title">Mensagens, aplicativos e plataformas</h3><p class="tg-card-note">Entre todas as escolas.</p><div class="tg-chart" id="ch-canais" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="F4A"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Por quais canais a escola que você conhece fala com as famílias? Todas conseguem acompanhar por eles?</p></div>
     </section>
   </div>
 
@@ -508,6 +515,7 @@
         <article class="tg-card" id="card-tempo"><h3 class="tg-card-title">Tempo na direção da escola</h3><p class="tg-card-note">Do tom mais claro (recém-chegados) ao mais escuro (mais de 10 anos).</p><div class="tg-chart" id="ch-tempo" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D2"></p></article>
         <article class="tg-card" id="card-funcao"><h3 class="tg-card-title">Quem dirige as escolas rurais</h3><p class="tg-card-note">Função de quem responde pela direção. Só existe para escolas rurais.</p><div class="tg-chart" id="ch-funcao" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D1"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Pense em quem dirige uma escola que você conhece. O que se parece com o perfil mostrado aqui, e o que é diferente?</p></div>
     </section>
 
     <section class="tg-sec" id="tecnologia">
@@ -518,6 +526,7 @@
         <article class="tg-card tg-span2" id="card-temas"><h3 class="tg-card-title">Temas discutidos nessas reuniões</h3><p class="tg-card-note">Do tema mais citado ao menos citado.</p><div class="tg-chart" id="ch-temas" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D7"></p></article>
         <article class="tg-card tg-wide" id="card-percepcao"><h3 class="tg-card-title">A tecnologia está integrada ao ensino?</h3><p class="tg-card-note">Quanto os gestores concordam com cada afirmação, da mais aceita para a menos aceita.</p><div class="tg-chart" id="ch-percepcao" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D8"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Se você participasse de uma reunião da direção sobre tecnologia, que tema colocaria na pauta?</p></div>
     </section>
 
     <section class="tg-sec" id="ia">
@@ -528,6 +537,7 @@
         <article class="tg-card" id="card-ia-usos"><h3 class="tg-card-title">Para que usam a IA</h3><p class="tg-card-note">Entre quem já usa IA na gestão.</p><div class="tg-chart" id="ch-ia-usos" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D9B"></p></article>
         <article class="tg-card" id="card-ia-contrib"><h3 class="tg-card-title">Onde a IA ajudou</h3><p class="tg-card-note">Áreas em que os gestores dizem que a IA contribuiu.</p><div class="tg-chart" id="ch-ia-contrib" data-source="gestores"></div><p class="tg-base" data-pub="gestores" data-ind="D9C"></p></article>
       </div>
+      <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Em que tarefas da gestão a inteligência artificial poderia ajudar? E em quais você preferiria que ela não entrasse?</p></div>
     </section>
   </div>
 

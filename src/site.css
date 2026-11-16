@@ -1,0 +1,41 @@
+/* Bússola da Educação: entrada do Tailwind.
+   Compile com `npm run css` (gera css/site.css, que vai versionado; o site não tem etapa de build).
+   As cores do @theme são exatamente as da paleta do DESIGN.md: nenhuma cor nova. */
+@import "tailwindcss";
+@import "./painel.css" layer(components);
+@import "./caderno.css" layer(components);
+
+@source "../index.html";
+@source "../404.html";
+@source "../js";
+
+@theme {
+  --font-sans: "Atkinson Hyperlegible Next",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-display: "Bricolage Grotesque", "Atkinson Hyperlegible Next",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+
+  --color-azul: #2f5fd0;
+  --color-azul-profundo: #2448b8;
+  --color-azul-claro: #3b6be6;
+  --color-amarelo: #ffd166;
+  --color-teal: #0b8a7f;
+  --color-laranja: #c95f0e;
+  --color-roxo: #7346d0;
+  --color-rosa: #c73674;
+  --color-grafite: #454d60;
+  --color-tinta: #1b1d24;
+  --color-tinta-suave: #5d6170;
+  --color-papel: #f4f6fb;
+  --color-painel: #ffffff;
+  --color-linha: #e2e3ea;
+  --color-trilho: #e9eaf0;
+  --color-cinza: #a9adbd;
+}
+
+@layer base {
+  /* o reset do Tailwind tira marcadores, sublinhados e cor dos links: devolvemos onde o texto precisa deles */
+  a:not([class]) { color: var(--color-azul-profundo); text-decoration-line: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:not([class]):hover { text-decoration-thickness: 2px; }
+  ::selection { background: color-mix(in srgb, var(--color-azul) 22%, white); color: var(--color-tinta); }
+  html { scrollbar-color: var(--color-cinza) var(--color-papel); accent-color: var(--color-azul); caret-color: var(--color-azul); }
+}

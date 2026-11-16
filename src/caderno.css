@@ -1,0 +1,248 @@
+/* =====================================================================
+   Caderno escolar: a linguagem visual do site.
+   A página é uma folha pautada com margem dupla rosa e furos de fichário;
+   seções são lições numeradas; o amarelo é marca-texto (nunca cor de texto);
+   "Você sabia?" é um post-it; o filtro é uma questão de múltipla escolha;
+   o "Ir para" são marcadores de página; cada seção fecha com "Para pensar".
+   Anotações à mão (Caveat) são só enfeite, nunca dado, e ficam fora do leitor de tela.
+   Só cores da paleta: azul da bússola, cores de capítulo, tinta e neutros azulados.
+   ===================================================================== */
+:root{
+  --font-mono:"Atkinson Hyperlegible Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --v-yellow:#ffd166;               /* Amarelo Norte: só marca-texto e post-it, nunca texto */
+  --v-blue-deep:#2448b8;
+  --font-mao:"Caveat","Segoe Print","Bradley Hand",cursive;
+  --cds-radius:6px;
+  --folha-raio:3px;
+  --moldura:76rem;
+  --respiro:2.5rem;                 /* da margem rosa até o conteúdo */
+  --pauta:30px;                     /* distância entre as linhas da folha */
+  --pauta-cor:color-mix(in srgb,var(--v-blue) 15%,var(--color-panel));
+  --margem-cor:color-mix(in srgb,var(--v-pink) 55%,var(--color-panel));
+  --margem-cor2:color-mix(in srgb,var(--v-pink) 32%,var(--color-panel));
+  --marca-texto:color-mix(in srgb,var(--v-yellow,#ffd166) 92%,var(--color-panel));
+  --q:24px;                         /* quadriculado: só no mapa e no guia */
+  --q-fio:color-mix(in srgb,var(--color-border-line) 75%,transparent);
+  --q-fio-forte:var(--color-border-line);
+  --quadriculado:
+    linear-gradient(var(--q-fio-forte) 1px,transparent 1px) 0 0/calc(var(--q) * 5) calc(var(--q) * 5),
+    linear-gradient(90deg,var(--q-fio-forte) 1px,transparent 1px) 0 0/calc(var(--q) * 5) calc(var(--q) * 5),
+    linear-gradient(var(--q-fio) 1px,transparent 1px) 0 0/var(--q) var(--q),
+    linear-gradient(90deg,var(--q-fio) 1px,transparent 1px) 0 0/var(--q) var(--q);
+  --pautado:repeating-linear-gradient(180deg,transparent 0 calc(var(--pauta) - 1px),var(--pauta-cor) calc(var(--pauta) - 1px) var(--pauta));
+  --v-shadow:0 1px 0 rgba(20,30,70,.04),0 10px 24px -18px rgba(20,30,70,.3);
+}
+
+/* ---------- a folha: pautas, margem dupla rosa e furos ---------- */
+body{background-color:var(--color-bg)}
+.site{padding-block:0}
+.tg{gap:3rem;padding-block:2rem 3.5rem;background:var(--pautado),var(--color-panel)}
+.tg-page{gap:3rem}
+.site-foot{background:var(--color-panel)}
+@media (min-width:900px){
+  .tg,.site-foot{--folga:calc(var(--respiro) + 3.25rem);max-width:calc(var(--moldura) + var(--folga) + var(--respiro));padding-inline:var(--folga) var(--respiro);
+    border-right:1px solid var(--color-border-line);box-shadow:0 30px 60px -40px rgba(20,30,70,.35)}
+  .tg{background:
+      linear-gradient(90deg,transparent calc(var(--folga) - var(--respiro) - 6px),var(--margem-cor) 0 calc(var(--folga) - var(--respiro) - 4.5px),transparent 0 calc(var(--folga) - var(--respiro) - 1.5px),var(--margem-cor2) 0 calc(var(--folga) - var(--respiro) - .5px),transparent 0),
+      var(--pautado),var(--color-panel)}
+  .site-foot{background:
+      linear-gradient(90deg,transparent calc(var(--folga) - var(--respiro) - 6px),var(--margem-cor) 0 calc(var(--folga) - var(--respiro) - 4.5px),transparent 0 calc(var(--folga) - var(--respiro) - 1.5px),var(--margem-cor2) 0 calc(var(--folga) - var(--respiro) - .5px),transparent 0),
+      var(--color-panel)}
+  /* furos de fichário, na faixa à esquerda da margem */
+  .tg::after{content:"";position:absolute;z-index:0;pointer-events:none;left:1.1rem;top:3rem;bottom:3rem;width:1.35rem;
+    background:radial-gradient(circle at 50% .675rem,var(--color-bg) 0 .5rem,color-mix(in srgb,var(--color-border-line) 80%,var(--color-fg-muted)) .5rem calc(.5rem + 1px),transparent calc(.5rem + 1.5px)) 0 0/100% 7.5rem repeat-y}
+}
+
+/* ---------- lição: cada seção abre com "Lição 01" sobre um fio na cor do capítulo ---------- */
+.tg-page,#painel{counter-reset:licao}
+.tg-sec{position:relative;counter-increment:licao}
+.tg-sec::before,.tg-fim::before{content:"";position:absolute;pointer-events:none;left:0;right:0;height:2px;top:calc(-1.5rem - 1px);background:var(--sec,var(--color-border-line))}
+.tg-fim{position:relative}
+.tg-fim::before{height:1px;background:var(--color-border-line)}
+.tg-sec::after{content:"Lição " counter(licao,decimal-leading-zero);position:absolute;pointer-events:none;left:0;top:calc(-1.5rem - .55rem);padding-right:.8rem;
+  background:var(--color-panel);font:500 .875rem/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
+.tg-portas{--sec:var(--color-fg-muted)}
+.tg-shot .tg-sec::before,.tg-shot .tg-sec::after{display:none}
+
+/* ---------- navegação: o link ativo vem grifado ---------- */
+.nav{background:color-mix(in srgb,var(--color-bg) 92%,transparent)}
+.nav-in{min-height:3.75rem}
+.nav-brand{font-size:1.2rem;font-weight:700;letter-spacing:-.02em}
+.nav-link .tg-ic{display:none}
+.nav-link{position:relative;padding:.5rem .8rem;border-radius:0;font-family:var(--font-mono);font-size:.875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--color-fg-muted)}
+.nav-link:hover{background:transparent;color:var(--color-fg)}
+.nav-link[aria-current=page]{color:var(--color-fg);box-shadow:none;font-weight:500;
+  background:linear-gradient(transparent 52%,var(--marca-texto) 52% 90%,transparent 90%) center/calc(100% - 1rem) 100% no-repeat}
+@media (max-width:560px){.nav-link{font-size:.875rem;letter-spacing:.02em;padding:.4rem .3rem}.nav-link[aria-current=page]{background-size:calc(100% - .4rem) 100%}}
+
+/* ---------- marca-texto: grifo amarelo atrás da palavra (o texto continua em tinta) ---------- */
+.tg-hero-title span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
+  color:var(--color-fg);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-inline:.08em;
+  background:linear-gradient(100deg,transparent .15em,var(--marca-texto) .25em calc(100% - .15em),transparent calc(100% - .05em)) 0 68%/100% 52% no-repeat}
+.tg-head .tg-take b,.tg-mapa-txt b{font-weight:800}
+/* texto sobre amarelo (marca-texto ou post-it) é sempre Tinta: as cores de tema ficam abaixo de 4.5:1 no amarelo (teal e laranja chegam a 2.9:1) */
+.tg .tg-mapa-txt b,.tg .tg-hero-home .tg-fact-txt b{color:var(--color-fg)}
+.tg .tg-mapa-txt b{display:table}
+
+/* ---------- botões em etiqueta: cantos chanfrados (o fundo chanfrado fica no ::before, para o contorno de foco não ser cortado) ---------- */
+.tg .tg-etq,.tg .tg-hero-home #fato-outro,.tg button.tg-mapa-ir,.tg button.tg-guide-btn,.tg button.tg-guide-volta{
+  --etq-bg:var(--color-fg);--etq-fg:#fff;--chanfro:9px;
+  position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:.45rem;min-height:2.6rem;padding:.55rem 1.15rem .55rem 1rem;
+  border:0;border-radius:0;background:transparent;color:var(--etq-fg);font-size:var(--cds-font-size-body);font-weight:700;box-shadow:none;transform:none;transition:none}
+.tg .tg-etq::before,.tg .tg-hero-home #fato-outro::before,.tg button.tg-mapa-ir::before,.tg button.tg-guide-btn::before,.tg button.tg-guide-volta::before{
+  content:"";position:absolute;inset:0;z-index:-1;background:var(--etq-bg);transition:background .25s ease;
+  clip-path:polygon(var(--chanfro) 0,100% 0,100% calc(100% - var(--chanfro)),calc(100% - var(--chanfro)) 100%,0 100%,0 var(--chanfro))}
+.tg .tg-etq:hover::before,.tg .tg-hero-home #fato-outro:hover::before,.tg button.tg-mapa-ir:hover::before,.tg button.tg-guide-btn:hover::before,.tg button.tg-guide-volta:hover::before{background:color-mix(in oklab,var(--etq-bg) 82%,#000)}
+.tg .tg-hero-home #fato-outro,.tg button.tg-mapa-ir{--etq-bg:var(--sec-texto)}
+.tg button.tg-guide-volta{--etq-bg:var(--v-blue)}
+.tg button.tg-guide-btn:hover{transform:none;box-shadow:none}
+.tg button.tg-guide-btn:focus-visible,.tg .tg-hero-home #fato-outro:focus-visible,.tg button.tg-mapa-ir:focus-visible,.tg button.tg-guide-volta:focus-visible{outline:2px solid var(--color-fg);outline-offset:3px}
+.tg button{border-radius:var(--cds-radius)}
+.tg .tg-acoes button,.tg .tg-rec-opts button,.tg .tg-rec-dims.tg-agrupado button,.tg .tg-rec-mudar,.tg .tg-rec-mudar2,.tg button.tg-sec-toggle,.tg .tg-retry,.tg button.tg-mapa-reset{border-radius:var(--cds-radius)}
+
+/* ---------- capas: direto na folha, sem fundo próprio ---------- */
+.tg-hero,.tg-head{position:relative;isolation:isolate;margin:0;padding:clamp(1.5rem,5vw,3.5rem) 0 clamp(.5rem,2vw,1rem);background:none;border:0;color:var(--color-fg)}
+.tg-hero > *,.tg-head > *{position:relative;max-width:min(100%,48rem)}
+.tg-hero .tg-eyebrow,.tg-head .tg-eyebrow{display:none}
+.tg-hero-title,.tg-title{color:var(--color-fg);font-weight:800;letter-spacing:-.02em;max-width:19ch;text-wrap:balance}
+.tg-title{font-size:clamp(2.1rem,4.6vw,3.5rem);line-height:1.08}
+.tg-hero-lead{color:var(--color-fg);font-weight:600;max-width:30ch;text-wrap:balance}
+.tg-hero-text,.tg-head .tg-take{color:var(--color-fg-muted);max-width:52ch}
+.tg-head .tg-take{color:var(--color-fg);font-size:clamp(1.0625rem,1.6vw,1.3rem);max-width:min(100%,46ch)}
+.tg .tg-head .tg-retry{border:1px solid var(--color-border-line);background:var(--color-panel);color:var(--v-blue)}
+.tg .tg-head .tg-retry:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.tg-fonte{display:inline-flex;align-items:center;gap:.6rem;width:fit-content;margin-top:.35rem;font-family:var(--font-mono);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-fonte::before{content:"";width:1.75rem;height:1px;background:currentColor}
+
+/* ---------- Início: capa em duas colunas, com o post-it ---------- */
+.tg-hero-home{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(2rem,4vw,3rem);align-items:center;padding-block:clamp(2rem,6vw,4.5rem) clamp(.5rem,2vw,1.5rem)}
+.tg-hero-home > *{max-width:none}
+.tg-hero-home .tg-hero-title{font-size:clamp(2.9rem,7.4vw,5.6rem);line-height:1}
+@media (min-width:900px){.tg-hero-home{grid-template-columns:minmax(0,1.25fr) minmax(19rem,24rem)}}
+/* "Você sabia?": um post-it amarelo preso com fita */
+.tg-hero-home .tg-fact{position:relative;overflow:visible;border:0;border-radius:2px;background:color-mix(in srgb,var(--v-yellow,#ffd166) 62%,var(--color-panel));
+  box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(var(--sombra-escura),.5)}
+.tg-hero-home .tg-fact::before{content:"";position:absolute;z-index:1;top:-.8rem;left:50%;width:6.5rem;height:1.6rem;translate:-50% 0;rotate:-3deg;
+  background:color-mix(in srgb,var(--v-blue) 16%,rgba(255,255,255,.7));border:1px solid rgba(255,255,255,.6);box-shadow:0 1px 2px rgba(20,30,70,.08)}
+@media (prefers-reduced-motion:no-preference){.tg-hero-home .tg-fact{rotate:1.6deg}}
+.tg-hero-home .tg-fact-ic,.tg .tg-fact-ic{border-radius:var(--cds-radius)}
+.tg .tg-fact-eyebrow{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em;color:var(--color-fg)}
+.tg-hero-home .tg-fact-meta{color:color-mix(in srgb,var(--color-fg) 82%,transparent)}
+.tg-fact-meta{font-family:var(--font-mono);font-size:.875rem;line-height:1.5}
+.tg-hero-home .tg-fact-link{color:var(--color-fg)}
+
+/* ---------- títulos de seção: o ícone do tema ao lado ---------- */
+.tg-sec-head{gap:var(--cds-gap-md);align-items:center}
+.tg-sec-head .tg-ic{width:2.75rem;height:2.75rem;padding:.65rem;border-radius:var(--cds-radius);background:color-mix(in srgb,var(--sec) 12%,var(--color-panel));border:1px solid color-mix(in srgb,var(--sec) 30%,var(--color-panel))}
+.tg-sec-title{font-size:clamp(1.6rem,2.8vw,2.1rem);font-weight:800;letter-spacing:-.015em;line-height:1.1}
+.tg-sec-head .tg-sec-title::after{display:none}
+.tg-sec-head .tg-sec-title{padding-right:0}
+.tg-sec-sub{max-width:62ch;margin-top:.3rem}
+@media (max-width:560px){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}.tg-sec-head .tg-sec-title{font-size:1.45rem}}
+
+/* ---------- cartões: folhas soltas sobre o caderno ---------- */
+.tg-card,.tg-filter,.tg-cite,.tg-fact,.tg-porta,.tg-fim-outra{border-color:var(--color-border-line)}
+.tg-card,.tg-filter,.tg-cite,.tg-porta,.tg-fim-outra{border-radius:var(--folha-raio)}
+.tg-sec .tg-card{box-shadow:var(--v-shadow)}
+.tg-card.tg-chegada{box-shadow:0 0 0 3px color-mix(in srgb,var(--sec) 55%,transparent),var(--v-shadow)}
+.tg-card-title{font-family:var(--font-display);font-size:1.3125rem;font-weight:700;letter-spacing:-.005em}
+.tg-base{font-family:var(--font-mono);font-size:.875rem;line-height:1.55;letter-spacing:.01em;border-top-style:dashed}
+.tg-tick,.tg-lik-cap,.tg-stack-cap{font-family:var(--font-mono);font-size:.875rem}
+
+/* barras: traço de marca-texto sobre uma linha de lápis tracejada */
+.tg-track{height:1rem;border-radius:0;background:linear-gradient(var(--cds-chart-axis,var(--color-fg-muted)),var(--cds-chart-axis,var(--color-fg-muted))) 0 100%/100% 0 no-repeat;
+  border-bottom:1.5px dashed color-mix(in srgb,var(--color-fg-muted) 45%,transparent)}
+.tg-fill{top:2px;bottom:3px;border-radius:0;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%);opacity:.85}
+.tg-moe{top:0;bottom:-1px;border-radius:2px}
+
+/* ---------- destaques: uma linha de células sobre a pauta ---------- */
+.tg-kpis{gap:1px;background:var(--color-border-line);border:1px solid var(--color-border-line);border-radius:var(--folha-raio);overflow:hidden;box-shadow:var(--v-shadow)}
+.tg-kpi{border:0;border-radius:0;background:var(--color-panel);box-shadow:none}
+.tg-kpi:has(.tg-total){background:color-mix(in srgb,var(--v-blue) 5%,var(--color-panel))}
+.tg-kpi-label{font-weight:600}
+.tg-kpi-num{font-size:clamp(2rem,3.2vw,2.5rem);letter-spacing:-.02em}
+.tg-kpi-cmp{font-family:var(--font-mono);font-size:.875rem;line-height:1.5}
+@media (max-width:560px){.tg-kpi-num{font-size:1.6rem}}
+
+/* ---------- filtro: uma questão de múltipla escolha (só uma alternativa marcada) ---------- */
+.tg-filter.tg-rec{position:relative;box-shadow:var(--v-shadow)}
+.tg-rec-onde .tg-eyebrow,.tg-mapa-onde .tg-eyebrow,.tg .tg-mapa-sub,.tg-rec-fixo-tit span{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
+.tg-rec-fixo-in{border-radius:var(--folha-raio)}
+.tg-rec-g-lab{font-family:var(--font-mono);font-weight:500;font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
+#rec-dims.tg-agrupado{counter-reset:questao alternativa;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0}
+#rec-dims .tg-rec-g{counter-increment:questao;align-items:center;column-gap:1.1rem;padding:.55rem 0;border-bottom:1px dashed var(--color-border-line)}
+#rec-dims .tg-rec-g:last-child{border-bottom:0}
+#rec-dims .tg-rec-g-lab::before{content:counter(questao) ".";display:inline-block;width:1.6rem;font:800 1rem var(--font-display);letter-spacing:0;color:var(--color-fg-muted)}
+#rec-dims.tg-agrupado button{counter-increment:alternativa;display:inline-flex;align-items:center;gap:.5rem;margin:0;padding:.35rem .5rem .35rem .2rem;border:0;background:transparent;font-weight:500;color:var(--color-fg)}
+#rec-dims.tg-agrupado button::before{content:counter(alternativa,lower-alpha);display:grid;place-items:center;flex:none;width:1.5rem;height:1.5rem;border-radius:50%;
+  border:1.5px solid var(--color-fg-muted);font:500 .875rem/1 var(--font-mono);color:var(--color-fg-muted);transition:background .15s ease,border-color .15s ease,color .15s ease}
+#rec-dims.tg-agrupado button:hover{background:transparent}
+#rec-dims.tg-agrupado button:hover::before{border-color:var(--color-fg);color:var(--color-fg)}
+#rec-dims.tg-agrupado button[aria-checked=true]{background:transparent;font-weight:700}
+#rec-dims.tg-agrupado button[aria-checked=true]::before{background:var(--color-fg);border-color:var(--color-fg);color:#fff}
+@media (min-width:720px){#rec-dims .tg-rec-g{flex-wrap:nowrap}#rec-dims .tg-rec-g-lab{flex:0 0 14rem;padding:0}#rec-dims .tg-rec-g > :not(.tg-rec-g-lab){flex:none}}
+/* segundo passo (qual grupo): alternativas com bolinha vazia */
+#rec-opts button{display:inline-flex;align-items:center;gap:.5rem;padding-left:.6rem}
+#rec-opts button::before{content:"";flex:none;width:.9rem;height:.9rem;border-radius:50%;border:1.5px solid var(--color-fg-muted)}
+#rec-opts button[aria-checked=true]::before{border:4.5px solid var(--color-fg)}
+
+/* ---------- "Ir para": marcadores de página na cor de cada capítulo ---------- */
+.tg-indice{gap:.55rem;align-items:flex-end;margin-top:-1.25rem;margin-bottom:.75rem;border:0}
+.tg-indice-lab{padding:0 .5rem .55rem 0;font-family:var(--font-mono);font-size:.875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.tg-indice a{min-height:2.75rem;padding:.75rem 1rem .5rem;border:0;border-radius:2px 2px 0 0;font-weight:700;
+  background:color-mix(in srgb,var(--sec) 15%,var(--color-panel));box-shadow:inset 0 5px 0 var(--sec),0 6px 12px -10px rgba(20,30,70,.55)}
+.tg-indice a::before{display:none}
+.tg-indice a:nth-of-type(odd){rotate:-1.2deg}.tg-indice a:nth-of-type(even){rotate:.9deg}
+.tg-indice a:hover{background:color-mix(in srgb,var(--sec) 26%,var(--color-panel))}
+@media (prefers-reduced-motion:reduce){.tg-indice a{rotate:none!important}}
+@media (max-width:560px){.tg-indice{margin-top:-1.5rem}.tg-indice-lab{flex-basis:100%;padding-bottom:.1rem}.tg-indice a{padding-inline:.8rem}}
+
+/* ---------- "Para pensar": a pergunta que fecha cada lição ---------- */
+.tg-pensar{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.25rem;border:1.5px dashed var(--sec);border-radius:var(--cds-radius);
+  background:color-mix(in srgb,var(--sec) 5%,var(--color-panel))}
+.tg-pensar-ic{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;border-radius:var(--cds-radius);background:var(--sec);color:#fff}
+.tg-pensar-ic .tg-ic{width:1.15rem;height:1.15rem}
+.tg-pensar p{max-width:70ch;color:var(--color-fg)}
+.tg-pensar-tit{display:block;font:800 1.05rem/1.4 var(--font-display);color:var(--sec-texto)}
+.tg-fechada .tg-pensar{display:none}
+
+/* ---------- anotações à mão e carimbo (enfeite, escondidos do leitor de tela) ---------- */
+.tg-anot{display:inline-block;font:600 1.4rem/1.1 var(--font-mao);color:var(--v-blue-deep,#2448b8);rotate:-3deg;pointer-events:none;user-select:none}
+.tg-anot-mapa{margin-top:.25rem}
+.tg-rec-corpo{position:relative}
+.tg-anot-filtro{position:absolute;right:0;top:-2.6rem}
+@media (max-width:719px){.tg-anot-filtro{display:none}}
+.tg-mapa-onde{position:relative}
+.tg-carimbo{position:absolute;right:0;top:-.25rem;display:grid;place-content:center;width:5.25rem;height:5.25rem;border-radius:50%;rotate:-12deg;pointer-events:none;user-select:none;
+  border:2.5px solid var(--v-blue-deep,#2448b8);box-shadow:inset 0 0 0 4px var(--color-panel),inset 0 0 0 5.5px var(--v-blue-deep,#2448b8);
+  font:800 .9rem/1 var(--font-display);letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--v-blue-deep,#2448b8);opacity:.8}
+.tg-carimbo small{display:block;margin-top:.2rem;font:500 .875rem var(--font-mono);letter-spacing:.06em}
+@media (max-width:480px){.tg-carimbo{width:4.25rem;height:4.25rem;font-size:.875rem}}
+
+/* ---------- Início: mapa, indicadores e portas ---------- */
+.tg-mapa-fig{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:16px}
+.tg-mapa-destaque{border-radius:var(--folha-raio)}
+.tg button.tg-mapa-ind{border-radius:0;border-bottom:1px dashed var(--color-border-line)}
+.tg button.tg-mapa-ind[aria-pressed=true]{border-radius:var(--folha-raio)}
+.tg-mapa-leg{font-family:var(--font-mono)}
+.tg-mapa-meta{font-family:var(--font-mono);font-size:.875rem}
+.tg-mapa-vs{border-radius:var(--folha-raio)}
+.tg-porta{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
+.tg-porta:hover{box-shadow:inset 0 3px 0 var(--sec),0 1px 0 rgba(20,30,70,.04),0 18px 36px -20px rgba(20,30,70,.35)}
+.tg-porta-tit,.tg-autor-papel,.tg-cite-lab{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
+.tg-fim-outra{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
+
+/* ---------- Sobre ---------- */
+.tg-about ul,.tg-alt ul{list-style:disc}
+.tg-about li::marker,.tg-alt li::marker{color:var(--color-fg-muted)}
+.tg-door-ic{border-radius:var(--cds-radius);background:color-mix(in srgb,var(--v-blue) 10%,var(--color-panel))}
+.tg-autor-foto{border-radius:var(--folha-raio);box-shadow:0 0 0 1px var(--color-border-line)}
+
+/* ---------- guia "Como ler" ---------- */
+.tg-guide{margin:auto;border-radius:var(--cds-radius)} /* o reset do Tailwind zera a margem que centraliza o <dialog> */
+.tg-lesson-vis{border-radius:var(--cds-radius);background:var(--quadriculado),var(--color-bg);--q:14px;border:1px solid var(--color-border-line)}
+.tg-guide-note{font-family:var(--font-mono);font-size:.875rem}
+
+/* ---------- rodapé ---------- */
+.site-foot{margin-top:0;padding-block:1.5rem 3rem;font-family:var(--font-mono);font-size:.875rem;line-height:1.6;letter-spacing:.01em;border-top:1px solid var(--color-border-line)}
+.pular{border-radius:var(--cds-radius)}
