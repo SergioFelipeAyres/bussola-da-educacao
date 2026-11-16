@@ -48,6 +48,15 @@
         ],
         "createdAt": "2026-11-16T13:43:55.937Z",
         "reason": "user confirmed: escolheu o caminho Caderno escolar; as listras repetidas são as pautas da folha, documentadas no DESIGN.md; a 404 usa a mesma folha pautada"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-16T19:34:01.536Z",
+        "reason": "Claude triage: o 'cartão de fora' é a folha do caderno (div.tg) ou a camada de papel a 70% que esmaece a pauta entre os cartões de gráfico (.tg-grid, sem borda, sombra só como véu suave); não há cartão visual dentro de cartão"
       }
     ]
   }

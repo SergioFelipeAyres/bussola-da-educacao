@@ -185,7 +185,7 @@ O sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas 
 - Capas direto na folha, sem fundo próprio; "Você sabia?" num post-it amarelo preso com fita.
 - Folhas brancas com cantos de 3px e sombra baixa; botões principais em etiqueta chanfrada.
 - Bricolage Grotesque para títulos, manchetes e números (800); Atkinson Hyperlegible Next para o texto corrido; Atkinson Hyperlegible Mono só para rótulos de medida.
-- Pictogramas Isotype, barras como traços de marca-texto sobre um trilho fino, e margem de erro sempre desenhada como barra de erro. Dentro dos cartões de gráfico o caderno se cala: o dado fica sozinho em cena, e a papelaria fica na moldura, nos títulos e nas notas.
+- Pictogramas Isotype, barras como traços de marca-texto sobre um trilho fino, e margem de erro sempre desenhada como barra de erro. Dentro dos cartões de gráfico o caderno se cala: o dado fica sozinho em cena, e a papelaria fica na moldura, nos títulos e nas notas. Entre os cartões de gráfico (Escolas e Gestores), a pauta quase some: o papel a 92% passa por cima dela, da margem rosa até a borda da folha.
 - Movimento que revela os dados em sequência e respeita `prefers-reduced-motion`.
 
 ## Colors

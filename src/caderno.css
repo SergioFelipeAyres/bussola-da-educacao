@@ -266,3 +266,11 @@ body{background-color:var(--color-bg)}
 .site-foot{margin-top:0;padding-block:1.5rem 3rem;font-size:.9375rem;line-height:1.55;border-top:1px solid var(--color-border-line)}
 .pular{border-radius:var(--cds-radius)}
 .tg-sw.tg-sw-moe{width:1.1rem;height:8px;border:0;border-inline:2px solid var(--color-fg);border-radius:0;background:linear-gradient(var(--color-fg),var(--color-fg)) center/100% 2px no-repeat}
+/* área dos gráficos: entre os cartões a pauta quase some (papel a 92% por cima). O papel vai de lado a lado da folha,
+   da margem rosa até a borda (border-image com outset, sem mexer no layout): as bordas de cima e de baixo caem entre
+   duas linhas da pauta e não aparecem. Na capa, nos títulos e na margem a pauta continua normal */
+/* vale para as três grades de cartões (.tg-grid, .tg-grid2, .tg-grid21); embaixo o papel desce até o próximo bloco
+   (outra grade ou o "Para pensar"), para o vão entre eles também ficar limpo */
+:is(#escolas,#gestores) .tg-sec :is(.tg-grid,.tg-grid2,.tg-grid21){--papel:color-mix(in srgb,var(--color-panel) 92%,transparent);
+  border-image:linear-gradient(var(--papel),var(--papel)) fill 0/0/0 16px var(--cds-gap-md) 16px}
+@media (min-width:900px){:is(#escolas,#gestores) .tg-sec :is(.tg-grid,.tg-grid2,.tg-grid21){border-image-outset:0 var(--respiro) var(--cds-gap-md) calc(var(--respiro) - 3px)}}
