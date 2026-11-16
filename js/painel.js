@@ -896,6 +896,16 @@
     // os dados da outra aba podem chegar depois: rola de novo quando o cartão já tem altura final
     setTimeout(() => { const el = document.getElementById(hash); if (el) el.scrollIntoView(); }, 700);
   };
+  // "Pergunte à Bússola": "qual região tem mais…?" abre o Compare grupos já no indicador e no tipo de grupo da pergunta.
+  // Devolve false quando o indicador não está no Compare (aí a resposta leva ao cartão)
+  window.mostraComparacao = (v, ind, grupo, resp, cat) => {
+    const m = MEAS.find((x) => x.ds === v && x.ind === ind && (x.grupo || '') === (grupo || '') && x.resp === resp);
+    if (!m) return false;
+    dash.setParams({ cmp_ind: m.id, cmp_cat: cat });
+    irPara(v, 'comparar');
+    setTimeout(() => { const el = document.getElementById('card-comparar'); if (el) el.scrollIntoView(); }, 700);
+    return true;
+  };
   // filtro em duas etapas: tocar numa dimensão só mostra os grupos dela; os dados mudam ao escolher o grupo
   let dimAberta = null;
   const PEDIDO = {

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<base href="../">
+<title>Testes do Pergunte à Bússola</title>
+<style>
+  body{margin:0;padding:1.5rem 16px 3rem;font:16px/1.5 system-ui,sans-serif;color:#1b1d24;background:#f4f6fb}
+  h1{font-size:1.4rem;margin:0 0 .3rem}
+  p{margin:.2rem 0 1rem;color:#5d6170}
+  #placar{font-weight:700;font-size:1.1rem}
+  table{width:100%;border-collapse:collapse;background:#fff;font-size:.95rem}
+  th,td{padding:.5rem .6rem;border-bottom:1px solid #e2e3ea;text-align:left;vertical-align:top}
+  td.ok{color:#0b6b52;font-weight:700}
+  td.falha{color:#b3261e;font-weight:700}
+  tr.falha{background:#fff3f2}
+  code{font-size:.85rem;color:#5d6170}
+</style>
+</head>
+<body>
+<h1>Testes do "Pergunte à Bússola"</h1>
+<p>Cada pergunta é feita à caixa com os dados reais; a resposta precisa conter todos os trechos esperados (e nenhum dos proibidos). Rode depois de qualquer mudança em <code>js/pergunte.js</code> ou nos dados. Abra pelo servidor local, por exemplo <code>http://localhost:8000/testes/pergunte.html</code>.</p>
+<p id="placar">Rodando…</p>
+<table><thead><tr><th>Pergunta</th><th>Resultado</th><th>Resposta</th></tr></thead><tbody id="linhas"></tbody></table>
+
+<script src="js/dash-shim.js"></script>
+<script src="js/pergunte.js"></script>
+<script>
+// [pergunta, trechos que precisam aparecer, trechos que não podem aparecer]
+const CASOS = [
+  // temas simples, Brasil
+  ['Quantas escolas têm internet?', ['Internet na escola', 'Brasil', 'em cada 100 escolas têm acesso à internet']],
+  ['escolas oferecem internet para os alunos?', ['Internet para os alunos']],
+  ['quantas escolas tem computador para os alunos', ['Computador e internet para os alunos']],
+  ['escolas usam chatgpt com os alunos?', ['Alunos podem usar IA']],
+  ['as escolas tem regra pro celular?', ['Regras para o celular']],
+  ['escolas têm câmeras de segurança?', ['Câmeras de vídeo']],
+  ['escolas usam reconhecimento facial', ['Reconhecimento facial']],
+  ['escolas usam biometria dos alunos', ['Identificação por digital']],
+  ['escolas protegem os dados dos alunos?', ['Proteção de dados']],
+  ['escolas têm robótica?', ['Robótica']],
+  ['escolas têm projetor?', ['Equipamentos audiovisuais']],
+  ['escolas usam sistemas digitais de gestão', ['Sistemas digitais na gestão']],
+  ['quantos gestores usam IA', ['Gestores que usam IA', 'já usam inteligência artificial']],
+  ['quantas diretoras mulheres?', ['Gestoras mulheres', 'são mulheres']],
+  ['os professores sabem usar tecnologia?', ['Professores sabem usar tecnologia nas aulas', 'concordam']],
+  // rankings
+  ['Qual o meio de comunicação mais usado no Nordeste?', ['Comunicação', 'Região: Nordeste', 'os meios mais usados são', 'não dá para dizer qual vem primeiro']],
+  ['qual o meio de comunicação menos usado?', ['o meio menos usado é', 'Telegram']],
+  ['qual a rede social mais usada pelas escolas', ['Redes sociais', 'Instagram']],
+  ['por que algumas escolas não têm internet?', ['Motivos para não ter internet', 'Entre as escolas sem internet'], ['undefined']],
+  ['qual a velocidade da internet das escolas', ['Velocidade da internet']],
+  ['qual o tipo de conexão mais comum no sul', ['Tipo de conexão', 'fibra ótica']],
+  ['quantos alunos por computador nas escolas públicas', ['Alunos por computador', 'Públicas']],
+  ['para que os gestores usam IA?', ['Para que os gestores usam IA', 'Entre os gestores que usam IA']],
+  ['onde a IA ajudou os gestores', ['Onde a IA ajudou']],
+  ['qual a idade dos gestores?', ['Idade dos gestores', 'Brasil', 'faixa de idade mais comum']],
+  ['qual a idade menos comum dos gestores', ['faixa de idade menos comum', 'até 40 anos']],
+  ['qual a cor ou raça dos gestores', ['Cor ou raça dos gestores', 'parda']],
+  ['há quanto tempo os gestores estão na direção', ['Tempo na direção']],
+  ['quais temas foram discutidos nas reuniões', ['Temas das reuniões']],
+  ['gestores fizeram reunião com as famílias sobre tecnologia?', ['Reuniões com as famílias sobre tecnologia']],
+  // item citado (foco)
+  ['quantos gestores têm mestrado', ['gestores têm mestrado'], ['especialização ou pós-graduação:']],
+  ['escolas usam whatsapp?', ['escolas usam WhatsApp']],
+  ['quantas escolas particulares tem instagram', ['Particular', 'têm perfil no Instagram']],
+  ['escolas tem tablet?', ['escolas têm tablet']],
+  ['a internet das escolas cai muito?', ['dizem que a internet cai ou para']],
+  // grupos
+  ['Quantas escolas rurais têm internet?', ['Urbana ou rural: Rural', 'Entre as escolas rurais']],
+  ['escolas pequenas têm smart tv?', ['Tamanho da escola: Até 50 matrículas', 'Smart TV']],
+  ['escolas de ensino médio têm guia de IA?', ['Até que série vai', 'Guia sobre o uso de IA']],
+  ['gestoras usam IA?', ['Sexo: Mulheres', 'Entre as gestoras']],
+  ['gestores jovens usam IA?', ['Idade: Até 40 anos']],
+  ['gestores com menos de 40 anos usam IA?', ['Idade: Até 40 anos'], ['menos usad']],
+  ['gestores negros usam IA?', ['pretas e pardas', 'Cor ou raça: Preta', 'Cor ou raça: Parda']],
+  ['Escolas particulares do Nordeste têm robótica?', ['não publica o número', 'escolas da região Nordeste', 'escolas particulares']],
+  ['escolas da bahia têm internet?', ['não publica números por estado', 'Região: Nordeste']],
+  ['quantas escolas no pará tem fibra', ['Região: Norte', 'Fibra ótica']],
+  // comparações
+  ['qual região tem menos internet?', ['Comparar: Região', 'A menor parcela fica', 'Norte']],
+  ['onde os gestores mais usam IA?', ['Comparar: Região', 'Gestores que usam IA']],
+  ['qual rede tem mais robótica?', ['Comparar: Pública ou particular']],
+  ['qual região mais usa WhatsApp?', ['Comparar: Região', 'parcela que usa WhatsApp']],
+  ['escolas rurais ou urbanas: qual tem mais computador para alunos?', ['Comparar: Urbana ou rural']],
+  ['gestores de qual idade mais usam IA?', ['Comparar: Idade']],
+  ['qual região tem mais problemas de internet', ['Para comparar os grupos, diga qual item']],
+  ['qual região tem mais internet entre as escolas rurais', ['Comparar: Região', 'não publica']],
+  // IA: "usar IA" sem citar alunos é o uso pelos gestores (com nota); "permitir aos alunos" é das escolas
+  ['qual região mais usa IA', ['Gestores que usam IA', 'Comparar: Região', 'perguntado aos gestores'], ['permite que os alunos']],
+  ['em qual região as escolas mais usam inteligência artificial?', ['Gestores que usam IA', 'perguntado aos gestores']],
+  ['as escolas permitem IA aos alunos?', ['Alunos podem usar IA'], ['perguntado aos gestores']],
+  ['qual região mais permite que os alunos usem IA', ['Alunos podem usar IA', 'Comparar: Região']],
+  ['quantos gestores usam IA no Sul?', ['Gestores que usam IA', 'Região: Sul'], ['perguntado aos gestores']],
+  // comparações pedidas de jeitos diferentes
+  ['Norte ou Sul: qual tem mais internet?', ['Comparar: Região', 'A maior parcela fica entre as escolas da região Sul'], ['Nordeste:']],
+  ['as escolas públicas ou as particulares têm mais robótica?', ['Comparar: Pública ou particular']],
+  ['escolas urbanas têm mais internet que as rurais?', ['Comparar: Urbana ou rural', 'urbanas']],
+  ['em que região as escolas têm menos computador para os alunos', ['Comparar: Região', 'A menor parcela', 'Norte']],
+  ['onde há mais câmeras nas escolas', ['Câmeras de vídeo', 'Comparar: Região']],
+  ['qual o tamanho de escola com menos internet', ['Comparar: Tamanho da escola', 'A menor parcela']],
+  ['gestores homens ou mulheres usam mais IA?', ['Gestores que usam IA', 'Comparar: Sexo']],
+  ['qual idade tem mais gestoras mulheres?', ['Gestoras mulheres', 'Comparar: Idade']],
+  ['qual raça tem mais gestoras mulheres?', ['Gestoras mulheres', 'Comparar: Cor ou raça']],
+  ['qual área tem mais conexão por rede de celular?', ['Tipo de conexão', 'Comparar: Urbana ou rural']],
+  ['qual o meio de comunicação mais usado no nordeste e no sul', ['Região: Nordeste', 'Região: Sul'], ['Comparar:']],
+  // sem resposta
+  ['qual a cor do céu', ['Ainda não sei responder essa']],
+  ['quem ganhou o jogo ontem', ['Ainda não sei responder essa']]
+];
+(async () => {
+  const corpo = document.getElementById('linhas'); let ok = 0;
+  for (const [q, tem, nao = []] of CASOS) {
+    const d = document.createElement('div');
+    const r = await window.__pergunte(q);
+    const falta = tem.filter((x) => !r.includes(x)), sobra = nao.filter((x) => r.includes(x)), passou = !falta.length && !sobra.length;
+    if (passou) ok++;
+    const tr = document.createElement('tr'); if (!passou) tr.className = 'falha';
+    tr.innerHTML = '<td></td><td class="' + (passou ? 'ok">ok' : 'falha">falhou') + '</td><td></td>';
+    tr.children[0].textContent = q;
+    tr.children[2].textContent = (passou ? '' : (falta.length ? 'faltou: ' + falta.join(' · ') + '. ' : '') + (sobra.length ? 'não devia ter: ' + sobra.join(' · ') + '. ' : '')) + r.slice(0, 260);
+    corpo.append(tr);
+  }
+  document.getElementById('placar').textContent = ok + ' de ' + CASOS.length + ' passaram' + (ok === CASOS.length ? ' ✓' : '') + ' · varredura das comparações rodando…';
+  // Varredura: para cada tema (e cada item citável dos rankings) e cada tipo de grupo, pergunta "qual <tipo> tem mais/menos <tema>?"
+  // e confere, contra os dados, o tema entendido, o tipo comparado, o grupo apontado e se o empate pelas margens foi dito
+  const { TEMAS, DIMS, SO_GESTOR } = window.__perg;
+  const PAL = ['região', 'rede', 'área', 'capital ou interior', 'tamanho de escola', 'série', 'sexo', 'idade', 'raça'];
+  const dados = { escolas: await (await fetch('data/escolas.json')).json(), gestores: await (await fetch('data/gestores.json')).json() };
+  const separa = (a, b) => a.pct - (a.moe || 0) > b.pct + (b.moe || 0);
+  const valor = (rows, ind, g, resp, cat, seg) => { const f = (r) => rows.find((x) => x.ind === ind && (x.grupo || '') === g && x.resp === r && x.cat === cat && x.seg === seg); if (!Array.isArray(resp)) return f(resp); const rs = resp.map(f); return rs.every(Boolean) ? { pct: rs.reduce((a, r) => a + r.pct, 0), moe: Math.hypot(...rs.map((r) => r.moe || 0)) } : null; };
+  let n = 0; const falhas = [];
+  for (const t of TEMAS) {
+    const alvos = t.ranking ? (t.foco || []).map(([, i]) => t.itens[i]) : [[t.nome, t.ind, t.grupo || '', t.resp || 'Sim']];
+    for (const it of alvos) {
+      const gatilho = t.ranking ? (t.nome === 'Comunicação' ? 'usam ' + it[0] : t.nome.toLowerCase() + ' ' + it[0]) : t.nome.toLowerCase();
+      for (let di = 0; di < DIMS.length; di++) {
+        const cat = DIMS[di][0];
+        if (cat === t.propria || (t.ds === 'escolas' && SO_GESTOR.includes(cat))) continue;
+        for (const menos of [false, true]) {
+          const q = 'qual ' + PAL[di] + ' tem ' + (menos ? 'menos' : 'mais') + ' ' + gatilho + '?'; n++;
+          const d = await window.__perguntaEl(q), txt = d.textContent, c = d.querySelector('[data-ponta]');
+          const rows = dados[t.ds], [, ind, g = '', resp = 'Sim'] = it;
+          const segs = [...new Set(rows.filter((x) => x.cat === cat && x.ind === ind).map((x) => x.seg))].filter((x) => x !== 'Não respondeu' && !/^Públicas/.test(x));
+          const its = segs.map((seg) => ({ seg, r: valor(rows, ind, g, resp, cat, seg) })).filter((x) => x.r).sort((a, b) => b.r.pct - a.r.pct);
+          const erro = [];
+          if (!txt.includes('Entendi: ' + t.nome)) erro.push('tema errado');
+          else if (its.length > 1) {
+            if (!c) erro.push('não comparou');
+            else {
+              const ponta = menos ? its.slice().reverse() : its, [a, b] = ponta, empate = menos ? !separa(b.r, a.r) : !separa(a.r, b.r);
+              if (c.dataset.cat !== cat) erro.push('tipo comparado: ' + c.dataset.cat);
+              if (c.dataset.ponta !== a.seg) erro.push('apontou ' + c.dataset.ponta + ', devia ser ' + a.seg);
+              if ((c.dataset.empate === '1') !== empate) erro.push(empate ? 'devia dizer que as margens se sobrepõem' : 'disse empate sem haver');
+            }
+          }
+          if (/undefined|NaN/.test(txt)) erro.push('texto com undefined/NaN');
+          if (erro.length) falhas.push([q, erro.join('; '), txt]);
+        }
+      }
+    }
+  }
+  for (const [q, e, txt] of falhas) {
+    const tr = document.createElement('tr'); tr.className = 'falha';
+    tr.innerHTML = '<td></td><td class="falha">falhou</td><td></td>'; tr.children[0].textContent = q; tr.children[2].textContent = e + '. ' + txt.slice(0, 220);
+    corpo.append(tr);
+  }
+  document.getElementById('placar').textContent = ok + ' de ' + CASOS.length + ' perguntas passaram · varredura: ' + (n - falhas.length) + ' de ' + n + ' comparações certas' + (ok === CASOS.length && !falhas.length ? ' ✓' : '');
+})();
+</script>
+</body>
+</html>

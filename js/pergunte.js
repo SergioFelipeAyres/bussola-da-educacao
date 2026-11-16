@@ -62,7 +62,7 @@
   // ranking: "itens" = [rótulo, ind, grupo, resp ou lista de respostas somadas]; "um"/"varios" nomeiam o primeiro;
   //          "val" diz o que o número conta; "base" explica de quem se fala, quando não são todas as escolas/gestores
   // "propria": tipo de grupo que é o próprio tema (ex.: em "idade", "jovens" é a resposta, não um grupo)
-  const IA = '(\\bia\\b|inteligencia artificial|chatgpt)';
+  const IA = '(\\bia\\b|inteligencia artificial|chat ?gpt|gemini|copilot)';
   const TEMAS = [
     // ----- Escolas · Conexão -----
     { nome: 'Motivos para não ter internet', sec: 'teal', ds: 'escolas', card: 'card-sem-internet', ranking: true,
@@ -77,14 +77,16 @@
       itens: [['a internet cai ou para', 'A19', 'A Internet cai ou para de funcionar'], ['a qualidade fica ruim', 'A19', 'A qualidade da Internet fica ruim'], ['o sinal não chega às salas mais distantes', 'A19', 'O sinal de Internet não chega às salas que ficam mais distantes do roteador'],
         ['o pacote de dados acaba', 'A19', 'O pacote de Internet da escola acaba'], ['falta manutenção nos equipamentos', 'A19', 'Falta manutenção para os equipamentos de Internet da escola'],
         ['é difícil pagar o plano', 'A19', 'A escola tem dificuldades para pagar pelo plano de Internet'], ['não aguenta muitos acessos ao mesmo tempo', 'A19', 'A Internet da escola não suporta muitos acessos ao mesmo tempo']].map((x) => [...x, ['Sempre', 'Quase sempre']]),
-      um: 'o problema mais frequente', varios: 'os problemas mais frequentes', val: 'dizem que isso acontece sempre ou quase sempre', base: 'Entre as escolas com internet.' },
+      um: 'o problema mais frequente', varios: 'os problemas mais frequentes', val: 'dizem que isso acontece sempre ou quase sempre', base: 'Entre as escolas com internet.',
+      foco: [[/\bcai\b|caindo|para de funcionar/, 0], [/qualidade|ruim/, 1], [/sinal/, 2], [/pacote/, 3], [/manutencao/, 4], [/pagar|caro|custo/, 5], [/acessos|aguenta/, 6]],
+      focoTxt: (l) => 'dizem que ' + l.replace(/^a internet /, 'a internet ') + ' sempre ou quase sempre' },
     { nome: 'Velocidade da internet', sec: 'teal', ds: 'escolas', card: 'card-velocidade', ranking: true, kw: /velocidade|lenta|rapida|mbps|megas?\b|banda/,
       itens: [['até 50 Mbps', 'A3_1', '', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps']], ['de 51 a 250 Mbps', 'A3_1', '', ['De 51 Mbps a 100 Mbps', 'De 101 Mbps a 250 Mbps']],
         ['mais de 250 Mbps', 'A3_1', '', ['De 251 Mbps a 500 Mbps', 'De 501 Mbps a 1 Gbps', 'Mais de 1 Gbps']], ['velocidade não informada', 'A3_1', '', 'Não sabe']],
       um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com internet. Mbps mede a velocidade: quanto maior, mais rápida.' },
     { nome: 'Fibra ótica', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', kw: /fibra/, ind: 'A2', resp: 'Conexão via fibra ótica',
       txt: 'das escolas com internet estão conectadas por fibra ótica', txtG: 'das que têm internet estão conectadas por fibra ótica' },
-    { nome: 'Tipo de conexão', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', ranking: true, kw: /tipo de (conexao|internet)|\bcabo\b|satelite|\bradio\b|[345]g\b|como .*conecta/,
+    { nome: 'Tipo de conexão', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', ranking: true, kw: /tipo de (conexao|internet)|\bcabo\b|satelite|\bradio\b|[345]g\b|rede de celular|dados moveis|(conexao|internet) (por|via) |como .*conecta/,
       itens: [['fibra ótica', 'A2', '', 'Conexão via fibra ótica'], ['cabo', 'A2', '', 'Conexão via cabo'], ['satélite', 'A2', '', 'Conexão via satélite'], ['rede de celular (3G, 4G ou 5G)', 'A2', '', 'Modem 3G, 4G ou 5G'], ['rádio', 'A2', '', 'Conexão via rádio']],
       um: 'a conexão mais comum', varios: 'as conexões mais comuns', val: 'usam essa conexão como principal', base: 'Entre as escolas com internet.',
       foco: [[/\bcabo\b/, 1], [/satelite/, 2], [/[345]g\b|rede de celular/, 3], [/\bradio\b/, 4]], focoTxt: (l) => 'usam ' + l + ' como conexão principal' },
@@ -98,9 +100,9 @@
       itens: [['computador de mesa', 'B2', 'Computador de mesa'], ['computador portátil', 'B2', 'Computador portátil'], ['tablet', 'B2', 'Tablet']],
       um: 'o tipo mais comum', varios: 'os tipos mais comuns', val: 'têm esse tipo de computador', base: 'Entre as escolas que têm computador.',
       foco: [[/mesa|desktop/, 0], [/notebook|portat|laptop/, 1], [/tablet/, 2]], focoTxt: (l) => 'têm ' + l },
-    { nome: 'Computador e internet para os alunos', sec: 'teal', ds: 'escolas', card: 'card-camadas', kw: /computador/, ind: 'A8', txt: 'escolas oferecem computador e internet aos alunos' },
+    { nome: 'Computador e internet para os alunos', sec: 'teal', ds: 'escolas', card: 'card-camadas', kw: /computador|\bpcs?\b|\bmicros?\b/, ind: 'A8', txt: 'escolas oferecem computador e internet aos alunos' },
     { nome: 'Internet para os alunos', sec: 'teal', ds: 'escolas', card: 'card-camadas', kw: /(internet|conex|wi.?fi).*(aluno|estudante)|(aluno|estudante).*(internet|conex|wi.?fi)/, ind: 'A7', txt: 'escolas oferecem internet para os alunos' },
-    { nome: 'Internet na escola', sec: 'teal', ds: 'escolas', card: 'card-camadas', kw: /internet|conectad|conexao|wi.?fi/, ind: 'A1', txt: 'escolas têm acesso à internet' },
+    { nome: 'Internet na escola', sec: 'teal', ds: 'escolas', card: 'card-camadas', kw: /internet|\bnet\b|conectad|conexao|wi.?fi|online/, ind: 'A1', txt: 'escolas têm acesso à internet' },
     { nome: 'Última compra de equipamentos', sec: 'orange', ds: 'escolas', card: 'card-renovacao', ranking: true, kw: /compra|comprou|doac|renov|equipamentos? novos?|ultima vez/,
       itens: [['há menos de 1 ano', 'K1_1', '', 'Há menos de 1 ano'], ['entre 1 e 5 anos', 'K1_1', '', 'Entre 1 e 5 anos'], ['entre 6 e 10 anos', 'K1_1', '', 'Entre 6 e 10 anos'], ['há mais de 10 anos', 'K1_1', '', 'Há mais de 10 anos'], ['não sabem', 'K1_1', '', 'Não sabe']],
       um: 'o tempo mais comum desde a última compra ou doação', varios: 'os tempos mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com computador.' },
@@ -111,13 +113,13 @@
     { nome: 'Celulares da escola', sec: 'orange', ds: 'escolas', card: 'card-recursos', kw: /celulares? (da escola|para (os )?alunos|para (os )?professores)|empresta .*celular/, ind: 'B16', txt: 'escolas têm celulares para alunos e professores' },
     // ----- Escolas · Regras, IA e dados -----
     { nome: 'Guia sobre o uso de IA', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: new RegExp('(guia|regra|orienta|norma).*' + IA + '|' + IA + '.*(guia|regra|orienta|norma)'), ind: 'E5A', txt: 'escolas têm um guia sobre o uso de inteligência artificial' },
-    { nome: 'Regras para o celular', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /celular|telefone|smartphone/, ind: 'C3C', txt: 'escolas têm regras para o uso do celular pelos alunos' },
-    { nome: 'Proteção de dados', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /protecao de dados|dados pessoais|lgpd|privacidade/, ind: 'H1', txt: 'escolas têm política de proteção de dados' },
+    { nome: 'Regras para o celular', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /celular|telefone|smartphone|\bcel\b/, ind: 'C3C', txt: 'escolas têm regras para o uso do celular pelos alunos' },
+    { nome: 'Proteção de dados', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /protecao de dados|dados pessoais|dados dos alunos|lgpd|privacidade/, ind: 'H1', txt: 'escolas têm política de proteção de dados' },
     { nome: 'Sistemas digitais na gestão', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /sistemas? (digita|de gestao)|gestao digital|software de gestao/, ind: 'E1D', txt: 'escolas usam sistemas digitais na gestão escolar' },
     { nome: 'Projetos de educação digital e midiática', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: /educacao (digital|midiatica)|midiatica|projetos? de educacao/, ind: 'I5', txt: 'escolas têm projetos de educação digital e midiática' },
     { nome: 'Reconhecimento facial', sec: 'purple', ds: 'escolas', card: 'card-vigilancia', kw: /facial|reconhecimento/, ind: 'E4B', txt: 'escolas usam reconhecimento facial dos alunos' },
-    { nome: 'Identificação por digital', sec: 'purple', ds: 'escolas', card: 'card-vigilancia', kw: /impressao digital|pela digital|biometri|palma da mao|digitais dos alunos/, ind: 'E4A', txt: 'escolas identificam os alunos pela digital ou palma da mão' },
-    { nome: 'Câmeras de vídeo', sec: 'purple', ds: 'escolas', card: 'card-vigilancia', kw: /camera|vigilancia|monitorament/, ind: 'E3', txt: 'escolas têm câmeras de vídeo' },
+    { nome: 'Identificação por digital', sec: 'purple', ds: 'escolas', card: 'card-vigilancia', kw: /impressao digital|(pela|por) digital|biometri|palma da mao|digitais dos alunos/, ind: 'E4A', txt: 'escolas identificam os alunos pela digital ou palma da mão' },
+    { nome: 'Câmeras de vídeo', sec: 'purple', ds: 'escolas', card: 'card-vigilancia', kw: /camera|vigilancia|monitorament|seguranca da escola|cameras? de seguranca/, ind: 'E3', txt: 'escolas têm câmeras de vídeo' },
     // ----- Gestores · IA (antes de "IA dos alunos", que casa com qualquer menção a IA) -----
     { nome: 'Para que os gestores usam IA', sec: 'purple', ds: 'gestores', card: 'card-ia-usos', ranking: true, pessoa: true, kw: new RegExp('(para (que|qu[eê])|como) .*' + IA + '|usos? d[ae] ' + IA + '|usam (a )?' + IA + ' para'),
       itens: ['Transcrever, resumir, revisar ou traduzir textos', 'Criar conteúdos audiovisuais, como imagens, apresentações de slides, vídeos', 'Produzir relatórios', 'Organizar documentos e certidões da escola',
@@ -131,8 +133,9 @@
         ['segurança e prevenção à violência', 'D9C', 'Segurança e prevenção à violência na escola'], ['integrar as áreas pedagógica, financeira e administrativa', 'D9C', 'Integração entre as áreas de gestão pedagógica, financeira e administrativa'],
         ['manter as aulas em emergências', 'D9C', 'Acesso às atividades educacionais em períodos de emergência, como durante crises climáticas, de saúde, conflitos armados, entre outros'], ['reduzir evasão, faltas e abandono', 'D9C', 'Redução de evasão, faltas ou abandono escolar dos alunos']],
       um: 'a área em que a IA mais ajudou', varios: 'as áreas em que mais ajudou', val: 'dizem que a IA contribuiu nisso', base: 'Entre os gestores que usam IA na gestão.' },
-    { nome: 'Gestores que usam IA', sec: 'purple', ds: 'gestores', card: 'card-ia-adocao', pessoa: true, kw: new RegExp('(gestor|diretor|direc|gestoras|diretoras).*' + IA + '|' + IA + '.*(gestor|diretor|direc|gestoras|diretoras)'), ind: 'D9A', txt: 'gestores já usam inteligência artificial na gestão da escola' },
-    { nome: 'Alunos podem usar IA', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: new RegExp(IA), ind: 'E5B', txt: 'escolas permitem que os alunos usem inteligência artificial' },
+    { nome: 'Alunos podem usar IA', sec: 'purple', ds: 'escolas', card: 'card-politicas', kw: new RegExp('(alun|estudant|permit|deix|liber|proib|pode).*' + IA + '|' + IA + '.*(alun|estudant|permit|deix|liber|proib)'), ind: 'E5B', txt: 'escolas permitem que os alunos usem inteligência artificial' },
+    { nome: 'Gestores que usam IA', sec: 'purple', ds: 'gestores', card: 'card-ia-adocao', pessoa: true, kw: new RegExp(IA), ind: 'D9A',
+      nota: [/gestor|diretor|direc/, 'Na pesquisa, o uso de IA é perguntado aos gestores, sobre a gestão da escola. Das escolas, a pesquisa pergunta se permitem que os alunos usem IA e se têm um guia sobre IA (experimente "escolas permitem IA aos alunos?").'], txt: 'gestores já usam inteligência artificial na gestão da escola' },
     // ----- Gestores · Tecnologia na gestão (reuniões antes de "comunicação", que também fala de famílias) -----
     { nome: 'Reuniões com professores sobre tecnologia', sec: 'blue', ds: 'gestores', card: 'card-reunioes', pessoa: true, kw: /reuni.*(professor|funcionari|equipe)|(professor|funcionari|equipe).*reuni/, ind: 'D3_1', txt: 'gestores fizeram reunião com professores e funcionários sobre tecnologia nos últimos 12 meses' },
     { nome: 'Reuniões com as famílias sobre tecnologia', sec: 'blue', ds: 'gestores', card: 'card-reunioes', pessoa: true, kw: /reuni.*(pais|familia|responsav)|(pais|familia|responsav).*reuni/, ind: 'D6', txt: 'gestores fizeram reunião com pais, mães e responsáveis sobre tecnologia nos últimos 12 meses' },
@@ -193,6 +196,24 @@
     const rs = resp.map((r) => linha(rows, ind, grupo, r, cat, seg));
     return rs.every(Boolean) ? { pct: rs.reduce((a, r) => a + Number(r.pct), 0), moe: Math.hypot(...rs.map((r) => Number(r.moe) || 0)) } : null;
   };
+
+  // ---------- "qual região tem mais…?": tipo de grupo a comparar ----------
+  const DIMS = [
+    ['REGIÃO', /\bregi(ao|oes)\b|\bonde\b|\bem que parte do (brasil|pais)\b/],
+    ['DEPENDÊNCIA ADMINISTRATIVA', /\brede(s)?\b(?!\s+(socia|de celular|movel|wi))|publicas? ou particular|particular(es)? ou publica|municipais ou estaduais|estaduais ou municipais/],
+    ['ÁREA', /\barea\b|rura(l|is) ou urbana|urbanas? ou rura|campo ou (a )?cidade|cidade ou (o )?campo/],
+    ['LOCALIZAÇÃO', /capita(l|is) ou (o )?interior|interior ou (as? )?capita/],
+    ['PORTE', /\btamanho\b|\bporte\b|pequenas ou grandes|grandes ou pequenas/],
+    ['NÍVEL DE ENSINO MAIS ELEVADO OFERTADO', /\bseries?\b|\bnivel de ensino\b|etapas? de ensino/],
+    ['SEXO', /\bsexo\b|homens ou mulheres|mulheres ou homens/],
+    ['FAIXA ETÁRIA', /\bidade\b|faixa etaria|mais (velhos|novos) ou/],
+    ['COR OU RAÇA', /\braca\b|cor ou raca/]
+  ];
+  const SUPER = /\b(mais|menos|maior|menor|maiores|menores|melhor|pior)\b/;
+  // a pesquisa não publica estados: o estado vira a região dele, com um aviso
+  const UF = { Norte: 'acre|amapa|amazonas|para|rondonia|roraima|tocantins|manaus|belem', Nordeste: 'alagoas|bahia|ceara|maranhao|paraiba|pernambuco|piaui|rio grande do norte|sergipe|salvador|fortaleza|recife',
+    Sudeste: 'espirito santo|minas gerais|minas|rio de janeiro|sao paulo|belo horizonte', Sul: 'parana|rio grande do sul|santa catarina|porto alegre|curitiba|florianopolis', 'Centro-Oeste': 'distrito federal|brasilia|goias|mato grosso do sul|mato grosso|goiania' };
+  const estado = (q) => { for (const [reg, nomes] of Object.entries(UF)) { const m = q.match(new RegExp('\\b(' + nomes + ')\\b')); if (m && !(m[1] === 'para' && !/\b(no|do|estado do) para\b/.test(q))) return [reg, m[1]]; } return null; };
 
   const MENOS = /\bmenos\b(?!\s+de\s+\d)|\bmenor(es)?\b|\bmenos (usad|comum|citad|frequent|popular)|\bpior(es)?\b|\bmais raros?\b|\bmais rara\b/;
 
@@ -258,14 +279,80 @@
     return c;
   };
 
+  // compara todos os grupos de um tipo (ex.: as 5 regiões) para um indicador, com a regra das margens
+  const compara = async (t, cat, q, aviso, so) => {
+    const c = cartao(t), rows = await dados(t.ds);
+    const ent = '<p class="tg-perg-entendi">Entendi: <b>' + t.nome + '</b><b>Comparar: ' + NOME_TIPO[cat] + '</b></p>';
+    if (!rows) { c.innerHTML = ent + '<p class="tg-perg-frase">Não foi possível carregar os dados. Verifique a conexão e tente de novo.</p>'; return c; }
+    // o que comparar: o indicador do tema, ou o item citado de um ranking ("qual região mais usa WhatsApp")
+    let ind = t.ind, grupo = t.grupo || '', resp = t.resp || 'Sim', txt = cat ? (t.txtG || (t.txt || '').replace(/^(escolas|gestores escolares|gestores) /, '')) : t.txt;
+    if (t.ranking) {
+      const f = t.foco && t.foco.find(([re]) => re.test(q));
+      if (!f) {
+        c.innerHTML = ent + '<p class="tg-perg-frase">Para comparar os grupos, diga qual item: por exemplo, "' + (t.nome === 'Comunicação' ? 'qual região mais usa WhatsApp?' : 'qual região tem mais \u201c' + t.itens[0][0] + '\u201d?') + '"</p>' +
+          '<p class="tg-perg-var">Itens deste tema: ' + t.itens.map((x) => x[0]).join(', ') + '.</p>';
+        return c;
+      }
+      const it = t.itens[f[1]]; [ind, grupo, resp] = [it[1], it[2], it[3] || 'Sim']; txt = t.focoTxt(it[0]);
+    }
+    const segs = so || [...new Set(rows.filter((r) => r.cat === cat && r.ind === ind).map((r) => r.seg))].filter((x) => x !== 'Não respondeu' && !/^Públicas/.test(x));
+    const its = segs.map((seg) => ({ seg, r: valor(rows, ind, grupo, resp, cat, seg) })).filter((x) => x.r).sort((a, b) => b.r.pct - a.r.pct);
+    const br = valor(rows, ind, grupo, resp);
+    if (its.length < 2) { c.innerHTML = ent + '<p class="tg-perg-frase">A pesquisa não tem esse número para esses grupos.</p>'; return c; }
+    const menos = MENOS.test(q), ponta = menos ? its.slice().reverse() : its, [a, b] = ponta;
+    const cem = its.some((x) => precisaCem(x.r.pct)) || !!(br && precisaCem(br.pct)), n = freq(a.r.pct, cem);
+    const onde = (seg) => { const s2 = quem(t, cat, seg); return s2.charAt(0).toLowerCase() + s2.slice(1); };
+    const empate = b && (menos ? !separa(b.r, a.r) : !separa(a.r, b.r));
+    const qual = menos ? 'menor' : 'maior';
+    const frase = empate
+      ? 'A ' + qual + ' parcela que ' + verbo1('1 em cada', txt) + ' fica ' + onde(a.seg) + ' e ' + onde(b.seg) + ', mas as margens de erro se sobrepõem: a ordem entre ' + (t.ds === 'gestores' ? 'eles' : 'elas') + ' pode ser outra.'
+      : 'A ' + qual + ' parcela fica ' + onde(a.seg) + ': <strong>' + n + '</strong> ' + verbo1(n, txt) + '.';
+    c.innerHTML = (aviso ? '<p class="tg-perg-var tg-perg-aviso">' + aviso + '</p>' : '') + ent + '<p class="tg-perg-frase">' + frase + (br ? ' No Brasil, ' + freq(br.pct, cem) + '.' : '') + '</p>' + iso(a.r.pct, t.pessoa) +
+      '<p class="tg-perg-var">' + esc(segCurto(a.seg)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (br ? '. Brasil: ' + n1(br.pct) + '%.' : '.') + '</p>' +
+      '<ul class="tg-perg-lista">' + ponta.map((x) => '<li><span>' + esc(segCurto(x.seg)) + (x.r.moe ? '' : '*') + '</span><span class="v">' + n1(x.r.pct) + '%</span><span class="tr" aria-hidden="true"><i style="width:' + Math.min(100, x.r.pct) + '%"></i></span></li>').join('') + '</ul>' +
+      (its.some((x) => !x.r.moe) ? '<p class="tg-perg-var">* sem margem de erro estimada (o valor vale para a amostra).</p>' : '');
+    // para a bateria de testes: qual grupo foi apontado e se houve empate
+    c.dataset.ponta = a.seg; c.dataset.empate = empate ? '1' : '0'; c.dataset.cat = cat;
+    const bt = el('button', 'tg-perg-ir', 'Ver a comparação no painel, com a margem de cada grupo <span aria-hidden="true">→</span>'); bt.type = 'button';
+    bt.addEventListener('click', () => {
+      const j = bt.closest('dialog'); if (j) j.close();
+      if (!(window.mostraComparacao && window.mostraComparacao(t.ds, ind, grupo, resp, cat)) && window.mostraNoPainel) window.mostraNoPainel(t.ds, cat + '|' + a.seg, t.card);
+    });
+    c.append(bt);
+    return c;
+  };
+
   const pergunta = async (txt, saida) => {
     const q = ' ' + sem(txt) + ' ';
     pergunta.ultima = q;
-    const t = TEMAS.find((x) => x.kw.test(q));
+    const cands = TEMAS.filter((x) => x.kw.test(q));
+    let t = cands[0];
+    if (t && t.propria && cands.length > 1 && SUPER.test(q) && DIMS.some(([c, re]) => c === t.propria && re.test(q))) t = cands.find((x) => x !== t && !x.propria) || cands[1];
     let gs = GRUPOS.filter(([re]) => re.test(q)).map(([, c, s]) => [c, s]);
     // o tipo de grupo que é o próprio tema não vira grupo ("gestores jovens" em "idade"); Escolas não tem os grupos de Gestores
+    // estado: a pesquisa não publica; usa a região dele, com aviso
+    const uf = estado(q); let aviso = '';
+    if (uf && !gs.some(([c]) => c === 'REGIÃO')) {
+      gs.push(['REGIÃO', uf[0]]);
+      aviso = 'A pesquisa não publica números por estado ou cidade. A resposta é da região ' + uf[0] + ', onde fica o lugar da pergunta.';
+    }
     if (t) gs = gs.filter(([c]) => c !== t.propria && (t.ds === 'gestores' || !SO_GESTOR.includes(c)));
     saida.replaceChildren();
+    const nota = t && t.nota && !t.nota[0].test(q) ? t.nota[1] : '';
+    // "qual região tem mais…?", "onde…menos…?": compara todos os grupos daquele tipo
+    // dois ou mais grupos do mesmo tipo e "mais/menos" ("Norte ou Sul: qual tem mais internet?"): compara só eles
+    if (t && SUPER.test(q) && gs.length > 1 && new Set(gs.map(([c]) => c)).size === 1 && (!t.ranking || (t.foco && t.foco.some(([re]) => re.test(q))))) {
+      saida.append(await compara(t, gs[0][0], q, [aviso, t.nota && !t.nota[0].test(q) ? t.nota[1] : ''].filter(Boolean).join(' '), gs.map(([, s]) => s)));
+      return;
+    }
+    const dim = t && SUPER.test(q) && DIMS.find(([c, re]) => re.test(q) && c !== t.propria && (t.ds === 'gestores' || !SO_GESTOR.includes(c)));
+    if (dim) gs = gs.filter(([c]) => c !== dim[0]);
+    if (dim) {
+      const nota2 = gs.length ? 'A comparação é entre todas as ' + (t.ds === 'gestores' ? 'pessoas' : 'escolas') + ': a pesquisa não publica ' + NOME_TIPO[dim[0]].toLowerCase() + ' só dentro de ' + gs.map(([c, s]) => nomeGrupo(c, s)).join(' e ') + '.' : '';
+      saida.append(await compara(t, dim[0], q, [nota, nota2].filter(Boolean).join(' ')));
+      return;
+    }
+    if (aviso || nota) saida.append(el('p', 'tg-perg-var tg-perg-aviso', [aviso, nota].filter(Boolean).join(' ')));
     if (!t) {
       saida.append(el('article', 'tg-perg-res tg-perg-nao', '<p class="tg-perg-frase">Ainda não sei responder essa.</p><p class="tg-perg-var">Pergunte sobre um destes temas, com ou sem um grupo (uma região, escolas rurais ou particulares, escolas pequenas, gestoras, gestores jovens…):</p><ul>' + TEMAS.map((x) => '<li>' + x.nome + '</li>').join('') + '</ul>'));
       return;
@@ -282,8 +369,11 @@
       saida.append(el('p', 'tg-perg-var tg-perg-aviso', 'A pesquisa conta separadamente pessoas pretas e pardas, que juntas formam a população negra. Veja cada grupo:'));
     for (const c of await Promise.all((gs.length ? gs.slice(0, 3) : [[null, null]]).map(([c, s]) => responde(t, c, s)))) saida.append(c);
   };
+  // para a bateria de testes (testes/pergunte.html): os temas e os tipos de grupo
+  window.__perg = { TEMAS, DIMS, GRUPOS, SO_GESTOR };
   // para testes no console: window.__pergunte('quantas escolas rurais têm internet?')
-  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-frase')].map((e) => e.textContent).join(' | ')); };
+  window.__perguntaEl = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => d); };
+  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-frase, .tg-perg-var')].map((e) => e.textContent).join(' | ')); };
 
   // ---------- a caixa (a mesma no Início e na janela) ----------
   let n = 0;
