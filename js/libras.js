@@ -62,7 +62,8 @@
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'tg-libras' + (tem ? '' : ' tg-libras-embreve'); b.dataset.libras = id;
     b.innerHTML = MAO + '<span>Ver em Libras</span>' + (tem ? '' : '<small>em breve</small>');
-    b.setAttribute('aria-label', 'Ver em Libras: ' + titulo + (tem ? '' : ' (vídeo em breve)'));
+    // o nome falado começa pelo texto visível ("Ver em Libras", "em breve"), para o comando de voz achar o botão
+    b.setAttribute('aria-label', (tem ? 'Ver em Libras: ' : 'Ver em Libras, em breve: ') + titulo);
     if (tem) b.addEventListener('click', () => abreVideo(id, titulo));
     else b.setAttribute('aria-disabled', 'true');
     return b;
@@ -83,7 +84,9 @@
     const head = sec.querySelector(':scope > .tg-sec-head'); if (!head || !(sec.id in VIDEOS)) return;
     const b = botao(sec.id, head.querySelector('.tg-sec-title').textContent.trim()); if (!b) return;
     const rec = head.querySelector(':scope > .tg-sec-toggle');
-    if (rec) rec.before(b); else head.append(b);
+    // os dois botões ficam juntos: quando não cabem ao lado do título, descem os dois para a linha de baixo, à direita
+    const grupo = document.createElement('div'); grupo.className = 'tg-sec-botoes';
+    if (rec) { rec.before(grupo); grupo.append(b, rec); } else { head.append(grupo); grupo.append(b); }
   });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', monta); else monta();

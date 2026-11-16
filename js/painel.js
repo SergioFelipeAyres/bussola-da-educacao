@@ -1920,7 +1920,7 @@
   const fechadas = lerFechadas();
   const CHEV = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
   const marcaSecao = (sec, aberta) => {
-    const b = sec.querySelector(':scope > .tg-sec-head > .tg-sec-toggle'), corpo = sec.querySelector(':scope > .tg-sec-corpo');
+    const b = sec.querySelector(':scope > .tg-sec-head .tg-sec-toggle'), corpo = sec.querySelector(':scope > .tg-sec-corpo');
     const nome = sec.querySelector('.tg-sec-title').textContent;
     sec.classList.toggle('tg-fechada', !aberta); corpo.hidden = !aberta;
     b.setAttribute('aria-expanded', aberta ? 'true' : 'false');

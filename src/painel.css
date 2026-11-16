@@ -768,3 +768,13 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg .tg-mapa-ind-v{grid-column:2}
 }
 .tg-alt-citar{margin:.7rem 0 0;padding-top:.6rem;border-top:1px dashed var(--color-border-line);color:var(--color-fg);line-height:1.45;user-select:all}
+
+/* alvos de 44px também com mouse: quem navega com o cursor da cabeça, do olhar ou de um acionador usa "mouse",
+   e mirar é difícil; vale para todo controle que não seja link no meio de uma frase */
+.nav-brand,.nav-link{min-height:2.75rem;display:inline-flex;align-items:center}
+.tg .tg-acoes button,.tg button.tg-libras,.tg button.tg-sec-toggle,.tg .tg-rec-opts button,.tg .tg-rec-dims.tg-agrupado button,
+.tg .tg-retry,.tg .tg-cite-copy,.tg button.tg-mapa-ir,.tg button.tg-guide-btn,.tg .tg-rec-mudar,.tg .tg-hero-home #fato-outro,.tg-indice a{min-height:2.75rem}
+.tg button.tg-sec-toggle{min-width:2.75rem}
+.tg .tg-share{width:2.75rem;height:2.75rem;top:.45rem;right:.45rem}
+.tg select{min-height:2.75rem}
+.tg .tg-fact-link,.tg .tg-fim-citar{display:inline-flex;align-items:center;min-height:2.75rem}

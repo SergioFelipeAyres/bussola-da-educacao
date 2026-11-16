@@ -160,6 +160,44 @@
       </article>
     </div>
 
+    <section class="tg-sec tg-acess" id="acessibilidade" aria-labelledby="sobre-acess">
+      <h2 class="tg-sec-title" id="sobre-acess">Acessibilidade</h2>
+      <p class="tg-sec-sub">A Bússola foi feita para ser lida por todo mundo, inclusive por quem usa leitor de tela, Libras, letra grande ou não usa as mãos. A meta é a WCAG 2.2, nível AA. Veja como usar cada recurso.</p>
+      <div class="tg-grid2">
+        <article class="tg-card tg-about">
+          <div class="tg-about-head"><span class="tg-door-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg></span><h3 class="tg-card-title">Ler e ouvir</h3></div>
+          <ul>
+            <li>Todo gráfico tem <b>Ler em texto</b>, com os números por extenso, e <b>Ouvir</b>, que lê o texto em voz alta.</li>
+            <li>O site funciona com leitores de tela, como NVDA, VoiceOver e TalkBack: botões e gráficos têm nome, e os textos que mudam com o filtro são anunciados.</li>
+          </ul>
+        </article>
+        <article class="tg-card tg-about">
+          <div class="tg-about-head"><span class="tg-door-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11.5V5.5a1.5 1.5 0 0 1 3 0V10M10 9.5V4a1.5 1.5 0 0 1 3 0v6M13 9.5V5a1.5 1.5 0 0 1 3 0v6M16 10.5V8a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-.6a6.4 6.4 0 0 1-5-2.4L3.6 15.4a1.5 1.5 0 0 1 2.3-1.9L7 14.6"/></svg></span><h3 class="tg-card-title">Libras</h3></div>
+          <ul>
+            <li><b>VLibras</b>: toque no botão azul com a mão, à direita da tela, e depois no texto que quer ver traduzido pelo avatar. É uma tradução automática, do governo federal, e pode errar alguns termos de estatística.</li>
+            <li><b>Ver em Libras</b>: vídeos com intérprete na abertura, no guia "Como ler" e em cada seção. Os que ainda não foram gravados aparecem marcados "em breve".</li>
+          </ul>
+        </article>
+        <article class="tg-card tg-about">
+          <div class="tg-about-head"><span class="tg-door-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19l5-14 5 14M6 14h6M15 19l3-8 3 8M16 16.5h4"/></svg></span><h3 class="tg-card-title">Letra maior e menos movimento</h3></div>
+          <ul>
+            <li>Aumente a letra no navegador (no computador, <kbd>Ctrl</kbd> e <kbd>+</kbd>; no celular, no tamanho de fonte do aparelho). O site acompanha até o dobro do tamanho sem cortar nada.</li>
+            <li>Nenhum texto fica abaixo de 14 pixels, e o texto tem contraste alto com o fundo.</li>
+            <li>Se o aparelho estiver com <b>reduzir movimento</b> ligado, nada se mexe na tela.</li>
+          </ul>
+        </article>
+        <article class="tg-card tg-about">
+          <div class="tg-about-head"><span class="tg-door-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0M2 8h3M19 8h3"/></svg></span><h3 class="tg-card-title">Sem usar as mãos</h3></div>
+          <ul>
+            <li><b>Teclado</b>: <kbd>Tab</kbd> avança, <kbd>Shift</kbd> e <kbd>Tab</kbd> volta, <kbd>Enter</kbd> ou espaço aciona, as setas trocam a opção do filtro e <kbd>Esc</kbd> fecha o guia.</li>
+            <li><b>Voz</b>: com o controle por voz do aparelho, diga o que está escrito no botão, como "tocar em Mudar grupo" ou "tocar em Ver em Libras".</li>
+            <li><b>Cabeça, rosto ou olhar</b>: o site funciona com os recursos do próprio aparelho, como o rastreamento da cabeça do iPhone e do iPad, o ponteiro de cabeça do Mac, os interruptores de câmera do Android e o controle pelo olhar do Windows. Procure nas configurações de acessibilidade. Todo botão tem pelo menos 44 pixels, para ser fácil de mirar.</li>
+          </ul>
+        </article>
+      </div>
+      <p class="tg-sec-sub">Encontrou alguma barreira? <a class="tg-fim-citar" href="https://github.com/SergioFelipeAyres/bussola-da-educacao/issues" target="_blank" rel="noopener" aria-label="Avise abrindo uma issue no GitHub (abre em nova guia)">Avise abrindo uma issue no GitHub <span aria-hidden="true">→</span></a></p>
+    </section>
+
     <section class="tg-sec" aria-labelledby="sobre-citar">
       <h2 class="tg-sec-title" id="sobre-citar">Como citar</h2>
       <div class="tg-cite">
@@ -549,9 +587,9 @@
     <article class="tg-card" id="card-comparar">
       <div class="tg-cmp-ctrl">
         <label for="tg-cmp-ind">Indicador</label>
-        <select id="tg-cmp-ind" aria-label="Indicador para comparar"></select>
-        <label for="tg-cmp-cat">por</label>
-        <select id="tg-cmp-cat" aria-label="Tipo de grupo"></select>
+        <select id="tg-cmp-ind"></select>
+        <label for="tg-cmp-cat">Tipo de grupo</label>
+        <select id="tg-cmp-cat"></select>
       </div>
       <div class="tg-chart" id="ch-comparar" data-source="gestores escolas"></div>
       <p class="tg-card-note" style="margin-top:0">Cada ponto é a estimativa do grupo, e a faixa, sua margem de erro. As diferenças em relação ao Brasil são só descritivas: o painel não faz o teste que diria se uma diferença pequena pode ser apenas efeito da amostra.</p>
