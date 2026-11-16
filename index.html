@@ -573,8 +573,16 @@
 </main>
 <script src="js/dash-shim.js"></script>
 <script src="js/mapa-regioes.js"></script>
+<script src="js/libras.js"></script>
 <script src="js/painel.js"></script>
 <script src="js/compartilhar.js"></script>
 <script src="js/animacao.js"></script>
+<!-- VLibras: tradução automática do texto da página para Libras (widget do governo federal, vlibras.gov.br).
+     O leitor clica no botão azul e depois no texto que quer ver traduzido pelo avatar. -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js" defer onload="new window.VLibras.Widget('https://vlibras.gov.br/app')"></script>
 </body>
 </html>

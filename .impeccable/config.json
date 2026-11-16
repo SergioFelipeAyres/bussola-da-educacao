@@ -57,6 +57,24 @@
         ],
         "createdAt": "2026-11-16T19:34:01.536Z",
         "reason": "Claude triage: o 'cartão de fora' é a folha do caderno (div.tg) ou a camada de papel a 70% que esmaece a pauta entre os cartões de gráfico (.tg-grid, sem borda, sombra só como véu suave); não há cartão visual dentro de cartão"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-16T19:56:27.786Z",
+        "reason": "Claude triage: as sombras de deslocamento zero são anéis sólidos sem desfoque, não brilho: o corretivo branco atrás do título da lição (cor do papel), o anel de chegada do cartão ao abrir um link (cor do tema, 3px) e o anel de foco; as sombras de elevação são azul-marinho com deslocamento (DESIGN.md, Sombra Tingida)"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "404.html"
+        ],
+        "createdAt": "2026-11-16T19:56:27.880Z",
+        "reason": "Claude triage: as sombras de deslocamento zero são anéis sólidos sem desfoque, não brilho: o corretivo branco atrás do título da lição (cor do papel), o anel de chegada do cartão ao abrir um link (cor do tema, 3px) e o anel de foco; as sombras de elevação são azul-marinho com deslocamento (DESIGN.md, Sombra Tingida)"
       }
     ]
   }

@@ -331,6 +331,9 @@ Direto na folha pautada, sem fundo, sem fio e sem ilustração. Título em Tinta
 ### Post-it "Você sabia?"
 Amarelo Norte a 62% sobre branco, cantos de 2px, sem borda, fita translúcida azulada de 6.5rem no topo, inclinado 1.6°. Todo o texto em Tinta, inclusive o número (a cor do tema fica na pastilha do ícone e nos pictogramas); o botão "Outro dado" em etiqueta no tom de texto do tema.
 
+### Ver em Libras
+Botão no tom de texto do tema, borda de 1px em Linha, raio de 6px, ícone de mão em traço de 1.7px e "Ver em Libras" em 700. Fica na cabeça de cada seção (antes de "Recolher"; no celular só o ícone, com nome para o leitor de tela), no topo do guia "Como ler" e abaixo da etiqueta de fonte da capa do Início e do Sobre. Abre uma janela com o vídeo (arquivo do site, YouTube ou Vimeo) em 16:9, na mesma família da janela do guia. Aparece sempre: sem vídeo, fica tracejado, em Tinta Suave, marcado "em breve", e não abre nada (`aria-disabled`). O botão azul flutuante do VLibras é do próprio widget e não segue o sistema.
+
 ### Para pensar
 Nota de margem no fim de cada seção de Escolas e Gestores, quieta: borda tracejada de 1px na cor do tema a 55%, fundo branco, raio de 6px, padding de .9rem 1.1rem; lápis de contorno no tom de texto do tema, sem pastilha; "Para pensar" em Bricolage 800 no tom de texto do tema e a pergunta em Tinta, até 70ch. É uma nota (`role="note"`), não um título, e some com a seção recolhida.
 
