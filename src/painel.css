@@ -522,6 +522,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-mapa-meta{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg .tg-mapa-meta b{color:var(--color-fg);font-weight:700}
 .tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
+.tg-mapa-vs[hidden]{display:none}
 .tg-mapa-vs.tg-dir{color:var(--color-fg);font-weight:600}
 .tg-mapa-vs .tg-arrow{color:var(--color-fg-muted)}
 .tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}

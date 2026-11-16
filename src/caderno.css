@@ -155,12 +155,15 @@ body{background-color:var(--color-bg)}
 .tg-tick{font-family:var(--font-mono);font-size:.875rem}
 .tg-lik-cap,.tg-stack-cap{font-size:.9375rem}
 
-/* barras: traço de marca-texto sobre uma linha de lápis tracejada */
-.tg-track{height:1rem;border-radius:0;background:linear-gradient(var(--cds-chart-axis,var(--color-fg-muted)),var(--cds-chart-axis,var(--color-fg-muted))) 0 100%/100% 0 no-repeat;
-  border-bottom:1.5px dashed color-mix(in srgb,var(--color-fg-muted) 45%,transparent)}
+/* barras: traço de marca-texto sobre um trilho fino e liso (marca os 100%); nada de linha tracejada, para o dado ficar sozinho */
+.tg-track{height:1rem;border-radius:0;background:linear-gradient(var(--color-border-line),var(--color-border-line)) 0 100%/100% 1px no-repeat}
 .tg-fill{top:2px;bottom:3px;border-radius:0;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%);opacity:.85}
-/* faixa da margem de erro: fundo claro com contorno em Tinta Suave (contraste acima de 3:1), diferente do traço vertical do Brasil */
-.tg-moe{top:0;bottom:-1px;border-radius:2px;opacity:1;background:color-mix(in srgb,var(--color-fg) 12%,transparent);border:1.5px solid var(--color-fg-muted)}
+/* margem de erro: linha fina em Tinta com pontinhas curtas (como uma barra de erro), por cima do traço; contraste alto
+   sobre o branco e sobre a cor, e diferente do traço do Brasil, que é vertical e passa da altura da barra */
+.tg-moe{top:50%;bottom:auto;height:0;margin-top:-1px;border:0;border-top:2px solid var(--color-fg);border-radius:0;background:none;opacity:1}
+.tg-moe::before,.tg-moe::after{content:"";position:absolute;top:-5px;width:2px;height:8px;background:var(--color-fg)}
+.tg-moe::before{left:0}
+.tg-moe::after{right:0}
 
 /* ---------- destaques: uma linha de células sobre a pauta ---------- */
 .tg-kpis{gap:1px;padding:1px;background:none;border:0;border-radius:0;overflow:visible;box-shadow:none}
@@ -219,9 +222,10 @@ body{background-color:var(--color-bg)}
 @media (max-width:560px){.tg-indice{margin-top:-1.5rem}.tg-indice-lab{flex-basis:100%;padding-bottom:.1rem}.tg-indice a{padding-inline:.8rem}}
 
 /* ---------- "Para pensar": a pergunta que fecha cada lição ---------- */
-.tg-pensar{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 1.25rem;border:1.5px dashed var(--sec);border-radius:var(--cds-radius);
-  background:color-mix(in srgb,var(--sec) 5%,var(--color-panel))}
-.tg-pensar-ic{display:grid;place-items:center;flex:none;width:2.5rem;height:2.5rem;border-radius:var(--cds-radius);background:var(--sec);color:#fff}
+/* "Para pensar": nota de margem, quieta; o lápis e o título levam a cor da lição, o resto é papel */
+.tg-pensar{display:flex;gap:.75rem;align-items:flex-start;padding:.9rem 1.1rem;border:1px dashed color-mix(in srgb,var(--sec) 55%,var(--color-panel));border-radius:var(--cds-radius);
+  background:var(--color-panel)}
+.tg-pensar-ic{display:grid;place-items:center;flex:none;width:1.75rem;height:1.75rem;margin-top:.1rem;color:var(--sec-texto)}
 .tg-pensar-ic .tg-ic{width:1.15rem;height:1.15rem}
 .tg-pensar p{max-width:70ch;color:var(--color-fg)}
 .tg-pensar-tit{display:block;font:800 1.05rem/1.4 var(--font-display);color:var(--sec-texto)}
@@ -233,7 +237,6 @@ body{background-color:var(--color-bg)}
 .tg-rec-corpo{position:relative}
 .tg-anot-filtro{position:absolute;right:0;top:-2.6rem}
 @media (max-width:719px){.tg-anot-filtro{display:none}}
-.tg-mapa-onde{position:relative}
 
 /* ---------- Início: mapa, indicadores e portas ---------- */
 .tg-mapa-fig{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:16px}
@@ -262,4 +265,4 @@ body{background-color:var(--color-bg)}
 /* ---------- rodapé ---------- */
 .site-foot{margin-top:0;padding-block:1.5rem 3rem;font-size:.9375rem;line-height:1.55;border-top:1px solid var(--color-border-line)}
 .pular{border-radius:var(--cds-radius)}
-.tg-sw.tg-sw-moe{background:color-mix(in srgb,var(--color-fg) 12%,transparent);border:1.5px solid var(--color-fg-muted);border-radius:2px}
+.tg-sw.tg-sw-moe{width:1.1rem;height:8px;border:0;border-inline:2px solid var(--color-fg);border-radius:0;background:linear-gradient(var(--color-fg),var(--color-fg)) center/100% 2px no-repeat}

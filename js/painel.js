@@ -984,7 +984,6 @@
     const hAt = decodeURIComponent(location.hash.slice(1)), u = urlDe(v, guia.contains(document.getElementById(hAt)) ? '' : hAt);
     if (u !== aqui()) history.replaceState(null, '', u);
     const escolheDim = (c) => {
-      if (c === 'TOTAL') { dimAberta = null; if (rec !== TOTAL) mudaGrupo(TOTAL); else drawRecorte(v, rec); return; }
       dimAberta = c === dimAtual ? null : c;
       drawRecorte(v, rec);
       // os grupos aparecem logo abaixo; se ficaram fora da tela (celular), rola até eles
@@ -1665,7 +1664,9 @@
         const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0;
         if (dir) { vs.classList.add('tg-dir'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.setAttribute('aria-hidden', 'true'); a.textContent = dir > 0 ? '▲' : '▼'; vs.append(a); }
         vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + (Math.abs(dd) < 2 ? ' ponto ' : ' pontos ') + (dir > 0 ? 'a mais' : 'a menos') + ' que no Brasil' : 'Igual ao Brasil') + ' (' + pct(br.pct) + ')');
-      } else vs.append('Brasil todo');
+      }
+      // sem região escolhida não há comparação: a pastilha some (antes dizia só "Brasil todo")
+      vs.hidden = !(mapaReg && br);
     }
     // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
     [...mapaInds.children].forEach((b, i) => {

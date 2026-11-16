@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-16T19:19:01.937Z",
+  "generatedAt": "2026-11-16T19:26:20.379Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -505,7 +505,7 @@
       "Capas direto na folha, sem fundo próprio; \"Você sabia?\" num post-it amarelo preso com fita.",
       "Folhas brancas com cantos de 3px e sombra baixa; botões principais em etiqueta chanfrada.",
       "Bricolage Grotesque para títulos, manchetes e números (800); Atkinson Hyperlegible Next para o texto corrido; Atkinson Hyperlegible Mono só para rótulos de medida.",
-      "Pictogramas Isotype, barras como traços de marca-texto sobre uma linha de lápis tracejada, e margem de erro sempre desenhada.",
+      "Pictogramas Isotype, barras como traços de marca-texto sobre um trilho fino, e margem de erro sempre desenhada como barra de erro. Dentro dos cartões de gráfico o caderno se cala: o dado fica sozinho em cena, e a papelaria fica na moldura, nos títulos e nas notas.",
       "Movimento que revela os dados em sequência e respeita `prefers-reduced-motion`."
     ],
     "rules": [

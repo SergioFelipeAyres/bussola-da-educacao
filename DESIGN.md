@@ -185,7 +185,7 @@ O sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas 
 - Capas direto na folha, sem fundo próprio; "Você sabia?" num post-it amarelo preso com fita.
 - Folhas brancas com cantos de 3px e sombra baixa; botões principais em etiqueta chanfrada.
 - Bricolage Grotesque para títulos, manchetes e números (800); Atkinson Hyperlegible Next para o texto corrido; Atkinson Hyperlegible Mono só para rótulos de medida.
-- Pictogramas Isotype, barras como traços de marca-texto sobre uma linha de lápis tracejada, e margem de erro sempre desenhada.
+- Pictogramas Isotype, barras como traços de marca-texto sobre um trilho fino, e margem de erro sempre desenhada como barra de erro. Dentro dos cartões de gráfico o caderno se cala: o dado fica sozinho em cena, e a papelaria fica na moldura, nos títulos e nas notas.
 - Movimento que revela os dados em sequência e respeita `prefers-reduced-motion`.
 
 ## Colors
@@ -209,7 +209,7 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Verde Positivo e Vermelho Negativo** (verde-positivo, vermelho-negativo): só nas setas de direção das comparações, que são neutras quanto à significância. Nunca preenchem áreas, fundos ou títulos.
 
 ### Neutral
-- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e fundo da faixa de margem de erro (12%; o contorno é Tinta Suave).
+- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e barra de erro da margem (linha de 2px com pontinhas).
 - **Tinta Suave** (tinta-suave): texto secundário, rodapés de base, notas e links inativos da navegação.
 - **Papel Azulado** (papel-azulado): a mesa, fora da moldura, e o fundo do mapa e dos desenhos do guia (estes com quadriculado).
 - **Painel** (painel): a folha do caderno (com as pautas em Azul Bússola a 15%), cartões, barra de navegação e controles.
@@ -332,10 +332,10 @@ Direto na folha pautada, sem fundo, sem fio e sem ilustração. Título em Tinta
 Amarelo Norte a 62% sobre branco, cantos de 2px, sem borda, fita translúcida azulada de 6.5rem no topo, inclinado 1.6°. Todo o texto em Tinta, inclusive o número (a cor do tema fica na pastilha do ícone e nos pictogramas); o botão "Outro dado" em etiqueta no tom de texto do tema.
 
 ### Para pensar
-Quadro no fim de cada seção de Escolas e Gestores: borda tracejada de 1.5px na cor do tema, fundo do tema a 5% sobre branco, raio de 6px, padding de 1.1rem 1.25rem; pastilha de 2.5rem na cor do tema com um lápis branco; "Para pensar" em Bricolage 800 no tom de texto do tema e a pergunta em Tinta, até 70ch. É uma nota (`role="note"`), não um título, e some com a seção recolhida.
+Nota de margem no fim de cada seção de Escolas e Gestores, quieta: borda tracejada de 1px na cor do tema a 55%, fundo branco, raio de 6px, padding de .9rem 1.1rem; lápis de contorno no tom de texto do tema, sem pastilha; "Para pensar" em Bricolage 800 no tom de texto do tema e a pergunta em Tinta, até 70ch. É uma nota (`role="note"`), não um título, e some com a seção recolhida.
 
 ### Barra com margem de erro (componente-assinatura)
-Linha de lápis tracejada (1.5px em Tinta Suave a 45%) com 1rem de altura; o preenchimento na cor do tema, a 85%, é um traço de marca-texto com as pontas levemente tortas (`clip-path`); faixa de margem de erro com fundo em Tinta a 12% e contorno de 1.5px em Tinta Suave (contraste acima de 3:1), e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
+Trilho fino e liso (1px em Linha) com 1rem de altura, que marca os 100%; o preenchimento na cor do tema, a 85%, é um traço de marca-texto com as pontas levemente tortas (`clip-path`); margem de erro como barra de erro: linha de 2px em Tinta no meio do traço, com pontinhas de 8px nas duas pontas (contraste alto sobre o branco e sobre a cor), e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
 
 ### Pictograma Isotype
 Fileira de 10 figuras em SVG (cada uma vale 10%), preenchidas na cor do tema e o restante em Trilho. As figuras acendem em sequência, só por opacidade.
