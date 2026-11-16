@@ -332,6 +332,9 @@ Direto na folha pautada, sem fundo, sem fio e sem ilustração. Título em Tinta
 ### Post-it "Você sabia?"
 Amarelo Norte a 62% sobre branco, cantos de 2px, sem borda, fita translúcida azulada de 6.5rem no topo, inclinado 1.6°. Todo o texto em Tinta, inclusive o número (a cor do tema fica na pastilha do ícone e nos pictogramas); o botão "Outro dado" em etiqueta no tom de texto do tema.
 
+### Pergunte à Bússola
+Caixa de pergunta numa folha (borda de 1px, cantos de 3px, sombra ambiente): título em Lead (Bricolage 800), campo de 3.25rem de altura com borda de 1.5px em Tinta Suave e foco em Azul Bússola, botão "Perguntar" em etiqueta Tinta, e exemplos clicáveis em chips tracejados (como alternativas de rascunho). A resposta é outra folha com o faixa interna de 3px no topo (box-shadow inset), na cor do tema da pergunta: "Entendi:" com o tema e o grupo em pastilhas (o leitor confere o que a caixa entendeu), a frase em Statement com o número em Bricolage 800, uma fileira de 10 pictogramas, o percentual com a faixa em Caption, a lista com barras de marca-texto quando a pergunta é "o mais usado", e "Ver no painel →" sublinhado. Em Escolas e Gestores, "Perguntar" é uma etiqueta em Azul Bússola ao lado de "Como ler este painel", e a caixa abre na janela do guia.
+
 ### Ver em Libras
 Botão no tom de texto do tema, borda de 1px em Linha, raio de 6px, ícone de mão em traço de 1.7px e "Ver em Libras" em 700. Fica na cabeça de cada seção (antes de "Recolher"; no celular só o ícone, com nome para o leitor de tela), no topo do guia "Como ler" e abaixo da etiqueta de fonte da capa do Início e do Sobre. Abre uma janela com o vídeo (arquivo do site, YouTube ou Vimeo) em 16:9, na mesma família da janela do guia. Aparece sempre: sem vídeo, fica tracejado, em Tinta Suave, marcado "em breve", e não abre nada (`aria-disabled`). O botão azul flutuante do VLibras é do próprio widget e não segue o sistema.
 

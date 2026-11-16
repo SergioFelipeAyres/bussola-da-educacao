@@ -36,6 +36,7 @@ src/caderno.css         a linguagem visual do caderno escolar (folha, lições, 
 css/site.css            CSS compilado a partir de src/ (vai versionado; não editar à mão)
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos
+js/pergunte.js          "Pergunte à Bússola": entende tema e grupo por palavras-chave e responde com os dados (sem IA)
 js/libras.js            "Ver em Libras": lista dos vídeos com intérprete (sem endereço, o botão mostra "em breve")
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data

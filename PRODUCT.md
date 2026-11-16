@@ -32,6 +32,7 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 - Páginas: Início (fato aleatório "Você sabia?", mapa das 5 regiões, portas para Escolas e Gestores), Escolas, Gestores, Sobre. `escolas.html`, `gestores.html` e `sobre.html` só redirecionam para a aba certa de `index.html`.
 - Dados em formato longo em `data/*.json`, gerados por `scripts/atualizar_dados.py` a partir das tabelas .xlsx do Cetic.br. São baixados sob demanda (`js/dash-shim.js`): cada arquivo só na primeira vez que um desenho o pede, e a página Sobre não baixa nenhum.
 - Filtro de recorte (região, área, rede, porte etc.) e comparação entre grupos com margem de erro.
+- "Pergunte à Bússola" (`js/pergunte.js`): o leitor escreve uma pergunta ("qual o meio de comunicação mais usado no Nordeste?") e recebe o número com as mesmas regras do painel. Não usa IA: reconhece tema e grupo por palavras-chave, e nenhum número é gerado fora dos dados. Cruzamentos que a pesquisa não publica são explicados. Aberta no Início, logo depois da capa; em Escolas e Gestores, no botão "Perguntar" ao lado de "Como ler". "Ver no painel" leva ao cartão, já no grupo da pergunta.
 - Gráficos desenhados em HTML/SVG sem biblioteca externa (o d3 saiu; a escala do Compare grupos é uma função própria), lógica em `js/painel.js` e `js/dash-shim.js`.
 - O grupo escolhido vai no endereço (`?grupo=regiao-norte`), para links compartilhados mostrarem o mesmo número.
 - Servidor local: `.claude/serve.ps1` (porta 8000 por padrão; `-Port` muda) ou `python -m http.server 8000`.

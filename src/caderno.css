@@ -310,3 +310,50 @@ body{background-color:var(--color-bg)}
    alinhados à direita, em vez de empurrar a página para o lado */
 .tg-sec-head{flex-wrap:wrap;row-gap:.5rem}
 .tg-sec-head > div:not(.tg-sec-botoes){flex:1 1 13rem;min-width:0}
+
+/* ---------- "Pergunte à Bússola" (js/pergunte.js) ---------- */
+.tg-perg{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
+.tg-perg .tg-perg-caixa{padding:clamp(1.1rem,2.5vw,1.6rem);border:1px solid var(--color-border-line);border-radius:var(--folha-raio);background:var(--color-panel);box-shadow:var(--v-shadow)}
+.tg-perg-tit{display:block;margin-bottom:.7rem;font:800 clamp(1.3rem,2.4vw,1.65rem)/1.2 var(--font-display);letter-spacing:-.015em;color:var(--color-fg)}
+.tg-perg-janela .tg-perg-tit{font-size:1.3125rem}
+.tg-perg-linha{display:flex;flex-wrap:wrap;gap:.6rem}
+.tg .tg-perg-linha input{flex:1 1 16rem;min-width:0;min-height:3.25rem;padding:.6rem .9rem;border:1.5px solid var(--color-fg-muted);border-radius:var(--cds-radius);
+  background:var(--color-panel);color:var(--color-fg);font:400 var(--cds-font-size-body) var(--font-sans)}
+.tg .tg-perg-linha input::placeholder{color:var(--color-fg-muted);opacity:1}
+.tg .tg-perg-linha input:focus-visible{outline:3px solid var(--v-blue);outline-offset:1px;border-color:var(--v-blue)}
+.tg .tg-perg-linha .tg-etq{min-height:3.25rem;--etq-bg:var(--color-fg)}
+.tg-perg-ex{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-top:.9rem}
+.tg-perg-ex-lab{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg button.tg-perg-chip{min-height:2.75rem;padding:.4rem .8rem;border:1px dashed var(--color-fg-muted);border-radius:var(--cds-radius);background:var(--color-panel);
+  color:var(--color-fg);font-size:var(--cds-font-size-caption);text-align:left;cursor:pointer}
+.tg button.tg-perg-chip:hover{border-style:solid}
+.tg button.tg-perg-chip:focus-visible{outline:2px solid var(--v-blue);outline-offset:2px}
+/* resposta: uma folha com o fio de cima na cor do tema da pergunta */
+.tg-perg-saida{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
+.tg-perg-saida:empty{display:none}
+/* o acento do tema fica no topo como faixa interna (box-shadow), igual às portas do Início: acompanha os cantos */
+.tg-perg-res{padding:clamp(1.1rem,2.5vw,1.5rem);border:1px solid var(--color-border-line);border-radius:var(--folha-raio);background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec,var(--v-blue))}
+.tg-perg-res.tg-perg-nao{box-shadow:inset 0 3px 0 var(--color-fg-muted)}
+.tg-perg-entendi{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-bottom:.8rem;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-perg-entendi b{padding:.1rem .55rem;border-radius:4px;background:color-mix(in srgb,var(--sec,var(--v-blue)) 10%,var(--color-panel));color:var(--color-fg);font-weight:600}
+.tg-perg-frase{max-width:34em;font-size:clamp(1.2rem,2.2vw,1.45rem);line-height:1.35;text-wrap:pretty}
+.tg-perg-frase strong{font-family:var(--font-display);font-weight:800}
+.tg-perg-iso{display:flex;gap:3px;max-width:18rem;margin:.9rem 0 .5rem}
+.tg-perg-iso svg{flex:1;height:auto;fill:var(--cds-chart-grid)}
+.tg-perg-iso svg.on{fill:var(--sec,var(--v-blue))}
+.tg-perg-var{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.tg-perg-nao ul{margin:.6rem 0 0;padding-left:1.2rem;columns:2 14rem;font-size:var(--cds-font-size-caption)}
+.tg-perg-lista{display:flex;flex-direction:column;gap:.45rem;max-width:30rem;margin:.9rem 0 0;padding:0;list-style:none}
+.tg-perg-lista li{display:grid;grid-template-columns:minmax(0,1fr) 3.6rem;gap:.2rem .6rem;align-items:center;font-size:var(--cds-font-size-caption)}
+.tg-perg-lista .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.tg-perg-lista .tr{grid-column:1/-1;position:relative;height:.8rem;background:linear-gradient(var(--color-border-line),var(--color-border-line)) 0 100%/100% 1px no-repeat}
+.tg-perg-lista .tr i{position:absolute;left:0;top:1px;bottom:2px;background:var(--sec,var(--v-blue));opacity:.85;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%)}
+.tg button.tg-perg-ir{display:inline-flex;align-items:center;gap:.35rem;min-height:2.75rem;margin-top:.6rem;padding:0;border:0;background:none;
+  color:var(--sec-texto,var(--v-blue));font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
+.tg button.tg-perg-ir:hover{text-decoration-thickness:2px}
+.tg button.tg-perg-ir:focus-visible{outline:2px solid var(--sec,var(--v-blue));outline-offset:3px}
+/* "Perguntar" ao lado de "Como ler este painel" */
+.tg-head-botoes{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.tg button.tg-perg-btn{--etq-bg:var(--v-blue)}
+.tg-perg-janela .tg-perg-caixa{padding:0;border:0;box-shadow:none}
+.tg-perg-janela .tg-guide-body{display:flex;flex-direction:column;gap:var(--cds-gap-md)}

@@ -888,6 +888,14 @@
     history.pushState(null, '', urlDe(view, guia.contains(document.getElementById(h)) ? '' : h));
     dash.setParams({ recorte: rec });
   };
+  // "Pergunte à Bússola" (js/pergunte.js): leva ao cartão da resposta, já no grupo da pergunta
+  window.mostraNoPainel = (v, rec, hash) => {
+    grupoUrl = rec === TOTAL ? '' : slugRec(rec);
+    dash.setParams({ recorte: rec });
+    irPara(v, hash);
+    // os dados da outra aba podem chegar depois: rola de novo quando o cartão já tem altura final
+    setTimeout(() => { const el = document.getElementById(hash); if (el) el.scrollIntoView(); }, 700);
+  };
   // filtro em duas etapas: tocar numa dimensão só mostra os grupos dela; os dados mudam ao escolher o grupo
   let dimAberta = null;
   const PEDIDO = {
