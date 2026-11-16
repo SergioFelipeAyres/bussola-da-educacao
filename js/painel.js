@@ -76,7 +76,11 @@
     'DEPENDÊNCIA ADMINISTRATIVA|Públicas (Municipal, Estadual e Federal)': 'Públicas (todas as redes)'
   };
   const segName = (rec) => rec === TOTAL ? 'Brasil' : (SEGL[rec] || rec.split('|')[1]);
-  const recName = (rec) => rec === TOTAL ? 'Brasil' : (SEGL[rec] || (CAT[rec.split('|')[0]] + ': ' + rec.split('|')[1]));
+  // nome do tipo de grupo: o mesmo do filtro em todo o site ("Pública ou particular", "Tamanho da escola");
+  // os tipos que só existem em Gestores dizem de quem se fala ("Sexo do gestor")
+  const SO_GESTOR = ['SEXO', 'COR OU RAÇA', 'FAIXA ETÁRIA'];
+  const nomeTipo = (c) => (SO_GESTOR.includes(c) ? CAT[c] : DIM[c]) || CAT[c] || c;
+  const recName = (rec) => rec === TOTAL ? 'Brasil' : (SEGL[rec] || (nomeTipo(rec.split('|')[0]) + ': ' + rec.split('|')[1]));
 
   const P = '<circle cx="12" cy="5.6" r="3.4"/><path d="M5.5 22v-6.5a6.5 6.5 0 0 1 13 0V22z"/>';
   const ICON = {
@@ -219,7 +223,7 @@
     { ds: 'gestores', ind: 'D3_1', grupo: '', resp: 'Sim', icon: 'balao', txt: 'gestores reuniram professores para falar de tecnologia no último ano', card: 'card-reunioes' },
     { ds: 'gestores', ind: 'D6', grupo: '', resp: 'Sim', icon: 'balao', txt: 'gestores reuniram as famílias para falar de tecnologia no último ano', card: 'card-reunioes' },
     { ds: 'escolas', ind: 'A1', grupo: '', resp: 'Sim', icon: 'radio', txt: 'escolas têm acesso à internet', card: 'card-camadas' },
-    { ds: 'escolas', ind: 'A7', grupo: '', resp: 'Sim', icon: 'pessoa', txt: 'escolas oferecem internet para os alunos', card: 'card-camadas' },
+    { ds: 'escolas', ind: 'A7', grupo: '', resp: 'Sim', icon: 'radio', txt: 'escolas oferecem internet para os alunos', card: 'card-camadas' },
     { ds: 'escolas', ind: 'A8', grupo: '', resp: 'Sim', icon: 'notebook', txt: 'escolas oferecem computador e internet para os alunos', card: 'card-camadas' },
     { ds: 'escolas', ind: 'A2', grupo: '', resp: 'Conexão via fibra ótica', icon: 'fibra', txt: 'escolas com internet estão conectadas por fibra ótica', card: 'card-tipo-conexao' },
     { ds: 'escolas', ind: 'B15', grupo: '', resp: 'Sim', icon: 'robo', txt: 'escolas têm material para aulas de robótica', card: 'card-recursos' },
@@ -427,10 +431,12 @@
   };
 
   // ---------- bars ----------
-  const bars = (el, items, rec, anim) => {
+  // max: mostra só as primeiras barras e um botão para ver as outras (listas longas cansam o leitor)
+  const bars = (el, items, rec, anim, max) => {
     if (!items.length) return emptyMsg(el, NODATA);
     const wrap = document.createElement('div'); wrap.className = 'tg-bars' + (anim ? ' tg-anim-bars' : '');
-    for (const it of items) {
+    const corta = max && items.length > max + 1, todas = el.dataset.todas === '1';
+    for (const [i, it] of items.entries()) {
       const row = document.createElement('div'); row.className = 'tg-bar-row';
       const lab = document.createElement('div'); lab.className = 'tg-bar-label';
       lab.innerHTML = ic(it.icon); const t = document.createElement('span'); t.textContent = it.label; lab.append(t);
@@ -443,9 +449,21 @@
       const v = document.createElement('span'); v.className = 'tg-val'; v.textContent = pct(it.row.pct);
       line.append(tr, v); row.append(lab, line);
       setTip(row, rowTip(it.full || it.label, it.row, it.br, rec));
+      if (corta && i >= max) { row.classList.add('tg-bar-extra'); row.hidden = !todas; }
       wrap.append(row);
     }
-    if (rec !== TOTAL) { const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.innerHTML = '<span><span class="tg-refkey"></span>Brasil</span><span><span class="tg-sw" style="background:var(--color-fg);opacity:.16"></span>Margem de erro</span>'; wrap.append(lg); }
+    if (corta) {
+      const resto = items.length - max, b = document.createElement('button');
+      b.type = 'button'; b.className = 'tg-bars-mais';
+      const rotulo = (ab) => { b.textContent = ab ? 'Mostrar só os ' + max + ' mais citados' : 'Ver os outros ' + resto + ' ' + (el.dataset.nome || 'itens'); b.setAttribute('aria-expanded', ab ? 'true' : 'false'); };
+      rotulo(todas);
+      b.addEventListener('click', () => {
+        const ab = el.dataset.todas !== '1'; el.dataset.todas = ab ? '1' : ''; rotulo(ab);
+        wrap.querySelectorAll('.tg-bar-extra').forEach((r) => { r.hidden = !ab; });
+      });
+      wrap.append(b);
+    }
+    if (rec !== TOTAL) { const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.innerHTML = '<span><span class="tg-refkey"></span>Brasil</span><span><span class="tg-sw tg-sw-moe"></span>Margem de erro</span>'; wrap.append(lg); }
     el.replaceChildren(wrap);
   };
   // items from one table: groups (multi-item) or responses (single-item)
@@ -656,6 +674,16 @@
       chart.after(acoesTexto(card, det), det);
     }
     const old = det.querySelector(':scope > ul'); if (old) old.replaceWith(ul); else det.append(ul);
+    // frase pronta para citar: a frase do cartão, o grupo e a fonte com a tabela, numa linha só
+    const say = card.querySelector(':scope > .tg-lead, .tg-cmp-lead'), base = card.querySelector('.tg-base'), aba = card.closest('#escolas,#gestores');
+    let cit = det.querySelector('.tg-alt-citar');
+    if (say && base && aba) {
+      if (!cit) { cit = document.createElement('p'); cit.className = 'tg-alt-citar'; det.append(cit); }
+      const grupo = document.getElementById('filtro').dataset.recorte || 'Brasil';
+      const tab = (base.textContent.match(/Tabela\s+[A-Z0-9_.]*[A-Z0-9]/i) || [''])[0];
+      const b = document.createElement('b'); b.textContent = 'Para citar: ';
+      cit.replaceChildren(b, say.textContent.trim() + ' Grupo: ' + grupo + '. Fonte: NIC.br/Cetic.br, pesquisa TIC Educação 2025' + (tab ? ', ' + tab : '') + '.');
+    } else if (cit) cit.remove();
   };
   window.addEventListener('hashchange', pararFala);
 
@@ -776,7 +804,7 @@
   // celular: "Mudar" na barra fixa leva ao filtro principal, já aberto, com o foco na dimensão atual
   document.getElementById('rec-mudar2')?.addEventListener('click', () => {
     const mudar = document.getElementById('rec-mudar');
-    if (mudar.getAttribute('aria-expanded') !== 'true') mudar.click();
+    if (mudar.offsetParent && mudar.getAttribute('aria-expanded') !== 'true') mudar.click();
     const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.getElementById('filtro').scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
     const b = document.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true });
@@ -811,7 +839,7 @@
   // todas as dimensões das tabelas continuam disponíveis; a lista muda com a aba (perfil do gestor só existe em Gestores)
   const DIM = {
     'TOTAL': 'Brasil', 'REGIÃO': 'Região', 'ÁREA': 'Urbana ou rural', 'LOCALIZAÇÃO': 'Capital ou interior', 'DEPENDÊNCIA ADMINISTRATIVA': 'Pública ou particular',
-    'PORTE': 'Tamanho da escola', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Até que série vai', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Computador para alunos',
+    'PORTE': 'Tamanho da escola', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'Até que série vai', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS': 'Com ou sem computador para alunos',
     'SEXO': 'Sexo', 'COR OU RAÇA': 'Cor ou raça', 'FAIXA ETÁRIA': 'Idade'
   };
   // rótulo curto do botão (etapa 2)
@@ -873,9 +901,15 @@
     if (v === 'gestores') return GEST[rec] || 'Gestores de ' + escDe(rec);
     const t = escDe(rec); return t.charAt(0).toUpperCase() + t.slice(1);
   };
-  // filtro principal: as dimensões aparecem em blocos com título, na linguagem do leitor
+  // filtro principal: as dimensões aparecem em blocos com título, na linguagem do leitor.
+  // O Brasil não é alternativa: fica no botão "Voltar para o Brasil todo", ao lado de "Você está vendo".
+  // Só os tipos de grupo mais procurados aparecem de início; os outros ficam atrás de "Mais tipos de grupo".
+  const PRINCIPAIS = {
+    escolas: ['REGIÃO', 'ÁREA', 'DEPENDÊNCIA ADMINISTRATIVA'],
+    gestores: ['REGIÃO', 'DEPENDÊNCIA ADMINISTRATIVA', 'SEXO']
+  };
+  let maisTipos = false;
   const GRUPOS = [
-    ['Ver os números de', ['TOTAL']],
     ['Onde fica a escola', ['REGIÃO', 'ÁREA', 'LOCALIZAÇÃO']],
     ['Tipo de escola', ['DEPENDÊNCIA ADMINISTRATIVA', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO', 'PORTE', 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS']],
     ['Quem dirige', ['SEXO', 'COR OU RAÇA', 'FAIXA ETÁRIA']]
@@ -918,26 +952,33 @@
       });
     }
   };
-  // abas que não cabem: esmaece a borda direita até chegar ao fim da rolagem
-  const marcaRola = (box) => { const r = box.scrollWidth > box.clientWidth + 1; box.classList.toggle('tg-rola', r); box.classList.toggle('tg-fim', r && box.scrollLeft + box.clientWidth >= box.scrollWidth - 2); };
-  // a aba ativa fica sempre à vista quando as abas rolam de lado (celular)
-  const mostraAtiva = (box) => {
-    const ativa = box.querySelector('[aria-checked=true]');
-    if (ativa && box.scrollWidth > box.clientWidth) {
-      const a = ativa.offsetLeft - box.offsetLeft, b = a + ativa.offsetWidth;
-      if (a < box.scrollLeft) box.scrollLeft = a - 8; else if (b > box.scrollLeft + box.clientWidth - 24) box.scrollLeft = b - box.clientWidth + 32;
-    }
-    marcaRola(box);
-  };
-  // o seletor existe em dois lugares: o cartão no topo da aba e a versão compacta fixa, que aparece ao rolar
-  const REC_SETS = [['rec-dims', 'rec-opts'], ['rec-dims2', 'rec-opts2']].map(([d, o]) => ({ dims: document.getElementById(d), opts: document.getElementById(o) }));
-  REC_SETS.forEach(({ dims }) => dims.addEventListener('scroll', () => marcaRola(dims), { passive: true }));
-  window.addEventListener('resize', () => REC_SETS.forEach(({ dims }) => marcaRola(dims)));
+  // o seletor fica no cartão do topo da aba; a barra fixa que aparece ao rolar só mostra o grupo e leva de volta a ele
+  const REC_SETS = [['rec-dims', 'rec-opts']].map(([d, o]) => ({ dims: document.getElementById(d), opts: document.getElementById(o) }));
+  const recMais = document.getElementById('rec-mais'), recBrasil = document.getElementById('rec-brasil');
   const drawRecorte = (v, rec) => {
     const dimAtual = rec === TOTAL ? 'TOTAL' : rec.split('|')[0], segs = SEGS[v] || [];
-    const dims = CATS[v].filter((c) => segs.some((s) => s.split('|')[0] === c));
-    if (dimAberta && (dimAberta === dimAtual || !dims.includes(dimAberta))) dimAberta = null;
+    const todas = CATS[v].filter((c) => c !== 'TOTAL' && segs.some((s) => s.split('|')[0] === c));
+    if (dimAberta && (dimAberta === dimAtual || !todas.includes(dimAberta))) dimAberta = null;
     const dim = dimAberta || dimAtual;
+    // com a lista recolhida, um tipo de grupo de fora dos principais que esteja escolhido continua à vista
+    const princ = (PRINCIPAIS[v] || []).filter((c) => todas.includes(c));
+    const fora = todas.filter((c) => !princ.includes(c));
+    const dims = maisTipos ? todas : todas.filter((c) => princ.includes(c) || c === dim);
+    recMais.hidden = !fora.length;
+    recMais.setAttribute('aria-expanded', maisTipos ? 'true' : 'false');
+    recMais.querySelector('span').textContent = maisTipos ? 'Menos tipos de grupo' : 'Mais tipos de grupo (' + fora.length + ')';
+    recMais.onclick = () => {
+      maisTipos = !maisTipos;
+      if (!maisTipos && fora.includes(dimAberta)) dimAberta = null;
+      drawRecorte(v, rec);
+      if (maisTipos) { const b = document.querySelector('#rec-dims [data-v="' + CSS.escape(fora[0]) + '"]'); if (b) b.focus(); }
+    };
+    recBrasil.hidden = rec === TOTAL;
+    // o botão some depois do clique: o foco vai para a primeira alternativa, para não se perder
+    recBrasil.onclick = () => {
+      dimAberta = null; mudaGrupo(TOTAL);
+      const b = document.querySelector('#rec-dims [role=radio]'); if (b && b.offsetParent) b.focus({ preventScroll: true });
+    };
     // endereço sempre em dia com o grupo (troca feita pelo mapa, pela aba etc.)
     grupoUrl = rec === TOTAL ? '' : slugRec(rec);
     const hAt = decodeURIComponent(location.hash.slice(1)), u = urlDe(v, guia.contains(document.getElementById(hAt)) ? '' : hAt);
@@ -946,6 +987,9 @@
       if (c === 'TOTAL') { dimAberta = null; if (rec !== TOTAL) mudaGrupo(TOTAL); else drawRecorte(v, rec); return; }
       dimAberta = c === dimAtual ? null : c;
       drawRecorte(v, rec);
+      // os grupos aparecem logo abaixo; se ficaram fora da tela (celular), rola até eles
+      const op = document.getElementById("rec-opts"), r = op.getBoundingClientRect();
+      if (dimAberta && !op.hidden && r.bottom > innerHeight) op.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     };
     const escolheGrupo = (s) => {
       dimAberta = null;
@@ -955,17 +999,27 @@
       if (filtro.classList.contains('tg-rec-aberto') && mudar.offsetParent) { mudar.click(); mudar.focus({ preventScroll: true }); }
     };
     for (const set of REC_SETS) {
-      radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim, escolheDim, set === REC_SETS[0]);
-      mostraAtiva(set.dims);
+      radios(set.dims, dims.map((c) => [c, DIM[c] || CAT[c] || c]), dim, escolheDim, true);
       const opts = set.opts;
       opts.hidden = dim === 'TOTAL'; opts.setAttribute('aria-label', PEDIDO[dim] || DIM[dim] || '');
       if (opts.dataset.dim !== v + dim) { opts.dataset.dim = v + dim; opts.classList.remove('tg-troca'); void opts.offsetWidth; opts.classList.add('tg-troca'); }
       radios(opts, dim === 'TOTAL' ? [] : segs.filter((s) => s.split('|')[0] === dim).map((s) => [s, OPC[s] || segName(s)]), dimAberta ? null : rec, escolheGrupo);
-      mostraAtiva(opts);
     }
+    // os grupos entram logo abaixo da questão da alternativa escolhida (as questões são itens do filtro, via display:contents)
+    const blocos = [...REC_SETS[0].dims.querySelectorAll('.tg-rec-g')];
+    blocos.forEach((b, i) => { b.style.order = 10 + i * 20; b.classList.remove('tg-com-grupos'); });
+    const iDim = blocos.findIndex((b) => b.querySelector('[data-v="' + CSS.escape(dim) + '"]'));
+    const ordem = iDim < 0 ? 10 + blocos.length * 20 : 10 + iDim * 20;
+    const recOpts = REC_SETS[0].opts, comGrupos = dim !== 'TOTAL' && iDim >= 0;
+    if (comGrupos) blocos[iDim].classList.add('tg-com-grupos');
+    recOpts.classList.toggle('tg-na-questao', comGrupos && iDim < blocos.length - 1);
     // pedido da etapa 2 ("Escolha a região:"), lido pelo leitor de tela
     const pedido = document.getElementById('rec-pedido');
-    pedido.hidden = !dimAberta; pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:') : '';
+    pedido.style.order = ordem + 1; recOpts.style.order = ordem + 2;
+    // com um grupo escolhido, o rótulo diz de que tipo ele é ("Região:"); durante a escolha, pede o grupo
+    pedido.hidden = dim === 'TOTAL';
+    pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:') : dim === 'TOTAL' ? '' : (DIM[dim] || dim) + ':';
+    pedido.classList.toggle('tg-pedindo', !!dimAberta);
     const novo = recTitulo(rec, v);
     document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
     document.getElementById('rec-titulo2').textContent = novo;
@@ -982,9 +1036,8 @@
     const mostrar = DASH.includes(view) && !filtro.hidden && filtro.getBoundingClientRect().bottom < navH + 8;
     if (fixo.hidden === mostrar) {
       fixo.hidden = !mostrar;
-      if (mostrar) REC_SETS.forEach(({ dims, opts }) => { mostraAtiva(dims); mostraAtiva(opts); });
       // o foco não pode ficar preso numa barra que sumiu
-      else if (fixo.contains(document.activeElement)) { const b = filtro.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true }); }
+      if (!mostrar && fixo.contains(document.activeElement)) { const b = filtro.querySelector('#rec-dims [aria-checked=true]') || filtro.querySelector('#rec-dims [role=radio]'); if (b) b.focus({ preventScroll: true }); }
     }
     if (mostrar) document.documentElement.style.setProperty('--fixo-h', fixo.offsetHeight + 'px');
   };
@@ -1213,7 +1266,7 @@
       el.replaceChildren(w);
     })();
 
-    bars(document.getElementById('ch-sem-internet'), listFrom('A20', Object.keys(A20L), 'Sim', rec, A20L, true), rec, anim);
+    bars(document.getElementById('ch-sem-internet'), listFrom('A20', Object.keys(A20L), 'Sim', rec, A20L, true), rec, anim, 5);
 
     bars(document.getElementById('ch-computadores'), listFrom('B2', ['Computador de mesa', 'Computador portátil', 'Tablet'], 'Sim', rec, { 'Computador de mesa': 'desktop', 'Computador portátil': 'notebook', 'Tablet': 'tablet' }), rec, anim);
 
@@ -1355,7 +1408,7 @@
     // "Internet e computador para os alunos"), que só diria 100% ou 0%
     const defineCat = (c) => (m.ds === 'gestores' && DEFINE_G[m.ind] === c) || (m.ds === 'escolas' && c === 'ESCOLA COM INTERNET E COMPUTADOR PARA USO DOS ALUNOS' && ['A1', 'A6', 'A7', 'A8'].includes(m.ind));
     const cats = CATS[m.ds].filter((c) => c !== 'TOTAL' && !defineCat(c));
-    if (cc.dataset.m !== m.id) { cc.replaceChildren(...cats.map((c) => new Option(CAT[c] || c, c))); cc.dataset.m = m.id; }
+    if (cc.dataset.m !== m.id) { cc.replaceChildren(...cats.map((c) => new Option(nomeTipo(c), c))); cc.dataset.m = m.id; }
     const cat = cats.includes(params.cmp_cat) ? params.cmp_cat : 'REGIÃO';
     ci.value = m.id; cc.value = cat;
     const br = get(m.ind, m.grupo, m.resp, TOTAL, m.ds);
@@ -1374,6 +1427,8 @@
     const axv = document.createElement('div'); axv.className = 'tg-dot-val';
     const bl = document.createElement('span'); bl.className = 'tg-verdict'; bl.append(document.createTextNode('Brasil ')); const bv = document.createElement('span'); bv.textContent = pct(br.pct); markRow(bv, br); bl.append(bv); axv.append(bl);
     ax.append(axl, axt, axv); w.append(ax);
+    // uma base só no cartão: a frase de cima e o texto de cada grupo dizem todos "em cada 10" ou todos "em cada 100"
+    const cemCmp = [...rows.map((x) => x.row.pct), br.pct].some(precisaCem);
     for (const { s, row } of rows) {
       // todos os grupos são descritos do mesmo jeito: quantos pontos a mais ou a menos que o Brasil
       // uma cor só (a do tema): a direção vem das setas e do sinal, sem verde/vermelho de julgamento
@@ -1396,10 +1451,11 @@
       vd.append(lado);
       v.append(vl, vd);
       // versão por extenso, usada no texto alternativo, no áudio e na dica ao passar o mouse
-      const quem = cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
-      const frase = 'A estimativa para ' + quem + ' é de ' + pct(row.pct) +
-        (row.moe ? ' (pode variar ' + faixa(row) + ')' : noMoe(row) ? ' (margem de erro não estimada)' : '') + ': ' +
-        lado + ' (Brasil: ' + pct(br.pct) + ').';
+      // na voz do site: "No Norte, cerca de 8 em cada 10 (76,8%, pode variar entre …). São 18,3 pontos a menos que no Brasil (95,1%)."
+      const onde = cat === 'REGIÃO' ? 'No ' + segName(s) : 'No grupo “' + segName(s) + '”';
+      const frase = onde + ', ' + fixaBase(cemCmp, () => freqTxt(row.pct, false)) + ' (' + pct(row.pct) +
+        (row.moe ? '; pode variar ' + faixa(row) : noMoe(row) ? '; sem margem de erro estimada' : '') + '). ' +
+        (dir ? 'São ' + ppN + pontos + (dir > 0 ? 'a mais' : 'a menos') + ' que no Brasil (' + pct(br.pct) + ').' : 'Igual ao Brasil (' + pct(br.pct) + ').');
       r.append(l, t, v); setTip(r, [m.label, frase]); w.append(r);
     }
     const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.style.marginTop = 'var(--cds-gap-sm)';
@@ -1414,10 +1470,14 @@
     const frase = document.createElement('p'); frase.className = 'tg-say tg-lead tg-cmp-lead';
     // "a maior parcela" só quando a margem do 1º não toca a do 2º (e o mesmo para "a menor");
     // senão a frase dá só a faixa. O * acompanha o número que não tem margem estimada
-    const fq = (x) => negrito(freqTxt(x.row.pct, false) + (noMoe(x.row) ? '*' : ''));
-    if (ord.length > 1 && alto.row.pct !== baixo.row.pct) comBase([alto.row.pct, baixo.row.pct, br.pct], () => {
+    // sem margem estimada, o número vale só para a amostra: dito junto, para não ser citado como certeza
+    const fq = (x) => negrito(freqTxt(x.row.pct, false) + (noMoe(x.row) ? ' na amostra*' : ''));
+    if (ord.length > 1 && alto.row.pct !== baixo.row.pct) fixaBase(cemCmp, () => {
       const topo = separa(alto.row, ord[1].row), fundo = separa(ord[ord.length - 2].row, baixo.row);
       if (topo && fundo) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' tem a maior parcela (', fq(alto), ') e ' + quemCurto(baixo.s) + ', a menor (', fq(baixo), ').');
+      // só uma ponta se destaca: ela é dita; a sobreposição vale só para os outros grupos
+      else if (topo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' tem a maior parcela (', fq(alto), '). Entre os outros grupos, que vão até ', fq(baixo), ' (' + segName(baixo.s) + '), as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
+      else if (fundo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(baixo.s) + ' tem a menor parcela (', fq(baixo), '). Entre os outros grupos, que chegam a ', fq(alto), ' (' + segName(alto.s) + '), as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
       else frase.append('Em “' + m.label + '”, os grupos vão de ', fq(baixo), ' (' + segName(baixo.s) + ') a ', fq(alto), ' (' + segName(alto.s) + '), mas as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
       frase.append(' No Brasil, ', negrito(freqTxt(br.pct, false)), '.');
     });
@@ -1482,10 +1542,12 @@
   const mapaRow = (m, reg) => get(m.ind, '', m.resp, reg ? regRec(reg) : TOTAL, m.ds);
   const mapaPick = (reg) => {
     pararFala(); mapaReg = reg === mapaReg ? null : reg; drawMapa();
-    const painel = document.querySelector('.tg-mapa-painel'), r = painel && painel.getBoundingClientRect();
-    if (mapaReg && r && r.top > innerHeight * 0.6) {
+    // a resposta (nome da região, frase e figuras) precisa ficar à vista: no celular ela vem depois do mapa.
+    // Mede o bloco da frase, não o painel (que no celular vira display:contents e não tem caixa própria)
+    const alvo = document.querySelector('.tg-mapa-destaque'), r = alvo && alvo.getBoundingClientRect();
+    if (mapaReg && r && r.bottom > innerHeight - 8) {
       const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      painel.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
+      alvo.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'end' });
     }
   };
 
@@ -1526,7 +1588,12 @@
     });
   };
 
+  // escala do desenho na tela: o CSS usa --esc para os rótulos do mapa nunca ficarem abaixo de 14px.
+  // Medida a cada desenho e sempre que o mapa muda de tamanho (largura da tela, letra ampliada)
+  function medeMapa() { const esc = mapaSvg.getBoundingClientRect().width / 316; if (esc > 0) mapaSvg.style.setProperty('--esc', esc.toFixed(3)); }
+  if ('ResizeObserver' in window) new ResizeObserver(medeMapa).observe(mapaSvg);
   function drawMapa() {
+    medeMapa();
     const m = MAPA[mapaInd];
     const sts = ['escolas', 'gestores'].map((d) => dash.data(d).status);
     if (sts.some((s) => s !== 'ok')) {
@@ -1597,7 +1664,7 @@
         // mesmo padrão de Compare grupos: comparação descritiva, diferença em pontos e seta neutra
         const dd = Math.round((row.pct - br.pct) * 10) / 10, dir = dd > 0 ? 1 : dd < 0 ? -1 : 0;
         if (dir) { vs.classList.add('tg-dir'); const a = document.createElement('span'); a.className = 'tg-arrow'; a.setAttribute('aria-hidden', 'true'); a.textContent = dir > 0 ? '▲' : '▼'; vs.append(a); }
-        vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + ' pontos percentuais ' + (dir > 0 ? 'acima' : 'abaixo') + ' do Brasil' : 'Igual ao Brasil') + ' (' + pct(br.pct) + ')');
+        vs.append((dir ? Math.abs(dd).toFixed(1).replace('.', ',') + (Math.abs(dd) < 2 ? ' ponto ' : ' pontos ') + (dir > 0 ? 'a mais' : 'a menos') + ' que no Brasil' : 'Igual ao Brasil') + ' (' + pct(br.pct) + ')');
       } else vs.append('Brasil todo');
     }
     // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
@@ -1678,8 +1745,17 @@
 
   // ---------- main draw ----------
   const TITLES = { gestores: 'Quem dirige as escolas brasileiras e como usa a tecnologia', escolas: 'Como as escolas brasileiras estão conectadas e equipadas' };
+  // o outro público (escolas na aba Gestores e vice-versa) só é pedido quando o fim da aba se aproxima
+  let precisaOutro = !('IntersectionObserver' in window);
+  const fimEl = document.getElementById('fim-outra');
+  if (!precisaOutro && fimEl) {
+    const fimObs = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { precisaOutro = true; fimObs.disconnect(); draw(); } }, { rootMargin: '1500px 0px' });
+    fimObs.observe(fimEl);
+  }
   const MARCA = { gestores: 'como usa a tecnologia', escolas: 'conectadas e equipadas' };
   function draw() {
+    // Sobre não tem dados: não pede (e portanto não baixa) nenhum arquivo; setView chama draw() de novo ao trocar de aba
+    if (view === 'sobre') return;
     const params = dash.params();
     const meta = dash.data(META);
     const take = document.getElementById('tg-take');
@@ -1704,14 +1780,17 @@
       p.replaceChildren('Fonte: pesquisa TIC Educação 2025 (NIC.br/Cetic.br) · Base: ' + m.universo.toLowerCase().replace(/^total de /, '') + ' · ', a);
     });
 
-    const g = dash.data('gestores'), e = dash.data('escolas');
+    // Escolas e Gestores baixam o outro público só perto do fim da aba (bloco "Agora veja…"); o Início usa os dois
+    const quer = (ds) => view === 'inicio' || precisaOutro || ds === view;
+    const ADIADO = { status: 'adiado', data: [] };
+    const g = quer('gestores') ? dash.data('gestores') : ADIADO, e = quer('escolas') ? dash.data('escolas') : ADIADO;
     if (g.status === 'ok') build('gestores', g.data);
     if (e.status === 'ok') build('escolas', e.data);
     const d = view === 'escolas' ? e : g;
     const pageCharts = chartsIn(view);
     const kpis = [...document.querySelectorAll('#' + view + ' .tg-kpi[data-ind]')];
 
-    if (g.status === 'ok' && e.status === 'ok') buildControls();
+    if (d.status === 'ok') buildControls();
     if (view === 'inicio') { drawHome(); return; }
     if (!DASH.includes(view)) return;
     if (grupoPendente != null && SEGS[view]) {
@@ -1730,7 +1809,7 @@
     if (SEGS[view]) drawRecorte(view, rec);
     drawFim();
 
-    if (g.status === 'ok' || e.status === 'ok') drawCompare(params); else fail(document.getElementById('ch-comparar'), g.status);
+    if (g.status === 'ok' || e.status === 'ok') drawCompare(params); else fail(document.getElementById('ch-comparar'), d.status);
 
     // falha no carregamento: uma mensagem só, no topo, com "Tentar de novo"; os destaques somem em vez de mostrar "—"
     const kpiBox = document.querySelector('#' + view + ' .tg-kpis');

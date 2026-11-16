@@ -24,37 +24,53 @@ colors:
 typography:
   display:
     fontFamily: "Bricolage Grotesque, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
-    fontSize: "clamp(2.6rem, 6vw, 4.4rem)"
+    fontSize: "clamp(2.9rem, 7.4vw, 5.6rem)"
     fontWeight: 800
     lineHeight: 1
-    letterSpacing: "-0.025em"
+    letterSpacing: "-0.02em"
   headline:
     fontFamily: "Bricolage Grotesque, system-ui, sans-serif"
-    fontSize: "2.16rem"
+    fontSize: "clamp(2.1rem, 4.6vw, 3.5rem)"
     fontWeight: 800
-    lineHeight: 1.15
-    letterSpacing: "-0.025em"
+    lineHeight: 1.08
+    letterSpacing: "-0.02em"
   title:
     fontFamily: "Bricolage Grotesque, system-ui, sans-serif"
-    fontSize: "1.6rem"
+    fontSize: "clamp(1.6rem, 2.8vw, 2.1rem)"
     fontWeight: 800
-    lineHeight: 1.2
-    letterSpacing: "-0.02em"
+    lineHeight: 1.1
+    letterSpacing: "-0.015em"
+  card-title:
+    fontFamily: "Bricolage Grotesque, system-ui, sans-serif"
+    fontSize: "1.3125rem"
+    fontWeight: 700
+    lineHeight: 1.25
+    letterSpacing: "-0.005em"
   number:
     fontFamily: "Bricolage Grotesque, system-ui, sans-serif"
-    fontSize: "2rem"
+    fontSize: "clamp(2rem, 3.2vw, 2.5rem)"
     fontWeight: 800
     lineHeight: 1.1
     letterSpacing: "-0.02em"
     fontFeature: "tnum"
-  statement:
+  lead:
     fontFamily: "Bricolage Grotesque, system-ui, sans-serif"
+    fontSize: "clamp(1.3rem, 2.4vw, 1.65rem)"
+    fontWeight: 600
+    lineHeight: 1.3
+  statement:
+    fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
     fontSize: "1.1875rem"
     fontWeight: 400
     lineHeight: 1.4
   body:
     fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
     fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  caption:
+    fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
+    fontSize: "0.9375rem"
     fontWeight: 400
     lineHeight: 1.5
   label:
@@ -69,6 +85,8 @@ typography:
     fontWeight: 600
     lineHeight: 1.1
 rounded:
+  traco: "1px"
+  fita: "2px"
   folha: "3px"
   card: "6px"
   pill: "999px"
@@ -156,7 +174,7 @@ components:
 
 A Bússola é desenhada como um caderno escolar aberto, organizado com o rigor de uma página de produto moderna. Dentro da moldura, a folha é branca e pautada (uma linha azul-clara a cada 30px), com a margem dupla rosa à esquerda e furos de fichário na faixa antes dela; fora da moldura fica a mesa, em Papel Azulado. Cada seção é uma lição numerada ("Lição 01") sobre um fio na cor do capítulo (conexão em teal, equipamentos em laranja, regras e IA em roxo, comunicação em rosa), com a pastilha de ícone do tema ao lado do título, e fecha com um quadro "Para pensar". O amarelo é o marca-texto do caderno: grifa a palavra-chave do título, os números da manchete, o número em destaque do mapa (em Tinta, como todo texto grifado) e o link ativo da navegação. "Você sabia?" é um post-it preso com fita; o filtro é uma questão de múltipla escolha; o "Ir para" são marcadores de página adesivos.
 
-O sistema é preciso e tátil. Cartões são folhas soltas sobre o caderno: fundo branco, borda de 1px, cantos de 3px e sombra baixa. Os botões principais são etiquetas com dois cantos chanfrados. Rótulos de medida (base, margem de erro, fonte, navegação, sobretítulos de controle) vão em mono, como anotações de régua; títulos e números ficam na Bricolage Grotesque e as frases na Atkinson Hyperlegible Next. Anotações à mão em Caveat ("← toque numa região!", "marque só uma!") e o carimbo "Visto" são só enfeite: nunca carregam dado e ficam fora do leitor de tela. A densidade continua baixa: uma ideia por cartão, a frase em linguagem simples antes do gráfico e a base e a margem de erro no rodapé de cada cartão.
+O sistema é preciso e tátil. Cartões são folhas soltas sobre o caderno: fundo branco, borda de 1px, cantos de 3px e sombra baixa. Os botões principais são etiquetas com dois cantos chanfrados. Rótulos curtos (navegação, sobretítulos de controle, eixos, a etiqueta de fonte da capa) vão em mono, como anotações de régua; títulos e números ficam na Bricolage Grotesque e toda frase, inclusive a margem de erro, a base e o rodapé, na Atkinson Hyperlegible Next. Anotações à mão em Caveat ("← toque numa região!", "marque só uma!") são só enfeite: nunca carregam dado e ficam fora do leitor de tela. A densidade continua baixa: uma ideia por cartão, a frase em linguagem simples antes do gráfico e a base e a margem de erro no rodapé de cada cartão.
 
 O sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas cheias, notação estatística, texto miúdo como protagonista) e o visual **alarmista** (vermelho e cores de alerta para dramatizar números). A seriedade vem da integridade dos dados, não de um visual austero.
 
@@ -191,7 +209,7 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Verde Positivo e Vermelho Negativo** (verde-positivo, vermelho-negativo): só nas setas de direção das comparações, que são neutras quanto à significância. Nunca preenchem áreas, fundos ou títulos.
 
 ### Neutral
-- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e base da faixa de margem de erro (com 16% de opacidade).
+- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e fundo da faixa de margem de erro (12%; o contorno é Tinta Suave).
 - **Tinta Suave** (tinta-suave): texto secundário, rodapés de base, notas e links inativos da navegação.
 - **Papel Azulado** (papel-azulado): a mesa, fora da moldura, e o fundo do mapa e dos desenhos do guia (estes com quadriculado).
 - **Painel** (painel): a folha do caderno (com as pautas em Azul Bússola a 15%), cartões, barra de navegação e controles.
@@ -213,7 +231,7 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 
 **Display Font:** Bricolage Grotesque (eixo óptico 12–96; reserva na fonte do texto)
 **Body Font:** Atkinson Hyperlegible Next (com system-ui, -apple-system, Segoe UI, Roboto e sans-serif como reserva)
-**Label Font:** Atkinson Hyperlegible Mono (só rótulos de medida: navegação, base e margem de erro, fonte, sobretítulos de controle, eixos, "Lição 01" e rodapé)
+**Label Font:** Atkinson Hyperlegible Mono (só rótulos curtos: navegação, etiqueta de fonte da capa, sobretítulos de controle, eixos e "Lição 01"; nunca frases)
 **Annotation Font:** Caveat 600 (só anotações à mão decorativas, com `aria-hidden`; nunca dado nem instrução necessária)
 
 No Tailwind (`src/site.css`), `--font-sans`, `--font-display` e `--font-mono` são as três famílias; no CSS do painel, `--font-display` (Bricolage) marca títulos, cartões e números.
@@ -225,14 +243,17 @@ No Tailwind (`src/site.css`), `--font-sans`, `--font-display` e `--font-mono` s�
 - **Headline** (800; clamp(2.1rem, 4.6vw, 3.5rem); 1.08; -0.02em): títulos das capas de Escolas, Gestores e Sobre, com no máximo 19ch; o fim do título ("conectadas e equipadas", "como usa a tecnologia") vem grifado.
 - **Title** (800; clamp(1.6rem, 2.8vw, 2.1rem); 1.1; -0.03em): títulos de seção, ao lado da pastilha de ícone na cor do tema (sem sublinhado).
 - **Number** (800; clamp(2rem, 3.2vw, 2.5rem); 1.1; algarismos tabulares): números-chave dos destaques, na cor do tema.
+- **Lead** (600 a 800; clamp(1.3rem, 2.4vw, 1.65rem); 1.3): frases de destaque fora dos gráficos: a linha fina da capa do Início, o texto do post-it "Você sabia?", o grupo escolhido no filtro ("Brasil (todas as escolas)") e o dado das portas do Início.
 - **Statement** (400, com negrito 600; 1.1875rem (19px); 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…"), com no máximo 62ch, logo abaixo do título do cartão; a nota sobre as cores vem depois dela, encostada no gráfico (título → frase → nota → gráfico).
 - **Body** (400; 1.0625rem (17px); 1.5): texto corrente, rótulos de barra e controles. Textos longos ficam em 62ch no máximo.
-- **Label** (Atkinson Hyperlegible Mono 500; 0.875rem (14px); 0.05em; caixa alta): navegação, "Você está vendo", rótulos dos blocos do filtro, "Ir para", nome das portas e a etiqueta de fonte da capa. Na mesma família, sem caixa alta e em Tinta Suave, a linha de base e margem de erro de cada cartão.
+- **Label** (Atkinson Hyperlegible Mono 500; 0.875rem (14px); 0.05em; caixa alta): navegação, "Você está vendo", rótulos dos blocos do filtro, "Ir para", nome das portas e a etiqueta de fonte da capa. A linha de base e fonte de cada cartão, a margem de erro dos destaques e o rodapé são frases: ficam em Caption (Atkinson Next, 0.875 a 0.9375rem, Tinta Suave).
 
 ### Named Rules
 **The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em "N em cada 10"; "o mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois ou diz a faixa ("vai de … a …"). Numa frase com dois números, os dois usam a mesma base (`comBase`): "95 em cada 100 … mas só 62 em cada 100", nunca "95 em cada 100 … 6 em cada 10". O painel não usa "metade": 50% é "5 em cada 10", como nos destaques.
 
-**The Piso de 14px Rule.** Nenhum texto visível fica abaixo de 14px (0.875rem), nem notas, legendas, rótulos em mono, base e margem de erro, rodapé ou rótulos dentro do mapa (medidos já na escala do SVG, no celular e no computador). O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Todos os tamanhos são em rem, para acompanhar o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.
+**The Enfeite Calado Rule.** Texto gerado por CSS que é só enfeite (as letras a, b, c das alternativas do filtro, o número das questões, "Lição 01") usa texto alternativo vazio (`content: "…" / ""`), para o leitor de tela não ler. Layout de texto nunca usa `nowrap` em grupos de botões: com a letra do navegador em 200%, tudo precisa quebrar linha; media queries de layout de texto ficam em `em`, para acompanhar esse tamanho.
+
+**The Piso de 14px Rule.** Nenhum texto visível fica abaixo de 14px (0.875rem). Única exceção de escrita: os rótulos dentro do mapa são escritos nas unidades do desenho, com `max(10.5px, calc(14px / var(--esc)))`, em que `--esc` é a escala do mapa na tela (o painel.js mede a cada desenho); assim ficam com 14px ou mais em qualquer largura, de 320px ao desktop. No celular o nome da região sai da caixa alta, para caber. Vale para tudo: notas, legendas, rótulos em mono, base e margem de erro, rodapé, a barra de filtro fixa e o guia "Como ler", que só aparecem depois. Todos os tamanhos são em rem, exceto os rótulos do mapa. O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Os tamanhos em rem acompanham o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.
 
 **The Números Tabulares Rule.** Todo valor numérico (barras, comparações, legendas, destaques) usa `font-variant-numeric: tabular-nums`, para que as colunas de números se alinhem.
 
@@ -246,9 +267,9 @@ No Tailwind (`src/site.css`), `--font-sans`, `--font-display` e `--font-mono` s�
 - **Capa da página inicial:** uma coluna no celular; a partir de 900px, texto e post-it "Você sabia?" lado a lado (1.25fr para minmax(19rem, 24rem)).
 - **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px. Abaixo de 560px, os links da navegação vão para uma segunda linha.
 - **Ordem de leitura em Escolas e Gestores:** capa, filtro de recorte, destaques, índice de seções ("Ir para") e as seções na ordem do índice, terminando em "Compare grupos".
-- **Navegação fixa no topo** e, ao rolar Escolas e Gestores, um filtro de recorte compacto fixo logo abaixo dela, com o botão "Topo". As âncoras compensam essa altura.
-- **Toque:** com dedo (`pointer: coarse`), os controles pequenos (Ver em texto, compartilhar, ⓘ, Recolher, links da navegação, grupos) têm pelo menos 44px.
-- **Celular (até 560px):** a barra fixa vira uma linha só, "<grupo> · Mudar · Topo", e "Mudar" leva ao filtro principal já aberto; o filtro principal começa recolhido, com "Você está vendo" e o botão "Mudar grupo" (vira "Fechar" quando aberto); os destaques ficam em 2 colunas, e o total vira uma faixa de uma linha ("129,7 mil Escolas representadas").
+- **Navegação fixa no topo** e, ao rolar Escolas e Gestores, uma barra fixa de uma linha logo abaixo dela, em qualquer tela: "Você está vendo: <grupo> · Mudar · Topo". O nome do grupo quebra em duas linhas em vez de ser cortado; "Mudar" leva ao filtro principal. As âncoras compensam a altura real da barra.
+- **Toque:** com dedo (`pointer: coarse`), os controles pequenos (Ver em texto, compartilhar, Recolher, links da navegação, grupos) têm pelo menos 44px; o botão ⓘ do filtro tem 44px também com mouse, com margem negativa para não mexer na linha do texto.
+- **Celular (até 560px):** na barra fixa, "Você está vendo" e o texto "Topo" saem (fica a seta); "Mudar" leva ao filtro principal já aberto; o filtro principal começa recolhido, com "Você está vendo" e o botão "Mudar grupo" (vira "Fechar" quando aberto); os destaques ficam em 2 colunas, e o total vira uma faixa de uma linha ("129,7 mil Escolas representadas").
 - **Fim das abas de dados:** depois de "Compare grupos", um bloco leva à outra aba com um dado real ("Agora veja quem dirige as escolas") e a "Como citar".
 - **Chegada:** ao ir para um cartão pelo endereço (Ver no painel, link compartilhado), ele ganha um anel na cor do capítulo por um instante.
 - **Fim do Início:** duas portas lado a lado (colunas de no mínimo 22rem), que viram uma coluna no celular.
@@ -265,13 +286,14 @@ Profundidade baixa, de folhas soltas sobre o caderno aberto na mesa: a folha pau
 - **Marcador** (`box-shadow: inset 0 5px 0 var(--sec), 0 6px 12px -10px rgba(20,30,70,.55)`): os links do "Ir para", levemente tortos.
 - **Navegação ativa:** sem sombra; o nome vem grifado de marca-texto.
 - **Filtro fixo** (`box-shadow: 0 10px 28px -12px rgba(20,30,70,.35)`, com desfoque de fundo de 10px): barra de recorte fixa.
+- **Fundo do guia** (`::backdrop` em `rgba(12,18,40,.55)` com desfoque de 3px): a página escurece em azul-marinho atrás da janela "Como ler".
 
 ### Named Rules
 **The Sombra Tingida Rule.** Sombras são sempre azul-marinho translúcido, nunca preto puro, para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.
 
 ## Shapes
 
-Formas de papelaria: 3px para as folhas (cartões, destaques, filtro, citação, portas); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito; o carimbo "Visto" é um círculo duplo de 5.25rem em Azul Profundo, inclinado -12°, a 80%.
+Formas de papelaria: 2px para o post-it e os marcadores (fita); 3px para as folhas (cartões, destaques, filtro, citação, portas); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito.
 
 ## Components
 
@@ -284,7 +306,7 @@ Formas de papelaria: 3px para as folhas (cartões, destaques, filtro, citação,
 - **Pular para o conteúdo:** botão de 6px Azul Bússola com texto branco 700, fora da tela até receber foco pelo teclado; é o primeiro item da página.
 
 ### Chips (seletor de recorte)
-- **Questão de múltipla escolha:** no filtro principal, cada bloco é uma questão numerada ("1. Ver os números de", "2. Onde fica a escola", "3. Tipo de escola" e, em Gestores, "Quem dirige"), com o rótulo em Label e as dimensões como alternativas a, b, c…: bolinha vazada em Tinta Suave, preenchida em Tinta com a letra branca quando marcada (texto em 700). Questões separadas por fio tracejado. Uma anotação à mão "marque só uma!" fica acima do quadro (só no desktop). Na barra fixa compacta, as abas seguem como antes, numa linha que rola de lado, sublinhadas na cor do tema.
+- **Questão de múltipla escolha:** no filtro principal, cada bloco é uma questão numerada ("1. Onde fica a escola", "2. Tipo de escola" e, em Gestores, "Quem dirige"), com o rótulo em Label e os tipos de grupo como alternativas a, b, c…: bolinha vazada em Tinta Suave, preenchida em Tinta com a letra branca quando marcada (texto em 700). Questões separadas por fio tracejado. De início só aparecem os tipos mais procurados (Escolas: região, urbana ou rural, rede; Gestores: região, rede, sexo); "Mais tipos de grupo (N)", em link sublinhado, mostra os outros. Os grupos (Norte, Nordeste…) entram dentro da própria questão da alternativa escolhida (as questões são itens do filtro via `display:contents`, e a ordem vem do painel.js), alinhados com as alternativas, sob um rótulo com o tipo escolhido ("Região:"), que vira o pedido em azul durante a escolha ("Escolha a região:"). O Brasil não é alternativa: com um grupo escolhido, "← Voltar para o Brasil todo" aparece logo abaixo de "Você está vendo". Uma anotação à mão "marque só uma!" fica acima do quadro (só no desktop).
 - **Vocabulário:** a interface diz "grupo", nunca "recorte" (o termo da pesquisa fica explicado no guia).
 - **Duas etapas:** tocar numa dimensão só mostra os grupos dela, com o pedido "Escolha a região:" (lido pelo leitor de tela); os grupos são botões de 6px com uma bolinha de rádio (vazia, ou com miolo branco e aro grosso em Tinta quando marcada). Os dados mudam ao escolher o grupo. No celular, o filtro recolhe depois da escolha e o foco volta para "Mudar grupo".
 - **Grupo no endereço:** o grupo vai na URL (`/escolas?grupo=regiao-norte`); o link compartilhado, "Copiar link", recarregar e o Voltar do navegador mantêm ou desfazem o grupo.
@@ -292,7 +314,7 @@ Formas de papelaria: 3px para as folhas (cartões, destaques, filtro, citação,
 
 ### Cards / Containers
 - **Corner Style:** 3px.
-- **Background:** Painel. Os destaques formam uma linha de células brancas coladas por fios de 1px em Linha, sem filete; o total fica numa célula com 5% de azul.
+- **Background:** Painel. Os destaques formam uma linha de células brancas separadas por fios de 1px em Linha, desenhados em cada célula (`box-shadow: 0 0 0 1px`) e não no fundo da grade, para que uma célula que sobra numa linha não deixe um bloco cinza; sem filete; o total fica numa célula com 5% de azul.
 - **Shadow Strategy:** Ambiente.
 - **Border:** 1px em Linha.
 - **Internal Padding:** 1.15rem. O rodapé de base fica separado por um fio de 1px e encostado no fim do cartão.
@@ -313,13 +335,13 @@ Amarelo Norte a 62% sobre branco, cantos de 2px, sem borda, fita translúcida az
 Quadro no fim de cada seção de Escolas e Gestores: borda tracejada de 1.5px na cor do tema, fundo do tema a 5% sobre branco, raio de 6px, padding de 1.1rem 1.25rem; pastilha de 2.5rem na cor do tema com um lápis branco; "Para pensar" em Bricolage 800 no tom de texto do tema e a pergunta em Tinta, até 70ch. É uma nota (`role="note"`), não um título, e some com a seção recolhida.
 
 ### Barra com margem de erro (componente-assinatura)
-Linha de lápis tracejada (1.5px em Tinta Suave a 45%) com 1rem de altura; o preenchimento na cor do tema, a 85%, é um traço de marca-texto com as pontas levemente tortas (`clip-path`); faixa de margem de erro em Tinta a 16% e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
+Linha de lápis tracejada (1.5px em Tinta Suave a 45%) com 1rem de altura; o preenchimento na cor do tema, a 85%, é um traço de marca-texto com as pontas levemente tortas (`clip-path`); faixa de margem de erro com fundo em Tinta a 12% e contorno de 1.5px em Tinta Suave (contraste acima de 3:1), e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
 
 ### Pictograma Isotype
 Fileira de 10 figuras em SVG (cada uma vale 10%), preenchidas na cor do tema e o restante em Trilho. As figuras acendem em sequência, só por opacidade.
 
 ### Destaque (KPI)
-Célula da linha de destaques, sem filete, com rótulo em Tinta 600, número em Number na cor do tema e linha de comparação em mono 0.875rem Tinta Suave.
+Célula da linha de destaques, sem filete, com rótulo em Tinta 600, número em Number na cor do tema e linha de comparação em Caption (Atkinson Next 0.9375rem) Tinta Suave. O número aparece já no valor final; só conta do valor antigo ao novo quando o leitor troca de grupo.
 
 ### Índice de seções
 Linha "Ir para" logo depois dos destaques de Escolas e Gestores: rótulo em Label e um marcador de página adesivo por seção, com fundo do tema a 15% sobre branco, faixa de 5px na cor do tema no topo, cantos superiores de 2px e inclinação alternada de -1.2° e 0.9° (sem inclinação com movimento reduzido); no hover, fundo a 26%. As âncoras usam o roteamento do painel. No filtro fixo, o botão "Topo" leva de volta ao início da aba.
@@ -328,7 +350,7 @@ Linha "Ir para" logo depois dos destaques de Escolas e Gestores: rótulo em Labe
 Fim da página inicial: duas portas (Escolas em teal, Gestores em roxo), cada uma inteira clicável, com o nome do público em Label, um dado real em frase (número em 800 no tom de texto do tema), o pictograma de 10 figuras, uma linha do que há no painel e "Ver o painel… →". Abaixo, uma linha leva ao guia "Como ler o painel".
 
 ### Notas e avisos
-Caixa em Trilho com raio de 8px e padding de 0.45rem 0.7rem, texto 0.9375rem em Tinta Suave, sem borda lateral. Usada na nota "sem margem de erro estimada" (o asterisco no valor fica em Tinta, negrito) e na explicação de "Um recorte por vez".
+Caixa em Trilho com raio de 6px e padding de 0.45rem 0.7rem, texto 0.9375rem em Tinta Suave, sem borda lateral. Usada na nota "sem margem de erro estimada" (o asterisco no valor fica em Tinta, negrito) e na explicação de "Um recorte por vez".
 
 ### Barra empilhada de faixas ordenadas
 Até 4 faixas à vista para o leitor leigo. Quando a pesquisa tem mais (Velocidade: 7), faixas vizinhas são somadas (Até 50 Mbps, 51 a 250 Mbps, Mais de 250 Mbps) e as faixas originais, com a margem de erro de cada uma, ficam em "Ver em texto ou ouvir"; a nota do cartão avisa isso.
@@ -340,7 +362,8 @@ Até 4 faixas à vista para o leitor leigo. Quando a pesquisa tem mais (Velocida
 
 ### Do:
 - **Do** defina `--sec` em cada nova seção e deixe fio da lição, ícone, número, destaque do gráfico e "Para pensar" herdarem dela.
-- **Do** abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a margem de erro em mono 0.875rem Tinta Suave, sobre um fio tracejado.
+- **Do** abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a fonte em Caption 0.875rem Tinta Suave, sobre um fio tracejado. "Ler em texto" termina com uma frase pronta para citar (frase do cartão, grupo, fonte e tabela).
+- **Do** mostre no máximo 5 barras de início numa lista longa; as outras ficam atrás de "Ver os outros N".
 - **Do** desenhe a margem de erro em toda barra e comparação, e comece as barras no zero.
 - **Do** use Bricolage Grotesque em 800 para títulos e números, Atkinson Hyperlegible Next no texto, Atkinson Hyperlegible Mono só para rótulos de medida, e algarismos tabulares em todo valor.
 - **Do** use sombras azul-marinho translúcidas e curtas, cantos de 3px nas folhas e 6px nos controles, etiqueta chanfrada nos botões principais.
@@ -355,7 +378,8 @@ Até 4 faixas à vista para o leitor leigo. Quando a pesquisa tem mais (Velocida
 - **Don't** use duas cores de tema na mesma seção, nem a cor de um capítulo em outro.
 - **Don't** rotule diferenças entre grupos como "reais" ou "empates", nem dê cores diferentes aos grupos comparados.
 - **Don't** use Amarelo Norte como cor de texto.
-- **Don't** use anotações à mão ou o carimbo para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.
+- **Don't** use carimbo ou selo: parecem validação oficial dos dados.
+- **Don't** use anotações à mão para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.
 - **Don't** use sombras pretas puras, degradês de fundo nas capas nem sobretítulos acima dos títulos.
 - **Don't** use mono em frases para o leitor: ela é escrita de régua, não voz.
 - **Don't** marque avisos, notas ou cartões com borda lateral colorida; o acento de capítulo é o fio da lição.

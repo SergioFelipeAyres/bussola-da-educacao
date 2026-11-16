@@ -10,7 +10,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232f5fd0'/%3E%3Cg fill='%23fff'%3E%3Cpath fill-rule='evenodd' d='M12 3.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 1 0 0-17zm0 1.7a6.8 6.8 0 1 1 0 13.6a6.8 6.8 0 1 1 0-13.6z'/%3E%3Cpath d='M16.6 7.4l-3.2 6-2.8-2.8z'/%3E%3Cpath d='M7.4 16.6l3.2-6 2.8 2.8z' opacity='.55'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500&family=Caveat:wght@600&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;500&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&display=swap">
+<link rel="stylesheet" crossorigin="anonymous" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&text=%E2%86%90%20toque%20numa%20regi%C3%A3o!marque%20s%C3%B3%20uma!&display=swap">
 <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
@@ -67,7 +68,6 @@
         </div>
         <div class="tg-mapa-painel">
           <div class="tg-mapa-onde">
-            <span class="tg-carimbo" aria-hidden="true">Visto ✓<small>2025</small></span>
             <span class="tg-eyebrow" id="mapa-eyebrow">Você está vendo</span>
             <h3 class="tg-mapa-regiao" id="mapa-regiao" aria-live="polite">Brasil</h3>
             <button type="button" class="tg-mapa-reset" id="mapa-reset" hidden><span aria-hidden="true">←</span> Voltar para o Brasil</button>
@@ -208,6 +208,7 @@
           </div>
           <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
             <p>Um percentual diz quantos, a cada 100, estão numa situação. Entre 10% e 90%, arredondamos para a dezena mais próxima. Abaixo de 10% ou a partir de 90%, contamos em 100: 95,1% vira "cerca de 95 em cada 100". O "cerca de" avisa que houve arredondamento e só some quando o número é exato.</p>
+            <p>Num mesmo cartão, todos os números usam a mesma conta. De um grupo para outro, ela pode mudar: no Brasil, 95,1% vira "cerca de 95 em cada 100"; no Norte, 76,8% vira "cerca de 8 em cada 10". Para comparar grupos, olhe o percentual ao lado da frase.</p>
           </details>
         </article>
 
@@ -312,13 +313,13 @@
         </article>
 
         <article class="tg-lesson" id="ler-pp">
-          <h4 class="tg-lesson-t">Pontos percentuais (p.p.)</h4>
+          <h4 class="tg-lesson-t">Pontos percentuais</h4>
           <p class="tg-lesson-frase">Para comparar dois percentuais, subtraímos um do outro: de 83,8% para 96,5% são <b>12,7 pontos percentuais</b>, e não "12,7%".</p>
           <div class="tg-lesson-vis" aria-hidden="true">
-            <div class="tg-lesson-eq tg-lesson-pp"><b>96,5%</b><span>−</span><b>83,8%</b><span>=</span><b>12,7 p.p.</b></div>
+            <div class="tg-lesson-eq tg-lesson-pp"><b>96,5%</b><span>−</span><b>83,8%</b><span>=</span><b>12,7 pontos</b></div>
           </div>
           <details class="tg-lesson-mais"><summary>Saiba mais<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
-            <p>Dizer que algo cresceu 12,7% seria outra conta, que compara com o valor de partida. O "p.p." evita essa confusão.</p>
+            <p>Dizer que algo cresceu 12,7% seria outra conta, que compara com o valor de partida. Falar em "pontos" evita essa confusão: é o que o painel faz ao comparar um grupo com o Brasil.</p>
           </details>
         </article>
 
@@ -350,12 +351,14 @@
       <span class="tg-eyebrow">Você está vendo</span>
       <h2 class="tg-rec-titulo" id="rec-titulo" aria-live="polite">Brasil</h2>
       <button type="button" class="tg-rec-mudar" id="rec-mudar" aria-expanded="false" aria-controls="rec-corpo"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg><span>Mudar grupo</span></button>
+      <button type="button" class="tg-rec-brasil" id="rec-brasil" hidden><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Voltar para o Brasil todo</span></button>
     </div>
     <div class="tg-rec-corpo" id="rec-corpo">
     <span class="tg-anot tg-anot-filtro" aria-hidden="true">marque só uma!</span>
     <div class="tg-rec-dims" id="rec-dims" role="radiogroup" aria-label="Ver os números de"></div>
     <p class="tg-rec-pedido" id="rec-pedido" aria-live="polite" hidden></p>
     <div class="tg-rec-opts" id="rec-opts" role="radiogroup" hidden></div>
+    <button type="button" class="tg-rec-mais" id="rec-mais" aria-expanded="false" aria-controls="rec-dims"><span>Mais tipos de grupo</span><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
     <p class="tg-rec-nota">Um grupo por vez <button type="button" class="tg-rec-info" id="rec-info" aria-expanded="false" aria-controls="rec-info-txt" aria-label="Por que um grupo por vez?">ⓘ</button></p>
     <p class="tg-rec-info-txt" id="rec-info-txt" hidden>A pesquisa não publica combinações, como "rural do Norte", porque a amostra fica pequena demais para um número confiável.</p>
     <p class="tg-filter-note" id="tg-filter-note" aria-live="polite">Todos os gráficos da aba mudam juntos.</p>
@@ -366,8 +369,6 @@
   <div class="tg-rec-fixo" id="filtro-fixo" hidden>
     <div class="tg-rec-fixo-in">
       <p class="tg-rec-fixo-tit"><span>Você está vendo</span> <b id="rec-titulo2">Brasil</b></p>
-      <div class="tg-rec-dims" id="rec-dims2" role="radiogroup" aria-label="Ver os números de"></div>
-      <div class="tg-rec-opts" id="rec-opts2" role="radiogroup" hidden></div>
       <button type="button" class="tg-rec-mudar2" id="rec-mudar2" aria-controls="rec-corpo"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg><span>Mudar</span></button>
       <button type="button" class="tg-topo" id="ir-topo" aria-label="Voltar ao topo da página"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span>Topo</span></button>
     </div>
@@ -422,8 +423,8 @@
       <div class="tg-grid">
         <article class="tg-card tg-wide" id="card-camadas"><h3 class="tg-card-title">Da internet na escola ao uso pelos alunos</h3><p class="tg-card-note">Cada prédio representa 10% das escolas.</p><div class="tg-chart" id="ch-camadas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A1"></p></article>
         <article class="tg-card" id="card-tipo-conexao"><h3 class="tg-card-title">Principal tipo de conexão</h3><p class="tg-card-note">Entre as escolas com internet.</p><div class="tg-chart" id="ch-tipo-conexao" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A2"></p></article>
-        <article class="tg-card" id="card-velocidade"><h3 class="tg-card-title">Velocidade da conexão</h3><p class="tg-card-note">Do tom mais claro (mais lenta) ao mais escuro (mais rápida). Em cinza, quem não soube informar. As sete faixas da pesquisa, com a margem de erro, estão em “Ver em texto ou ouvir”.</p><div class="tg-chart" id="ch-velocidade" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A3_1"></p></article>
-        <article class="tg-card" id="card-sem-internet"><h3 class="tg-card-title">Por que algumas escolas não têm internet</h3><p class="tg-card-note">Motivos citados pelas escolas sem conexão. Por serem poucas, as margens de erro são grandes.</p><div class="tg-chart" id="ch-sem-internet" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A20"></p></article>
+        <article class="tg-card" id="card-velocidade"><h3 class="tg-card-title">Velocidade da conexão</h3><p class="tg-card-note">Do tom mais claro (mais lenta) ao mais escuro (mais rápida). Em cinza, quem não soube informar. Mbps (megabits por segundo) mede a velocidade: quanto maior o número, mais rápida a internet. As sete faixas da pesquisa, com a margem de erro, estão em “Ler em texto”.</p><div class="tg-chart" id="ch-velocidade" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A3_1"></p></article>
+        <article class="tg-card" id="card-sem-internet"><h3 class="tg-card-title">Por que algumas escolas não têm internet</h3><p class="tg-card-note">Motivos citados pelas escolas sem conexão. Por serem poucas, as margens de erro são grandes.</p><div class="tg-chart" id="ch-sem-internet" data-source="escolas" data-nome="motivos"></div><p class="tg-base" data-pub="escolas" data-ind="A20"></p></article>
         <article class="tg-card tg-wide" id="card-problemas"><h3 class="tg-card-title">Com que frequência a internet dá problema</h3><p class="tg-card-note">Do tom mais escuro (sempre) ao mais claro (nunca), ordenado pelos problemas mais frequentes.</p><div class="tg-chart" id="ch-problemas" data-source="escolas"></div><p class="tg-base" data-pub="escolas" data-ind="A19"></p></article>
       </div>
       <div class="tg-pensar" role="note"><span class="tg-pensar-ic"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></span><p><b class="tg-pensar-tit">Para pensar</b>Ter internet na escola é só o primeiro passo. O que precisa acontecer para que essa conexão chegue às aulas dos alunos?</p></div>
@@ -553,7 +554,7 @@
         <select id="tg-cmp-cat" aria-label="Tipo de grupo"></select>
       </div>
       <div class="tg-chart" id="ch-comparar" data-source="gestores escolas"></div>
-      <p class="tg-card-note" style="margin-top:0">Cada ponto é a estimativa do grupo, e a faixa, sua margem de erro. As diferenças em relação ao Brasil são descritivas: o painel não testa se elas são estatisticamente significativas.</p>
+      <p class="tg-card-note" style="margin-top:0">Cada ponto é a estimativa do grupo, e a faixa, sua margem de erro. As diferenças em relação ao Brasil são só descritivas: o painel não faz o teste que diria se uma diferença pequena pode ser apenas efeito da amostra.</p>
     </article>
   </section>
 

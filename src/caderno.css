@@ -53,13 +53,15 @@ body{background-color:var(--color-bg)}
     background:radial-gradient(circle at 50% .675rem,var(--color-bg) 0 .5rem,color-mix(in srgb,var(--color-border-line) 80%,var(--color-fg-muted)) .5rem calc(.5rem + 1px),transparent calc(.5rem + 1.5px)) 0 0/100% 7.5rem repeat-y}
 }
 
+/* Mono só em rótulos, eixos e números de régua; frases (margem, base, fonte, rodapé) ficam na fonte do texto */
 /* ---------- lição: cada seção abre com "Lição 01" sobre um fio na cor do capítulo ---------- */
-.tg-page,#painel{counter-reset:licao}
+/* uma numeração só por tela: as abas escondidas não contam, e o Compare continua a sequência da aba */
+#painel{counter-reset:licao}
 .tg-sec{position:relative;counter-increment:licao}
 .tg-sec::before,.tg-fim::before{content:"";position:absolute;pointer-events:none;left:0;right:0;height:2px;top:calc(-1.5rem - 1px);background:var(--sec,var(--color-border-line))}
 .tg-fim{position:relative}
 .tg-fim::before{height:1px;background:var(--color-border-line)}
-.tg-sec::after{content:"Lição " counter(licao,decimal-leading-zero);position:absolute;pointer-events:none;left:0;top:calc(-1.5rem - .55rem);padding-right:.8rem;
+.tg-sec::after{content:"Lição " counter(licao,decimal-leading-zero);content:"Lição " counter(licao,decimal-leading-zero) / "";position:absolute;pointer-events:none;left:0;top:calc(-1.5rem - .55rem);padding-right:.8rem;
   background:var(--color-panel);font:500 .875rem/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
 .tg-portas{--sec:var(--color-fg-muted)}
 .tg-shot .tg-sec::before,.tg-shot .tg-sec::after{display:none}
@@ -73,7 +75,7 @@ body{background-color:var(--color-bg)}
 .nav-link:hover{background:transparent;color:var(--color-fg)}
 .nav-link[aria-current=page]{color:var(--color-fg);box-shadow:none;font-weight:500;
   background:linear-gradient(transparent 52%,var(--marca-texto) 52% 90%,transparent 90%) center/calc(100% - 1rem) 100% no-repeat}
-@media (max-width:560px){.nav-link{font-size:.875rem;letter-spacing:.02em;padding:.4rem .3rem}.nav-link[aria-current=page]{background-size:calc(100% - .4rem) 100%}}
+@media (max-width:35em){.nav-link{font-size:.875rem;letter-spacing:.02em;padding:.4rem .3rem}.nav-link[aria-current=page]{background-size:calc(100% - .4rem) 100%}}
 
 /* ---------- marca-texto: grifo amarelo atrás da palavra (o texto continua em tinta) ---------- */
 .tg-hero-title span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
@@ -128,7 +130,7 @@ body{background-color:var(--color-bg)}
 .tg-hero-home .tg-fact-ic,.tg .tg-fact-ic{border-radius:var(--cds-radius)}
 .tg .tg-fact-eyebrow{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em;color:var(--color-fg)}
 .tg-hero-home .tg-fact-meta{color:color-mix(in srgb,var(--color-fg) 82%,transparent)}
-.tg-fact-meta{font-family:var(--font-mono);font-size:.875rem;line-height:1.5}
+.tg-fact-meta{font-size:.9375rem;line-height:1.45}
 .tg-hero-home .tg-fact-link{color:var(--color-fg)}
 
 /* ---------- títulos de seção: o ícone do tema ao lado ---------- */
@@ -138,7 +140,9 @@ body{background-color:var(--color-bg)}
 .tg-sec-head .tg-sec-title::after{display:none}
 .tg-sec-head .tg-sec-title{padding-right:0}
 .tg-sec-sub{max-width:62ch;margin-top:.3rem}
-@media (max-width:560px){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}.tg-sec-head .tg-sec-title{font-size:1.45rem}}
+/* a pauta não passa por trás do título e da frase da lição: o texto fica sobre papel limpo, como corretivo */
+.tg-sec-head .tg-sec-title,.tg-sec-head .tg-sec-sub{width:fit-content;background:var(--color-panel);box-shadow:0 0 0 .3rem var(--color-panel)}
+@media (max-width:560px){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}}
 
 /* ---------- cartões: folhas soltas sobre o caderno ---------- */
 .tg-card,.tg-filter,.tg-cite,.tg-fact,.tg-porta,.tg-fim-outra{border-color:var(--color-border-line)}
@@ -146,22 +150,25 @@ body{background-color:var(--color-bg)}
 .tg-sec .tg-card{box-shadow:var(--v-shadow)}
 .tg-card.tg-chegada{box-shadow:0 0 0 3px color-mix(in srgb,var(--sec) 55%,transparent),var(--v-shadow)}
 .tg-card-title{font-family:var(--font-display);font-size:1.3125rem;font-weight:700;letter-spacing:-.005em}
-.tg-base{font-family:var(--font-mono);font-size:.875rem;line-height:1.55;letter-spacing:.01em;border-top-style:dashed}
-.tg-tick,.tg-lik-cap,.tg-stack-cap{font-family:var(--font-mono);font-size:.875rem}
+.tg-base{font-size:.875rem;line-height:1.5;border-top-style:dashed}
+/* eixo em mono (régua); legendas das barras empilhadas e de concordância são frases, na fonte do texto */
+.tg-tick{font-family:var(--font-mono);font-size:.875rem}
+.tg-lik-cap,.tg-stack-cap{font-size:.9375rem}
 
 /* barras: traço de marca-texto sobre uma linha de lápis tracejada */
 .tg-track{height:1rem;border-radius:0;background:linear-gradient(var(--cds-chart-axis,var(--color-fg-muted)),var(--cds-chart-axis,var(--color-fg-muted))) 0 100%/100% 0 no-repeat;
   border-bottom:1.5px dashed color-mix(in srgb,var(--color-fg-muted) 45%,transparent)}
 .tg-fill{top:2px;bottom:3px;border-radius:0;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%);opacity:.85}
-.tg-moe{top:0;bottom:-1px;border-radius:2px}
+/* faixa da margem de erro: fundo claro com contorno em Tinta Suave (contraste acima de 3:1), diferente do traço vertical do Brasil */
+.tg-moe{top:0;bottom:-1px;border-radius:2px;opacity:1;background:color-mix(in srgb,var(--color-fg) 12%,transparent);border:1.5px solid var(--color-fg-muted)}
 
 /* ---------- destaques: uma linha de células sobre a pauta ---------- */
-.tg-kpis{gap:1px;background:var(--color-border-line);border:1px solid var(--color-border-line);border-radius:var(--folha-raio);overflow:hidden;box-shadow:var(--v-shadow)}
-.tg-kpi{border:0;border-radius:0;background:var(--color-panel);box-shadow:none}
+.tg-kpis{gap:1px;padding:1px;background:none;border:0;border-radius:0;overflow:visible;box-shadow:none}
+.tg-kpi{border:0;border-radius:0;background:var(--color-panel);box-shadow:0 0 0 1px var(--color-border-line),0 10px 24px -20px rgba(20,30,70,.3)}
 .tg-kpi:has(.tg-total){background:color-mix(in srgb,var(--v-blue) 5%,var(--color-panel))}
 .tg-kpi-label{font-weight:600}
 .tg-kpi-num{font-size:clamp(2rem,3.2vw,2.5rem);letter-spacing:-.02em}
-.tg-kpi-cmp{font-family:var(--font-mono);font-size:.875rem;line-height:1.5}
+.tg-kpi-cmp{font-size:.9375rem;line-height:1.4}
 @media (max-width:560px){.tg-kpi-num{font-size:1.6rem}}
 
 /* ---------- filtro: uma questão de múltipla escolha (só uma alternativa marcada) ---------- */
@@ -169,18 +176,32 @@ body{background-color:var(--color-bg)}
 .tg-rec-onde .tg-eyebrow,.tg-mapa-onde .tg-eyebrow,.tg .tg-mapa-sub,.tg-rec-fixo-tit span{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
 .tg-rec-fixo-in{border-radius:var(--folha-raio)}
 .tg-rec-g-lab{font-family:var(--font-mono);font-weight:500;font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
-#rec-dims.tg-agrupado{counter-reset:questao alternativa;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0}
+/* as questões viram itens do próprio filtro (display:contents), para os grupos (Norte, Nordeste…) entrarem logo
+   abaixo da questão da alternativa escolhida; a ordem vem do painel.js (style.order) */
+#filtro{counter-reset:questao alternativa}
+#rec-dims.tg-agrupado{display:contents}
+#rec-dims .tg-rec-g{margin-block:-.3rem}
+#filtro .tg-rec-mais,#filtro .tg-rec-nota,#filtro .tg-rec-info-txt,#filtro .tg-filter-note{order:900}
+#rec-dims .tg-rec-g.tg-com-grupos{border-bottom:0;padding-bottom:.2rem}
+#filtro .tg-rec-opts.tg-na-questao{padding-bottom:.7rem;border-bottom:1px dashed var(--color-border-line)}
 #rec-dims .tg-rec-g{counter-increment:questao;align-items:center;column-gap:1.1rem;padding:.55rem 0;border-bottom:1px dashed var(--color-border-line)}
 #rec-dims .tg-rec-g:last-child{border-bottom:0}
-#rec-dims .tg-rec-g-lab::before{content:counter(questao) ".";display:inline-block;width:1.6rem;font:800 1rem var(--font-display);letter-spacing:0;color:var(--color-fg-muted)}
-#rec-dims.tg-agrupado button{counter-increment:alternativa;display:inline-flex;align-items:center;gap:.5rem;margin:0;padding:.35rem .5rem .35rem .2rem;border:0;background:transparent;font-weight:500;color:var(--color-fg)}
-#rec-dims.tg-agrupado button::before{content:counter(alternativa,lower-alpha);display:grid;place-items:center;flex:none;width:1.5rem;height:1.5rem;border-radius:50%;
+#rec-dims .tg-rec-g-lab::before{content:counter(questao) ".";content:counter(questao) "." / "";display:inline-block;width:1.6rem;font:800 1rem var(--font-display);letter-spacing:0;color:var(--color-fg-muted)}
+#rec-dims.tg-agrupado button{white-space:normal;max-width:100%;text-align:left;counter-increment:alternativa;display:inline-flex;align-items:center;gap:.5rem;margin:0;padding:.35rem .5rem .35rem .2rem;border:0;background:transparent;font-weight:500;color:var(--color-fg)}
+#rec-dims.tg-agrupado button::before{content:counter(alternativa,lower-alpha);content:counter(alternativa,lower-alpha) / "";display:grid;place-items:center;flex:none;width:1.5rem;height:1.5rem;border-radius:50%;
   border:1.5px solid var(--color-fg-muted);font:500 .875rem/1 var(--font-mono);color:var(--color-fg-muted);transition:background .15s ease,border-color .15s ease,color .15s ease}
 #rec-dims.tg-agrupado button:hover{background:transparent}
 #rec-dims.tg-agrupado button:hover::before{border-color:var(--color-fg);color:var(--color-fg)}
 #rec-dims.tg-agrupado button[aria-checked=true]{background:transparent;font-weight:700}
 #rec-dims.tg-agrupado button[aria-checked=true]::before{background:var(--color-fg);border-color:var(--color-fg);color:#fff}
-@media (min-width:720px){#rec-dims .tg-rec-g{flex-wrap:nowrap}#rec-dims .tg-rec-g-lab{flex:0 0 14rem;padding:0}#rec-dims .tg-rec-g > :not(.tg-rec-g-lab){flex:none}}
+@media (min-width:52em){#rec-dims .tg-rec-g{flex-wrap:wrap;padding-left:16.1rem}#rec-dims .tg-rec-g-lab{flex:0 0 15rem;margin-left:-16.1rem;padding:0}}
+/* etapa 2: os grupos ficam logo abaixo das alternativas, numa faixa com o rótulo do tipo escolhido */
+#filtro .tg-rec-pedido{margin-top:-.1rem;font-weight:600;color:var(--color-fg-muted)}
+#filtro .tg-rec-pedido.tg-pedindo{font-weight:700;color:var(--sec-texto,var(--color-fg))}
+#filtro .tg-rec-pedido + .tg-rec-opts{margin-top:-.35rem}
+#filtro .tg-rec-mais{margin-top:.1rem}
+#filtro .tg-rec-pedido,#filtro .tg-rec-opts{align-self:stretch}
+@media (min-width:52em){#filtro .tg-rec-pedido,#filtro .tg-rec-opts{padding-left:16.1rem}}
 /* segundo passo (qual grupo): alternativas com bolinha vazia */
 #rec-opts button{display:inline-flex;align-items:center;gap:.5rem;padding-left:.6rem}
 #rec-opts button::before{content:"";flex:none;width:.9rem;height:.9rem;border-radius:50%;border:1.5px solid var(--color-fg-muted)}
@@ -206,18 +227,13 @@ body{background-color:var(--color-bg)}
 .tg-pensar-tit{display:block;font:800 1.05rem/1.4 var(--font-display);color:var(--sec-texto)}
 .tg-fechada .tg-pensar{display:none}
 
-/* ---------- anotações à mão e carimbo (enfeite, escondidos do leitor de tela) ---------- */
+/* ---------- anotações à mão (enfeite, escondidos do leitor de tela) ---------- */
 .tg-anot{display:inline-block;font:600 1.4rem/1.1 var(--font-mao);color:var(--v-blue-deep,#2448b8);rotate:-3deg;pointer-events:none;user-select:none}
 .tg-anot-mapa{margin-top:.25rem}
 .tg-rec-corpo{position:relative}
 .tg-anot-filtro{position:absolute;right:0;top:-2.6rem}
 @media (max-width:719px){.tg-anot-filtro{display:none}}
 .tg-mapa-onde{position:relative}
-.tg-carimbo{position:absolute;right:0;top:-.25rem;display:grid;place-content:center;width:5.25rem;height:5.25rem;border-radius:50%;rotate:-12deg;pointer-events:none;user-select:none;
-  border:2.5px solid var(--v-blue-deep,#2448b8);box-shadow:inset 0 0 0 4px var(--color-panel),inset 0 0 0 5.5px var(--v-blue-deep,#2448b8);
-  font:800 .9rem/1 var(--font-display);letter-spacing:.06em;text-transform:uppercase;text-align:center;color:var(--v-blue-deep,#2448b8);opacity:.8}
-.tg-carimbo small{display:block;margin-top:.2rem;font:500 .875rem var(--font-mono);letter-spacing:.06em}
-@media (max-width:480px){.tg-carimbo{width:4.25rem;height:4.25rem;font-size:.875rem}}
 
 /* ---------- Início: mapa, indicadores e portas ---------- */
 .tg-mapa-fig{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:16px}
@@ -225,7 +241,7 @@ body{background-color:var(--color-bg)}
 .tg button.tg-mapa-ind{border-radius:0;border-bottom:1px dashed var(--color-border-line)}
 .tg button.tg-mapa-ind[aria-pressed=true]{border-radius:var(--folha-raio)}
 .tg-mapa-leg{font-family:var(--font-mono)}
-.tg-mapa-meta{font-family:var(--font-mono);font-size:.875rem}
+.tg-mapa-meta{font-size:.9375rem}
 .tg-mapa-vs{border-radius:var(--folha-raio)}
 .tg-porta{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
 .tg-porta:hover{box-shadow:inset 0 3px 0 var(--sec),0 1px 0 rgba(20,30,70,.04),0 18px 36px -20px rgba(20,30,70,.35)}
@@ -241,8 +257,9 @@ body{background-color:var(--color-bg)}
 /* ---------- guia "Como ler" ---------- */
 .tg-guide{margin:auto;border-radius:var(--cds-radius)} /* o reset do Tailwind zera a margem que centraliza o <dialog> */
 .tg-lesson-vis{border-radius:var(--cds-radius);background:var(--quadriculado),var(--color-bg);--q:14px;border:1px solid var(--color-border-line)}
-.tg-guide-note{font-family:var(--font-mono);font-size:.875rem}
+.tg-guide-note{font-size:.9375rem}
 
 /* ---------- rodapé ---------- */
-.site-foot{margin-top:0;padding-block:1.5rem 3rem;font-family:var(--font-mono);font-size:.875rem;line-height:1.6;letter-spacing:.01em;border-top:1px solid var(--color-border-line)}
+.site-foot{margin-top:0;padding-block:1.5rem 3rem;font-size:.9375rem;line-height:1.55;border-top:1px solid var(--color-border-line)}
 .pular{border-radius:var(--cds-radius)}
+.tg-sw.tg-sw-moe{background:color-mix(in srgb,var(--color-fg) 12%,transparent);border:1.5px solid var(--color-fg-muted);border-radius:2px}

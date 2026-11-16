@@ -2,7 +2,8 @@
  * Animações do painel.
  * 1. Entrada ao rolar: cartões e blocos ganham .tg-reveal e, ao entrar na tela, .tg-in.
  *    As animações dos gráficos (CSS) só rodam dentro de .tg-in, então acontecem quando o leitor vê.
- * 2. Números dos destaques contando: 0 → valor ao aparecer; valor antigo → novo quando o filtro muda.
+ * 2. Números dos destaques contando do valor antigo ao novo quando o filtro muda. Na chegada, o número já
+ *    aparece no valor final: um print ou um link compartilhado nunca mostra um número no meio da contagem.
  * 3. Linhas de gráfico recebem --i (posição) para entrarem uma depois da outra.
  * Nada disso roda com "reduzir movimento" ativado no sistema.
  */
@@ -41,10 +42,6 @@
     // garantia: se o navegador pausar os quadros (aba em segundo plano), o valor final aparece mesmo assim
     setTimeout(() => { if (el.__run === id && el.textContent !== el.__final) { el.__last = el.__final; el.textContent = el.__final; } }, delay + DUR + 300);
   };
-  const countIn = (scope, delay) => {
-    const list = scope.matches && scope.matches(NUMS) ? [scope] : [...scope.querySelectorAll(NUMS)];
-    list.forEach((el) => { if (parse(el.textContent)) count(el, 0, delay); });
-  };
 
   // ---------- posição das linhas (--i) ----------
   const index = (scope) => {
@@ -65,16 +62,16 @@
         const d = Math.min(n++, 5) * 80;
         el.style.setProperty('--d', d + 'ms');
         el.classList.add('tg-in');
-        countIn(el, d + 150);
       } else if (!el.offsetParent) {
         // a tela foi trocada: anima de novo quando voltar
         el.classList.remove('tg-in');
       }
     }
-  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+  }, { rootMargin: '0px 0px 4% 0px', threshold: 0 });
 
   const watch = (scope) => scope.querySelectorAll(REVEAL).forEach((el) => {
-    if (el.closest('.tg-shot') || el.__watched) return;
+    // o Compare é ferramenta de consulta: aparece já desenhado, sem entrada animada
+    if (el.closest('.tg-shot, #card-comparar') || el.__watched) return;
     el.__watched = true; el.classList.add('tg-reveal'); io.observe(el);
   });
   index(root); watch(root);
@@ -92,13 +89,12 @@
         if (txt === num.__last || txt === num.__final) continue;
         const old = num.__final ? parse(num.__final) : null;
         num.__final = txt; num.__last = null;
-        if (inRevealed(num) && parse(txt)) count(num, old ? old.val : 0);
+        if (old && inRevealed(num) && parse(txt)) count(num, old.val);
         continue;
       }
       for (const a of m.addedNodes) {
         if (a.nodeType !== 1) continue;
         index(a);
-        if (inRevealed(a)) a.querySelectorAll(NUMS).forEach((el) => { if (parse(el.textContent)) count(el, 0, 150); });
       }
     }
   }).observe(root, { childList: true, subtree: true, characterData: true });

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-16T14:10:05.174Z",
+  "generatedAt": "2026-11-16T19:19:01.937Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -497,7 +497,7 @@
   ],
   "narrative": {
     "northStar": "O Caderno Escolar",
-    "overview": "A Bússola é desenhada como um caderno escolar aberto, organizado com o rigor de uma página de produto moderna. Dentro da moldura, a folha é branca e pautada (uma linha azul-clara a cada 30px), com a margem dupla rosa à esquerda e furos de fichário na faixa antes dela; fora da moldura fica a mesa, em Papel Azulado. Cada seção é uma lição numerada (\"Lição 01\") sobre um fio na cor do capítulo (conexão em teal, equipamentos em laranja, regras e IA em roxo, comunicação em rosa), com a pastilha de ícone do tema ao lado do título, e fecha com um quadro \"Para pensar\". O amarelo é o marca-texto do caderno: grifa a palavra-chave do título, os números da manchete, o número em destaque do mapa (em Tinta, como todo texto grifado) e o link ativo da navegação. \"Você sabia?\" é um post-it preso com fita; o filtro é uma questão de múltipla escolha; o \"Ir para\" são marcadores de página adesivos.\n\nO sistema é preciso e tátil. Cartões são folhas soltas sobre o caderno: fundo branco, borda de 1px, cantos de 3px e sombra baixa. Os botões principais são etiquetas com dois cantos chanfrados. Rótulos de medida (base, margem de erro, fonte, navegação, sobretítulos de controle) vão em mono, como anotações de régua; títulos e números ficam na Bricolage Grotesque e as frases na Atkinson Hyperlegible Next. Anotações à mão em Caveat (\"← toque numa região!\", \"marque só uma!\") e o carimbo \"Visto\" são só enfeite: nunca carregam dado e ficam fora do leitor de tela. A densidade continua baixa: uma ideia por cartão, a frase em linguagem simples antes do gráfico e a base e a margem de erro no rodapé de cada cartão.\n\nO sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas cheias, notação estatística, texto miúdo como protagonista) e o visual **alarmista** (vermelho e cores de alerta para dramatizar números). A seriedade vem da integridade dos dados, não de um visual austero.",
+    "overview": "A Bússola é desenhada como um caderno escolar aberto, organizado com o rigor de uma página de produto moderna. Dentro da moldura, a folha é branca e pautada (uma linha azul-clara a cada 30px), com a margem dupla rosa à esquerda e furos de fichário na faixa antes dela; fora da moldura fica a mesa, em Papel Azulado. Cada seção é uma lição numerada (\"Lição 01\") sobre um fio na cor do capítulo (conexão em teal, equipamentos em laranja, regras e IA em roxo, comunicação em rosa), com a pastilha de ícone do tema ao lado do título, e fecha com um quadro \"Para pensar\". O amarelo é o marca-texto do caderno: grifa a palavra-chave do título, os números da manchete, o número em destaque do mapa (em Tinta, como todo texto grifado) e o link ativo da navegação. \"Você sabia?\" é um post-it preso com fita; o filtro é uma questão de múltipla escolha; o \"Ir para\" são marcadores de página adesivos.\n\nO sistema é preciso e tátil. Cartões são folhas soltas sobre o caderno: fundo branco, borda de 1px, cantos de 3px e sombra baixa. Os botões principais são etiquetas com dois cantos chanfrados. Rótulos curtos (navegação, sobretítulos de controle, eixos, a etiqueta de fonte da capa) vão em mono, como anotações de régua; títulos e números ficam na Bricolage Grotesque e toda frase, inclusive a margem de erro, a base e o rodapé, na Atkinson Hyperlegible Next. Anotações à mão em Caveat (\"← toque numa região!\", \"marque só uma!\") são só enfeite: nunca carregam dado e ficam fora do leitor de tela. A densidade continua baixa: uma ideia por cartão, a frase em linguagem simples antes do gráfico e a base e a margem de erro no rodapé de cada cartão.\n\nO sistema rejeita explicitamente o visual de **relatório acadêmico** (tabelas cheias, notação estatística, texto miúdo como protagonista) e o visual **alarmista** (vermelho e cores de alerta para dramatizar números). A seriedade vem da integridade dos dados, não de um visual austero.",
     "keyCharacteristics": [
       "Uma cor por tema, aplicada no fio da lição, no ícone, no número-chave, no destaque do gráfico e no quadro \"Para pensar\".",
       "Folha pautada com margem dupla rosa e furos de fichário; cada seção é uma \"Lição\" numerada.",
@@ -535,8 +535,13 @@
         "section": "typography"
       },
       {
+        "name": "The Enfeite Calado Rule",
+        "body": "Texto gerado por CSS que é só enfeite (as letras a, b, c das alternativas do filtro, o número das questões, \"Lição 01\") usa texto alternativo vazio (`content: \"…\" / \"\"`), para o leitor de tela não ler. Layout de texto nunca usa `nowrap` em grupos de botões: com a letra do navegador em 200%, tudo precisa quebrar linha; media queries de layout de texto ficam em `em`, para acompanhar esse tamanho.",
+        "section": "typography"
+      },
+      {
         "name": "The Piso de 14px Rule",
-        "body": "Nenhum texto visível fica abaixo de 14px (0.875rem), nem notas, legendas, rótulos em mono, base e margem de erro, rodapé ou rótulos dentro do mapa (medidos já na escala do SVG, no celular e no computador). O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Todos os tamanhos são em rem, para acompanhar o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.",
+        "body": "Nenhum texto visível fica abaixo de 14px (0.875rem). Única exceção de escrita: os rótulos dentro do mapa são escritos nas unidades do desenho, com `max(10.5px, calc(14px / var(--esc)))`, em que `--esc` é a escala do mapa na tela (o painel.js mede a cada desenho); assim ficam com 14px ou mais em qualquer largura, de 320px ao desktop. No celular o nome da região sai da caixa alta, para caber. Vale para tudo: notas, legendas, rótulos em mono, base e margem de erro, rodapé, a barra de filtro fixa e o guia \"Como ler\", que só aparecem depois. Todos os tamanhos são em rem, exceto os rótulos do mapa. O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Os tamanhos em rem acompanham o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.",
         "section": "typography"
       },
       {
@@ -552,7 +557,8 @@
     ],
     "dos": [
       "Do defina `--sec` em cada nova seção e deixe fio da lição, ícone, número, destaque do gráfico e \"Para pensar\" herdarem dela.",
-      "Do abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a margem de erro em mono 0.875rem Tinta Suave, sobre um fio tracejado.",
+      "Do abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a fonte em Caption 0.875rem Tinta Suave, sobre um fio tracejado. \"Ler em texto\" termina com uma frase pronta para citar (frase do cartão, grupo, fonte e tabela).",
+      "Do mostre no máximo 5 barras de início numa lista longa; as outras ficam atrás de \"Ver os outros N\".",
       "Do desenhe a margem de erro em toda barra e comparação, e comece as barras no zero.",
       "Do use Bricolage Grotesque em 800 para títulos e números, Atkinson Hyperlegible Next no texto, Atkinson Hyperlegible Mono só para rótulos de medida, e algarismos tabulares em todo valor.",
       "Do use sombras azul-marinho translúcidas e curtas, cantos de 3px nas folhas e 6px nos controles, etiqueta chanfrada nos botões principais.",
@@ -567,7 +573,8 @@
       "Don't use duas cores de tema na mesma seção, nem a cor de um capítulo em outro.",
       "Don't rotule diferenças entre grupos como \"reais\" ou \"empates\", nem dê cores diferentes aos grupos comparados.",
       "Don't use Amarelo Norte como cor de texto.",
-      "Don't use anotações à mão ou o carimbo para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.",
+      "Don't use carimbo ou selo: parecem validação oficial dos dados.",
+      "Don't use anotações à mão para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.",
       "Don't use sombras pretas puras, degradês de fundo nas capas nem sobretítulos acima dos títulos.",
       "Don't use mono em frases para o leitor: ela é escrita de régua, não voz.",
       "Don't marque avisos, notas ou cartões com borda lateral colorida; o acento de capítulo é o fio da lição."

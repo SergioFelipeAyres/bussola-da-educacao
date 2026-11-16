@@ -27,12 +27,14 @@
       .catch(function (e) { store[id] = { status: 'error', data: [], message: String(e) }; })
       .then(function () { clearTimeout(timer); run(); });
   }
-  Object.keys(SOURCES).forEach(carregar);
+  // cada arquivo só é baixado na primeira vez que um desenho pede por ele (dash.data):
+  // a página Sobre não baixa nada, e cada aba baixa só o que mostra
 
   window.dash = {
     colors: [1, 2, 3, 4, 5, 6, 7, 8].map(function (i) { return 'var(--cds-chart-categorical-' + i + ')'; }),
     data: function (id) {
       if (store[id]) return store[id];
+      if (SOURCES[id]) { carregar(id); return store[id]; }
       var c = calcs[id];
       if (!c) return { status: 'missing', data: [] };
       var inputs = c.inputs.map(function (i) { return window.dash.data(i); });
@@ -53,7 +55,7 @@
     refresh: function () {},
     // busca de novo só os arquivos que falharam
     retry: function () {
-      var falhos = Object.keys(SOURCES).filter(function (id) { return store[id].status === 'error'; });
+      var falhos = Object.keys(SOURCES).filter(function (id) { return store[id] && store[id].status === 'error'; });
       falhos.forEach(carregar);
       if (falhos.length) run();
     },

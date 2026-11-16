@@ -30,7 +30,7 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 
 - Site estático publicado no GitHub Pages com domínio próprio (`CNAME`), sem build na publicação. O CSS é escrito em `src/` com Tailwind CSS v4 e compilado com `npm run css` em `css/site.css`, que vai versionado.
 - Páginas: Início (fato aleatório "Você sabia?", mapa das 5 regiões, portas para Escolas e Gestores), Escolas, Gestores, Sobre. `escolas.html`, `gestores.html` e `sobre.html` só redirecionam para a aba certa de `index.html`.
-- Dados em formato longo em `data/*.json`, gerados por `scripts/atualizar_dados.py` a partir das tabelas .xlsx do Cetic.br.
+- Dados em formato longo em `data/*.json`, gerados por `scripts/atualizar_dados.py` a partir das tabelas .xlsx do Cetic.br. São baixados sob demanda (`js/dash-shim.js`): cada arquivo só na primeira vez que um desenho o pede, e a página Sobre não baixa nenhum.
 - Filtro de recorte (região, área, rede, porte etc.) e comparação entre grupos com margem de erro.
 - Gráficos desenhados em HTML/SVG sem biblioteca externa (o d3 saiu; a escala do Compare grupos é uma função própria), lógica em `js/painel.js` e `js/dash-shim.js`.
 - O grupo escolhido vai no endereço (`?grupo=regiao-norte`), para links compartilhados mostrarem o mesmo número.
@@ -76,5 +76,5 @@ O público inclui **pessoas idosas e com baixa visão**, e a acessibilidade é l
 
 - **Tamanho de texto:** nenhum texto visível abaixo de 14px; texto corrido em 17px, notas e legendas em 15px, a frase de cada gráfico em 19px. Tudo em rem, para acompanhar o tamanho de letra e o zoom do leitor. Na dúvida, o texto sobe.
 - **Contraste:** texto pequeno na cor do tema usa o tom mais escuro (`--sec-texto`); texto sobre amarelo (marca-texto, post-it) é sempre em Tinta, porque as cores de tema não passam de 4.5:1 no amarelo.
-- **Enfeites não carregam informação:** anotações à mão e o carimbo "Visto" ficam escondidos do leitor de tela e nunca dizem algo que o leitor precise saber.
+- **Enfeites não carregam informação:** anotações à mão ficam escondidas do leitor de tela e nunca dizem algo que o leitor precise saber.
 - **Movimento:** toda animação respeita `prefers-reduced-motion`.
