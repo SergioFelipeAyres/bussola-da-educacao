@@ -163,6 +163,9 @@ body{background-color:var(--color-bg)}
 .tg-moe{top:50%;bottom:auto;height:0;margin-top:-1px;border:0;border-top:2px solid var(--color-fg);border-radius:0;background:none;opacity:1}
 .tg-moe::before,.tg-moe::after{content:"";position:absolute;top:-5px;width:2px;height:8px;background:var(--color-fg)}
 .tg-moe::before{left:0}
+/* contorno branco na margem de erro e no traço do Brasil: a Tinta fica visível sobre qualquer cor de barra
+   (no roxo, que é escuro para não se confundir com o azul no daltonismo, sem contorno ficaria em 2.3:1) */
+.tg-moe,.tg-ref{filter:drop-shadow(0 0 .5px var(--color-panel)) drop-shadow(0 0 1px var(--color-panel))}
 .tg-moe::after{right:0}
 
 /* ---------- destaques: uma linha de células sobre a pauta ---------- */

@@ -8,7 +8,7 @@ colors:
   amarelo-norte: "#ffd166"
   teal-conexao: "#0b8a7f"
   laranja-equipamentos: "#c95f0e"
-  roxo-regras: "#7346d0"
+  roxo-regras: "#591987"
   rosa-comunicacao: "#c73674"
   grafite-comparacao: "#454d60"
   verde-positivo: "#2c9a6a"
@@ -201,7 +201,7 @@ Um azul de orientação como voz principal, cinco cores de capítulo saturadas e
 As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `--sec`.
 - **Teal Conexão** (teal-conexao): acesso à internet, tipo e velocidade da conexão.
 - **Laranja Equipamentos** (laranja-equipamentos): equipamentos e tecnologia na rotina da gestão.
-- **Roxo Regras** (roxo-regras): regras sobre celular, IA e proteção de dados.
+- **Roxo Regras** (roxo-regras): regras sobre celular, IA e proteção de dados. É um roxo-uva escuro de propósito: o roxo antigo (#7346d0) tinha a mesma claridade do Azul Bússola e, na deuteranopia, as duas cores ficavam idênticas (veja The Daltonismo Rule).
 - **Rosa Comunicação** (rosa-comunicacao): redes sociais, plataformas e comunicação. Fora das seções, só na margem dupla da folha (a 55% e a 32% sobre branco).
 - **Grafite Comparação** (grafite-comparacao): a comparação entre grupos. Também substitui, dentro de uma seção, a cor de categoria que coincidiria com a cor do tema.
 
@@ -209,7 +209,7 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Verde Positivo e Vermelho Negativo** (verde-positivo, vermelho-negativo): só nas setas de direção das comparações, que são neutras quanto à significância. Nunca preenchem áreas, fundos ou títulos.
 
 ### Neutral
-- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e barra de erro da margem (linha de 2px com pontinhas).
+- **Tinta** (tinta): texto principal, traço de referência do Brasil nas barras e barra de erro da margem (linha de 2px com pontinhas). Essas duas marcas levam um contorno branco fino (`drop-shadow` em Painel), para ficarem visíveis sobre qualquer cor de barra, inclusive o roxo escuro.
 - **Tinta Suave** (tinta-suave): texto secundário, rodapés de base, notas e links inativos da navegação.
 - **Papel Azulado** (papel-azulado): a mesa, fora da moldura, e o fundo do mapa e dos desenhos do guia (estes com quadriculado).
 - **Painel** (painel): a folha do caderno (com as pautas em Azul Bússola a 15%), cartões, barra de navegação e controles.
@@ -222,6 +222,8 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 **The Capítulo Rule.** Cada seção tem exatamente uma cor de tema. Ela aparece no fio e no rótulo da lição, na pastilha do ícone (12% de mistura sobre branco, borda a 30%), no número-chave, no destaque do gráfico e no quadro "Para pensar" (borda tracejada e ícone). Nenhuma outra cor saturada disputa com ela dentro da seção.
 
 **The Tom de Texto Rule.** A cor pura do capítulo (`--sec`) é para preenchimentos, ícones, filetes e números grandes. Todo texto pequeno na cor do capítulo e todo fundo de botão com texto branco usam `--sec-texto`, a mesma cor 15% mais escura em oklab (`color-mix(in oklab, var(--sec) 85%, #000)`), que fica acima de 4.9:1 no branco, no papel e nos fundos tingidos. Teal e laranja puros não passam em 4.5:1.
+
+**The Daltonismo Rule.** Duas cores de capítulo nunca podem se confundir nos três tipos principais de daltonismo (protanopia, deuteranopia e tritanopia). A conferência simula cada tipo (matrizes de Machado et al., 2009, severidade total) e mede a diferença entre os pares em CIEDE2000. O Azul Bússola, que é a marca, fica fixo; as outras cores se ajustam a ele. Como o daltonismo vermelho-verde apaga justamente o que separa azul de roxo, a separação entre os dois vem da claridade: o Roxo Regras é bem mais escuro que o azul. Em novembro de 2026, a pior diferença do roxo contra o azul passou de 0,6 (deuteranopia, cores idênticas) para 13,6. Pares que ainda ficam próximos num dos tipos (rosa × grafite na protanopia, laranja × rosa na tritanopia) aparecem sempre com o nome do capítulo escrito ao lado (navegação, legenda, destaques): a cor nunca é o único jeito de saber o capítulo (WCAG 1.4.1).
 
 **The Escala de Um Tom Rule.** Categorias ordenadas (idade, velocidade, frequência) usam tons de uma só cor, derivados da cor do tema: o claro é a cor com 28% de mistura sobre branco e o escuro, com 78% de mistura sobre preto, no espaço oklab.
 

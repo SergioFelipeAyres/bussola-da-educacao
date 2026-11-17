@@ -6,8 +6,8 @@
   /* superfícies e texto */
   --color-bg:#f4f6fb;--color-panel:#ffffff;--color-fg:#1b1d24;--color-fg-muted:#5d6170;--color-border-line:#e2e3ea;
   /* cores dos capítulos (DESIGN.md, regra do Capítulo) e da capa */
-  --v-slate:#454d60;--v-blue:#2f5fd0;--v-teal:#0b8a7f;--v-orange:#c95f0e;--v-purple:#7346d0;--v-pink:#c73674;
-  --hero-a:#2448b8;--hero-b:#3b6be6;--hero-c:#7346d0;--hero-hi:#ffd166;
+  --v-slate:#454d60;--v-blue:#2f5fd0;--v-teal:#0b8a7f;--v-orange:#c95f0e;--v-purple:#591987;--v-pink:#c73674;
+  --hero-a:#2448b8;--hero-b:#3b6be6;--hero-c:#591987;--hero-hi:#ffd166;
   /* paleta dos gráficos fora das seções temáticas (dentro delas, a 1 vira a cor do tema; ver o fim do arquivo) */
   --cds-chart-categorical-1:#2f5fd0;--cds-chart-categorical-2:#d4731c;--cds-chart-categorical-3:#2c9a6a;--cds-chart-categorical-4:#8a4fc4;
   --cds-chart-categorical-5:#c2417a;--cds-chart-categorical-6:#2a8fb0;--cds-chart-categorical-7:#9a7b1d;--cds-chart-categorical-8:#6b7385;
