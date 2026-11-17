@@ -359,7 +359,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-frase .tg-perg-grifo{font-family:var(--font-display);font-weight:800;color:var(--color-fg);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-inline:.08em;
   background:linear-gradient(100deg,transparent .15em,var(--marca-texto) .25em calc(100% - .15em),transparent calc(100% - .05em)) 0 68%/100% 52% no-repeat}
 .tg-perg-iso{display:flex;gap:3px;max-width:18rem;margin:.9rem 0 .2rem}
-.tg-perg-iso svg{flex:1;height:auto;overflow:visible;fill:var(--cds-chart-grid);stroke:var(--cds-chart-vazio);stroke-width:1.3;stroke-linejoin:round}
+.tg-perg-iso svg{flex:1 1 0;min-width:0;height:auto;overflow:visible;fill:var(--cds-chart-grid);stroke:var(--cds-chart-vazio);stroke-width:1.3;stroke-linejoin:round}
 .tg-perg-iso svg.on{fill:var(--sec,var(--v-blue));stroke:none}
 .tg-perg-var{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
 .tg-perg-nao ul{margin:.6rem 0 0;padding-left:1.2rem;columns:2 14rem;font-size:var(--cds-font-size-caption)}
@@ -373,7 +373,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-lista .tr .moe::before,.tg-perg-lista .tr .moe::after{content:"";position:absolute;top:-5px;width:2px;height:8px;background:var(--color-fg)}
 .tg-perg-lista .tr .moe::before{left:0}
 .tg-perg-lista .tr .moe::after{right:0}
-.tg-perg-lista .tr .ref{position:absolute;top:-.3rem;bottom:-.3rem;width:2px;margin-left:-1px;background:var(--color-fg)}
+.tg-perg-lista .tr .ref{position:absolute;top:-.1rem;bottom:-.1rem;width:2px;margin-left:-1px;background:var(--color-fg)}
 .tg-perg-lista .tr .moe,.tg-perg-lista .tr .ref{filter:drop-shadow(0 0 .5px var(--color-panel)) drop-shadow(0 0 1px var(--color-panel))}
 .tg-perg-leg{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;margin:.55rem 0 .35rem;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-perg-leg i{display:inline-block;vertical-align:middle;margin-right:.4rem}
@@ -384,7 +384,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-leg .lr{width:2px;height:1rem;background:var(--color-fg)}
 /* rodapé de base e fonte, como nos cartões do painel */
 .tg-perg-base{margin:.6rem 0 0;padding-top:.7rem;border-top:1px dashed var(--color-border-line);font-size:.875rem;line-height:1.5;color:var(--color-fg-muted)}
-.tg button.tg-perg-ir{display:inline-flex;align-items:center;gap:.35rem;min-height:2.75rem;margin-top:.6rem;padding:0;border:0;background:none;
+.tg button.tg-perg-ir{display:inline-block;min-height:2.75rem;margin-top:.2rem;padding:.6rem 0;text-align:left;border:0;background:none;
   color:var(--sec-texto,var(--v-blue));font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
 .tg button.tg-perg-ir:hover{text-decoration-thickness:2px}
 .tg button.tg-perg-ir:focus-visible{outline:2px solid var(--sec,var(--v-blue));outline-offset:3px}

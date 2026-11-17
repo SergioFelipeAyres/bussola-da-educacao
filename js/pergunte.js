@@ -329,8 +329,8 @@
       ? 'A ' + qual + ' parcela que ' + verbo1('1 em cada', txt) + ' fica ' + onde(a.seg) + ' e ' + onde(b.seg) + ', mas as margens de erro se sobrepõem: a ordem entre ' + (t.ds === 'gestores' ? 'eles' : 'elas') + ' pode ser outra.'
       : 'A ' + qual + ' parcela fica ' + onde(a.seg) + ': ' + grifo(n) + ' ' + verbo1(n, txt) + '.';
     c.innerHTML = (aviso ? '<p class="tg-perg-var tg-perg-aviso">' + aviso + '</p>' : '') + ent + '<p class="tg-perg-frase">' + frase + (br ? ' No Brasil, ' + freq(br.pct, cem) + '.' : '') + '</p>' + iso(a.r.pct, t.pessoa) +
-      '<p class="tg-perg-var">' + esc(segCurto(a.seg)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (br ? '. Brasil: ' + n1(br.pct) + '%.' : '.') + '</p>' +
       '<ul class="tg-perg-lista">' + ponta.map((x) => barra(segCurto(x.seg), x.r, br)).join('') + '</ul>' + legenda(!!br) +
+      '<p class="tg-perg-var">' + esc(segCurto(a.seg)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (br ? '. Brasil: ' + n1(br.pct) + '%.' : '.') + '</p>' +
       (its.some((x) => !x.r.moe) ? '<p class="tg-perg-var">* sem margem de erro estimada (o valor vale para a amostra).</p>' : '');
     // para a bateria de testes: qual grupo foi apontado e se houve empate
     c.dataset.ponta = a.seg; c.dataset.empate = empate ? '1' : '0'; c.dataset.cat = cat;
