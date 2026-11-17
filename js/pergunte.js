@@ -3,7 +3,7 @@
  * Procura um TEMA e um GRUPO por palavras-chave e responde com os dados do próprio site,
  * pelas mesmas regras do painel ("N em cada 10" ou "em cada 100", margem de erro como faixa, "o mais citado"
  * só quando as margens não se tocam). Cruzamentos que a pesquisa não publica (ex.: particulares do Nordeste)
- * são explicados, e cada grupo aparece separado.
+ * são avisados, sem explicar o motivo, e cada grupo aparece separado.
  *
  * Fica aberta no Início (#pergunte) e numa janela em Escolas e Gestores (botão "Perguntar", ao lado de
  * "Como ler este painel"). "Ver no painel" leva ao cartão certo, já no grupo da pergunta (window.mostraNoPainel,
@@ -392,9 +392,10 @@
     }
     const tipos = [...new Set(gs.map(([c]) => c))];
     if (tipos.length > 1) {
-      // cruzamento de grupos: a pesquisa não publica; cada grupo aparece separado
-      saida.append(el('article', 'tg-perg-res tg-perg-nao', '<p class="tg-perg-frase">A pesquisa não publica o número das <strong>' + gs.map(([c, s]) => nomeGrupo(c, s)).join(' e ') + '</strong> ao mesmo tempo: nesse cruzamento a amostra fica pequena demais para um número confiável.</p><p class="tg-perg-var">Veja cada grupo separado:</p>'));
-      for (const c of await Promise.all(gs.slice(0, 2).map(([c, s]) => responde(t, c, s)))) saida.append(c);
+      // cruzamento de grupos: a pesquisa não publica; avisa (sem explicar o motivo) e mostra cada grupo separado
+      const ns = gs.map(([c, s]) => '<strong>' + nomeGrupo(c, s) + '</strong>');
+      saida.append(el('article', 'tg-perg-res tg-perg-nao', '<p class="tg-perg-frase">A pesquisa não publica um número que junte ' + (ns.length > 1 ? ns.slice(0, -1).join(', ') + ' e ' + ns[ns.length - 1] : ns[0]) + '.</p><p class="tg-perg-var">Veja cada grupo separado:</p>'));
+      for (const c of await Promise.all(gs.map(([c, s]) => responde(t, c, s)))) saida.append(c);
       return;
     }
     // "negros": a pesquisa conta pretos e pardos separadamente; avisa antes das duas respostas
