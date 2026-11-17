@@ -458,8 +458,10 @@
         b.disabled = true; b.textContent = 'Tentando entender de outro jeito…';
         const nova = await reescreve(txt);
         if (saida.dataset.vez !== vez) return;
-        if (mudou(txt, nova)) { await pergunta(nova, saida, txt); explicaTermos(saida); }
-        else b.replaceWith(el('p', 'tg-perg-var', 'Não achei outro jeito de entender. Tente escrever com outras palavras.'));
+        // o botão some com a nova resposta: o foco vai para o começo dela, para quem usa teclado ou leitor de tela não voltar ao topo da página (WCAG 2.4.3)
+        const foca = (x) => { if (x) { x.tabIndex = -1; x.focus({ preventScroll: false }); } };
+        if (mudou(txt, nova)) { await pergunta(nova, saida, txt); explicaTermos(saida); foca(saida.firstElementChild); }
+        else { const p = el('p', 'tg-perg-var', 'Não achei outro jeito de entender. Tente escrever com outras palavras.'); b.replaceWith(p); foca(p); }
       });
       saida.append(b);
     };

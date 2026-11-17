@@ -368,18 +368,27 @@
   const NODATA = 'Sem dados para este grupo.';
 
   // ---------- pictograms ----------
+  // figura vazia: contorno em cinza com 3:1 contra o fundo (WCAG 1.4.11), para o "de 10" ser visível com baixa visão.
+  // Só aparece onde a figura não está pintada (cobre de "de" até o fim), para o contorno não vazar em volta da cor.
+  const vazia = (i, de, shape, id) => {
+    const g = '<g class="tg-vazia" transform="translate(' + (i * 24) + ',1)">' + shape + '</g>';
+    if (de <= 0) return { defs: '', body: g };
+    if (de >= 1) return { defs: '', body: '' };
+    return { defs: '<clipPath id="' + id + '"><rect x="' + (i * 24 + 24 * de) + '" y="-2" width="' + (24 * (1 - de) + 2) + '" height="30"/></clipPath>', body: '<g clip-path="url(#' + id + ')">' + g + '</g>' };
+  };
   const iso10 = (svg, v, color, uid, shape = P) => {
     const filled = v / 10; let s = '<defs>';
     for (let i = 0; i < 10; i++) {
       const f = Math.max(0, Math.min(1, filled - i));
       if (f > 0 && f < 1) s += '<clipPath id="' + uid + '-c"><rect x="' + (i * 24) + '" y="0" width="' + (24 * f) + '" height="26"/></clipPath>';
+      s += vazia(i, f, shape, uid + '-v' + i).defs;
     }
     s += '</defs>';
     for (let i = 0; i < 10; i++) {
       const f = Math.max(0, Math.min(1, filled - i));
       // --i numera as figuras coloridas para a animação acendê-las em sequência
       const g = (fill, extra) => '<g transform="translate(' + (i * 24) + ',1)" ' + extra + ' style="--i:' + i + ';fill:' + fill + '">' + shape + '</g>';
-      s += g('var(--cds-chart-muted)', 'opacity=".45"');
+      s += vazia(i, f, shape, uid + '-v' + i).body;
       if (f >= 1) s += g(color, 'class="tg-c"');
       else if (f > 0) s += '<g clip-path="url(#' + uid + '-c)">' + g(color, 'class="tg-c"') + '</g>';
     }
@@ -390,7 +399,8 @@
   let isoN = 0;
   const isoParts = (parts) => {
     const uid = 'ip' + (isoN++); let defs = '', body = '', a = 0;
-    for (let i = 0; i < 10; i++) body += '<g transform="translate(' + (i * 24) + ',1)" opacity=".45" style="fill:var(--cds-chart-muted)">' + P + '</g>';
+    const total = Math.min(100, parts.reduce((t, p) => t + p.v, 0));
+    for (let i = 0; i < 10; i++) { const vz = vazia(i, Math.max(0, Math.min(1, (total - i * 10) / 10)), P, uid + '-v' + i); defs += vz.defs; body += vz.body; }
     parts.forEach((p, k) => {
       const b = Math.min(100, a + p.v);
       for (let i = 0; i < 10; i++) {
@@ -1039,7 +1049,11 @@
     pedido.classList.toggle('tg-pedindo', !!dimAberta);
     // "Escolas que vão até": explica anos iniciais, anos finais e Educação Profissional enquanto esse tipo de grupo está aberto ou escolhido
     const dica = document.getElementById('rec-dica-nivel');
-    if (dica) { dica.hidden = (dimAberta || dim) !== 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO'; dica.style.order = ordem + 3; }
+    if (dica) {
+      dica.hidden = (dimAberta || dim) !== 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO'; dica.style.order = ordem + 3;
+      // o leitor de tela lê a dica junto com as opções
+      if (dica.hidden) recOpts.removeAttribute('aria-describedby'); else recOpts.setAttribute('aria-describedby', 'rec-dica-nivel');
+    }
     const novo = recTitulo(rec, v);
     document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
     document.getElementById('rec-titulo2').textContent = novo;

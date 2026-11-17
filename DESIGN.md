@@ -21,6 +21,7 @@ colors:
   trilho: "#e9eaf0"
   cinza-secundario: "#a9adbd"
   cinza-grupo: "#80869a"
+  cinza-vazio: "#7d8194"
 typography:
   display:
     fontFamily: "Bricolage Grotesque, system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
@@ -88,6 +89,7 @@ rounded:
   traco: "1px"
   fita: "2px"
   folha: "3px"
+  tecla: "4px"
   card: "6px"
   pill: "999px"
 spacing:
@@ -215,7 +217,8 @@ As cores de capítulo. Cada uma tinge a seção inteira por meio da variável `-
 - **Painel** (painel): a folha do caderno (com as pautas em Azul Bússola a 15%), cartões, barra de navegação e controles.
 - **Linha** (linha): bordas de cartões e divisórias de rodapé.
 - **Trilho** (trilho): trilhos das barras, fundo do controle segmentado e estados de hover.
-- **Cinza Secundário** (cinza-secundario): figuras restantes dos pictogramas (com 45% de opacidade) e marcas que devem recuar.
+- **Cinza Secundário** (cinza-secundario): marcas que devem recuar.
+- **Cinza Vazio** (cinza-vazio): contorno de 1.3 das figuras vazias dos pictogramas (miolo em Trilho). Tem 3,9:1 contra o branco e 3,6:1 contra o Papel Azulado, para o "de 10" ser visto com baixa visão (WCAG 1.4.11); por ser contorno e não preenchimento, não se confunde com o Cinza do Grupo.
 - **Cinza do Grupo** (cinza-grupo): o grupo de comparação que não é o foco, por exemplo "homens" no gráfico por sexo. Tem 3:1 contra o branco e contra o Trilho, o mínimo para elementos gráficos.
 
 ### Named Rules
@@ -273,7 +276,7 @@ Números em colunas de tabela e de lista seguem alinhados à direita (`tabular-n
 - **Grade de cartões:** `auto-fit` com colunas de no mínimo 22rem. A partir de 73rem, um cartão pode ocupar duas colunas para não deixar buraco. Os destaques usam colunas de no mínimo 13.5rem. Seções em proporção 2:1 se dividem a partir de 900px.
 - **Ritmo:** 3rem entre seções, 0.875rem entre cartões e dentro deles, e 1.15rem de padding interno nos cartões.
 - **Capa da página inicial:** uma coluna no celular; a partir de 900px, texto e post-it "Você sabia?" lado a lado (1.25fr para minmax(19rem, 24rem)).
-- **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px. Abaixo de 560px, os links da navegação vão para uma segunda linha.
+- **Pontos de quebra observados:** 480, 520, 560, 620, 720, 900 e 1080px, escritos em `em` nas media queries (px ÷ 16: 30em, 32.5em, 35em, 38.75em, 45em, 56.25em…), para o layout acompanhar a letra ampliada no navegador; com a letra padrão, valem os mesmos px. Abaixo de 560px, os links da navegação vão para uma segunda linha.
 - **Ordem de leitura em Escolas e Gestores:** capa, filtro de recorte, destaques, índice de seções ("Ir para") e as seções na ordem do índice, terminando em "Compare grupos".
 - **Navegação fixa no topo** e, ao rolar Escolas e Gestores, uma barra fixa de uma linha logo abaixo dela, em qualquer tela: "Você está vendo: <grupo> · Mudar · Topo". O nome do grupo quebra em duas linhas em vez de ser cortado; "Mudar" leva ao filtro principal. As âncoras compensam a altura real da barra.
 - **Alvos de 44px em qualquer ponteiro:** todo controle que não seja link no meio de uma frase tem pelo menos 44px de altura também com mouse, porque quem navega com o cursor da cabeça, do olhar ou de um acionador usa "mouse". Na cabeça das lições, "Ver em Libras" e "Recolher" ficam juntos e descem para a linha de baixo quando não cabem.
@@ -295,14 +298,14 @@ Profundidade baixa, de folhas soltas sobre o caderno aberto na mesa: a folha pau
 - **Marcador** (`box-shadow: inset 0 5px 0 var(--sec), 0 6px 12px -10px rgba(20,30,70,.55)`): os links do "Ir para", levemente tortos.
 - **Navegação ativa:** sem sombra; o nome vem grifado de marca-texto.
 - **Filtro fixo** (`box-shadow: 0 10px 28px -12px rgba(20,30,70,.35)`, com desfoque de fundo de 10px): barra de recorte fixa.
-- **Fundo do guia** (`::backdrop` em `rgba(12,18,40,.55)` com desfoque de 3px): a página escurece em azul-marinho atrás da janela "Como ler".
+- **Fundo do guia** (`::backdrop` em `rgba(12,18,40,.55)` com desfoque de 3px): a página escurece em azul-marinho atrás da janela "Como ler" e da janela de Libras. É um valor de sombra, da família da Sombra Tingida, e não uma cor da paleta.
 
 ### Named Rules
-**The Sombra Tingida Rule.** Sombras são sempre azul-marinho translúcido, nunca preto puro, para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.
+**The Sombra Tingida Rule.** Sombras são sempre azul-marinho translúcido, nunca preto puro (o preto só entra dentro de `color-mix`, para escurecer uma cor: o tom de texto do tema `--sec-texto`, a cor do tema a 85% com preto, e o hover das etiquetas, a 82%; e no fundo do player de vídeo em Libras), para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.
 
 ## Shapes
 
-Formas de papelaria: 2px para o post-it e os marcadores (fita); 3px para as folhas (cartões, destaques, filtro, citação, portas); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito.
+Formas de papelaria: 2px para o post-it, os marcadores (fita) e os exemplos da caixa de perguntas; 4px só nas teclas desenhadas do guia (`kbd`); 3px para as folhas (cartões, destaques, filtro, citação, portas); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito.
 
 ## Components
 
@@ -341,12 +344,12 @@ Direto na folha pautada, sem fundo, sem fio e sem ilustração. Título em Tinta
 Amarelo Norte a 62% sobre branco, cantos de 2px, sem borda, fita translúcida azulada de 6.5rem no topo, inclinado 1.6°. Todo o texto em Tinta, inclusive o número (a cor do tema fica na pastilha do ícone e nos pictogramas); o botão "Outro dado" em etiqueta no tom de texto do tema.
 
 ### Saiba mais (termos técnicos)
-Termos que o leitor leigo pode não conhecer ganham um "Saiba mais" fechado, logo depois da nota do cartão e antes do gráfico (título → frase → nota → Saiba mais → gráfico), com o mesmo componente do guia "Como ler" (`details.tg-lesson-mais.tg-card-mais`). O resumo diz o assunto ("Saiba mais: o que é Mbps"), para o leitor de tela e o controle por voz. Hoje explicam: Projeto Político Pedagógico e currículo, Mbps e Gbps, material maker e Smart TV, sistemas digitais e educação digital e midiática, ambiente virtual de aprendizagem e educação midiática (em Gestores). No filtro, "Escolas que vão até" mostra uma dica fixa abaixo das alternativas (anos iniciais, anos finais e Educação Profissional) enquanto esse tipo de grupo está aberto ou escolhido. Na caixa de perguntas, os mesmos termos ganham uma nota curta quando aparecem na resposta (lista `TERMOS` em `js/pergunte.js`); as duas versões do texto devem dizer o mesmo.
+Termos que o leitor leigo pode não conhecer ganham um "Saiba mais" fechado (resumo em 500 no tom de texto do tema, `--sec-texto`, para passar de 4,5:1 também em teal e laranja), logo depois da nota do cartão e antes do gráfico (título → frase → nota → Saiba mais → gráfico), com o mesmo componente do guia "Como ler" (`details.tg-lesson-mais.tg-card-mais`). O resumo diz o assunto ("Saiba mais: o que é Mbps"), para o leitor de tela e o controle por voz. Hoje explicam: Projeto Político Pedagógico e currículo, Mbps e Gbps, material maker e Smart TV, sistemas digitais e educação digital e midiática, ambiente virtual de aprendizagem e educação midiática (em Gestores). No filtro, "Escolas que vão até" mostra uma dica fixa abaixo das alternativas (anos iniciais, anos finais e Educação Profissional) enquanto esse tipo de grupo está aberto ou escolhido, ligada às opções por aria-describedby. Na caixa de perguntas, os mesmos termos ganham uma nota curta quando aparecem na resposta (lista `TERMOS` em `js/pergunte.js`); as duas versões do texto devem dizer o mesmo.
 
 ### Pergunte à Bússola
 Usa as peças do resto do site, para não parecer uma busca à parte. A caixa é uma folha (borda de 1px, cantos de 3px, sombra ambiente) com o título em Bricolage 800 de 1.3125rem, uma dica em Caption Tinta Suave ("Escreva do seu jeito, com ou sem um grupo…", ligada ao campo por aria-describedby), o campo de 3.25rem como o do filtro (fundo Papel Azulado, borda de 1px em Linha, cantos de 3px, foco de 2px em Tinta) e o botão "Perguntar" em etiqueta Tinta. Os exemplos são marcadores de página iguais aos do "Ir para" (fundo do tema a 15%, faixa de 5px no topo, inclinação alternada de -1.2° e 0.9°, sem inclinação com movimento reduzido), cada um na cor do capítulo do tema que pergunta; o rótulo "Experimente" fica em Label, e a ordem dos exemplos evita duas cores iguais lado a lado.
 
-A resposta é um cartão do painel (faixa interna de 4px na cor do capítulo e sombra ambiente): "Entendi:" em Label com o grupo em 700 ("Região: Nordeste", "Brasil", "Comparar: Região"), como o "Você está vendo" do filtro; o tema como título do cartão (Bricolage 700, 1.3125rem); a frase em Statement com o número grifado de marca-texto, como os números da capa; a fileira de 10 pictogramas; as barras do painel, com margem de erro e traço do Brasil, e uma legenda dos dois sinais; o percentual com a faixa em Caption; "Ver no painel →" sublinhado; e o rodapé de base e fonte sobre um fio tracejado. Ranking e comparação usam as mesmas barras. Quando a IA reescreveu a pergunta, uma linha em Caption e Tinta Suave abre a resposta: "Entendi sua pergunta como: **“…”**". Depois de uma resposta das palavras-chave, "Não era isso? Tentar entender de outro jeito" usa o estilo sublinhado de "Ver no painel" (sem seta); enquanto espera, o botão desativa e o texto vira "Tentando entender de outro jeito…". Em Escolas e Gestores, "Perguntar" é uma etiqueta em Azul Bússola ao lado de "Como ler este painel", e a caixa abre na janela do guia.
+A resposta é um cartão do painel (faixa interna de 4px na cor do capítulo e sombra ambiente): "Entendi:" em Label com o grupo em 700 ("Região: Nordeste", "Brasil", "Comparar: Região"), como o "Você está vendo" do filtro; o tema como título do cartão (Bricolage 700, 1.3125rem); a frase em Statement com o número grifado de marca-texto, como os números da capa; a fileira de 10 pictogramas; as barras do painel, com margem de erro e traço do Brasil, e uma legenda dos dois sinais; o percentual com a faixa em Caption; "Ver no painel →" sublinhado; e o rodapé de base e fonte sobre um fio tracejado. Ranking e comparação usam as mesmas barras. Quando a IA reescreveu a pergunta, uma linha em Caption e Tinta Suave abre a resposta: "Entendi sua pergunta como: **“…”**". Depois de uma resposta das palavras-chave, "Não era isso? Tentar entender de outro jeito" usa o estilo sublinhado de "Ver no painel" (sem seta); enquanto espera, o botão desativa e o texto vira "Tentando entender de outro jeito…"; quando a nova resposta chega, o foco vai para o começo dela, para quem usa teclado ou leitor de tela não voltar ao topo da página. Em Escolas e Gestores, "Perguntar" é uma etiqueta em Azul Bússola ao lado de "Como ler este painel", e a caixa abre na janela do guia.
 
 ### Ver em Libras
 Botão no tom de texto do tema, borda de 1px em Linha, raio de 6px, ícone de mão em traço de 1.7px e "Ver em Libras" em 700. Fica na cabeça de cada seção (antes de "Recolher"; no celular só o ícone, com nome para o leitor de tela), no topo do guia "Como ler" e abaixo da etiqueta de fonte da capa do Início e do Sobre. Abre uma janela com o vídeo (arquivo do site, YouTube ou Vimeo) em 16:9, na mesma família da janela do guia. Aparece sempre: sem vídeo, fica tracejado, em Tinta Suave, marcado "em breve", e não abre nada (`aria-disabled`). O botão azul flutuante do VLibras é do próprio widget e não segue o sistema.
@@ -358,7 +361,7 @@ Nota de margem no fim de cada seção de Escolas e Gestores, quieta: borda trace
 Trilho fino e liso (1px em Linha) com 1rem de altura, que marca os 100%; o preenchimento na cor do tema, a 85%, é um traço de marca-texto com as pontas levemente tortas (`clip-path`); margem de erro como barra de erro: linha de 2px em Tinta no meio do traço, com pontinhas de 8px nas duas pontas (contraste alto sobre o branco e sobre a cor), e traço vertical de 2px em Tinta marcando o valor do Brasil. O valor fica à direita em algarismos tabulares, 600, com no mínimo 3.6rem. As barras crescem da esquerda em sequência; a margem e o traço aparecem depois.
 
 ### Pictograma Isotype
-Fileira de 10 figuras em SVG (cada uma vale 10%), preenchidas na cor do tema e o restante em Trilho. As figuras acendem em sequência, só por opacidade.
+Fileira de 10 figuras em SVG (cada uma vale 10%), preenchidas na cor do tema; as vazias têm contorno de 1.3 em Cinza Vazio e miolo em Trilho, e o contorno só aparece na parte não pintada (numa figura cortada, não vaza em volta da cor). Na caixa de perguntas, a mesma regra. As figuras acendem em sequência, só por opacidade.
 
 ### Destaque (KPI)
 Célula da linha de destaques, sem filete, com rótulo em Tinta 600, número em Number na cor do tema e linha de comparação em Caption (Atkinson Next 0.9375rem) Tinta Suave. O número aparece já no valor final; só conta do valor antigo ao novo quando o leitor troca de grupo.

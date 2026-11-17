@@ -75,6 +75,33 @@
         ],
         "createdAt": "2026-11-16T19:56:27.880Z",
         "reason": "Claude triage: as sombras de deslocamento zero são anéis sólidos sem desfoque, não brilho: o corretivo branco atrás do título da lição (cor do papel), o anel de chegada do cartão ao abrir um link (cor do tema, 3px) e o anel de foco; as sombras de elevação são azul-marinho com deslocamento (DESIGN.md, Sombra Tingida)"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(12,18,40,.55)",
+        "createdAt": "2026-11-17T17:18:18.109Z",
+        "reason": "Fundo das janelas (guia e Libras): valor de sombra da Sombra Tingida, documentado em DESIGN.md > Elevation"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#000",
+        "createdAt": "2026-11-17T17:18:18.233Z",
+        "reason": "Só dentro de color-mix para escurecer (--sec-texto, hover da etiqueta) e no fundo do player; documentado na Sombra Tingida Rule"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(20,30,70,.08)",
+        "createdAt": "2026-11-17T17:18:29.895Z",
+        "reason": "Sombra Tingida (azul-marinho translúcido), documentada em DESIGN.md > Elevation"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          "js/painel.js"
+        ],
+        "createdAt": "2026-11-17T17:18:29.990Z",
+        "reason": "Falso positivo: o detector lê o 2px (raio fita, que está na escala) junto com o HTML da legenda"
       }
     ]
   }

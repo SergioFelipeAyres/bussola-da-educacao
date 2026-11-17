@@ -39,7 +39,7 @@ body{background-color:var(--color-bg)}
 .tg{gap:3rem;padding-block:2rem 3.5rem;background:var(--pautado),var(--color-panel)}
 .tg-page{gap:3rem}
 .site-foot{background:var(--color-panel)}
-@media (min-width:900px){
+@media (min-width:56.25em){
   .tg,.site-foot{--folga:calc(var(--respiro) + 3.25rem);max-width:calc(var(--moldura) + var(--folga) + var(--respiro));padding-inline:var(--folga) var(--respiro);
     border-right:1px solid var(--color-border-line);box-shadow:0 30px 60px -40px rgba(20,30,70,.35)}
   .tg{background:
@@ -120,7 +120,7 @@ body{background-color:var(--color-bg)}
 .tg-hero-home{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(2rem,4vw,3rem);align-items:center;padding-block:clamp(2rem,6vw,4.5rem) clamp(.5rem,2vw,1.5rem)}
 .tg-hero-home > *{max-width:none}
 .tg-hero-home .tg-hero-title{font-size:clamp(2.9rem,7.4vw,5.6rem);line-height:1}
-@media (min-width:900px){.tg-hero-home{grid-template-columns:minmax(0,1.25fr) minmax(19rem,24rem)}}
+@media (min-width:56.25em){.tg-hero-home{grid-template-columns:minmax(0,1.25fr) minmax(19rem,24rem)}}
 /* "Você sabia?": um post-it amarelo preso com fita */
 .tg-hero-home .tg-fact{position:relative;overflow:visible;border:0;border-radius:2px;background:color-mix(in srgb,var(--v-yellow,#ffd166) 62%,var(--color-panel));
   box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(var(--sombra-escura),.5)}
@@ -142,7 +142,7 @@ body{background-color:var(--color-bg)}
 .tg-sec-sub{max-width:62ch;margin-top:.3rem}
 /* a pauta não passa por trás do título e da frase da lição: o texto fica sobre papel limpo, como corretivo */
 .tg-sec-head .tg-sec-title,.tg-sec-head .tg-sec-sub{width:fit-content;background:var(--color-panel);box-shadow:0 0 0 .3rem var(--color-panel)}
-@media (max-width:560px){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}}
+@media (max-width:35em){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}}
 
 /* ---------- cartões: folhas soltas sobre o caderno ---------- */
 .tg-card,.tg-filter,.tg-cite,.tg-fact,.tg-porta,.tg-fim-outra{border-color:var(--color-border-line)}
@@ -175,7 +175,7 @@ body{background-color:var(--color-bg)}
 .tg-kpi-label{font-weight:600}
 .tg-kpi-num{font-size:clamp(2rem,3.2vw,2.5rem);letter-spacing:-.02em}
 .tg-kpi-cmp{font-size:.9375rem;line-height:1.4}
-@media (max-width:560px){.tg-kpi-num{font-size:1.6rem}}
+@media (max-width:35em){.tg-kpi-num{font-size:1.6rem}}
 
 /* ---------- filtro: uma questão de múltipla escolha (só uma alternativa marcada) ---------- */
 .tg-filter.tg-rec{position:relative;box-shadow:var(--v-shadow)}
@@ -225,7 +225,7 @@ body{background-color:var(--color-bg)}
 .tg-indice a:nth-of-type(odd){rotate:-1.2deg}.tg-indice a:nth-of-type(even){rotate:.9deg}
 .tg-indice a:hover{background:color-mix(in srgb,var(--sec) 26%,var(--color-panel))}
 @media (prefers-reduced-motion:reduce){.tg-indice a{rotate:none!important}}
-@media (max-width:560px){.tg-indice{margin-top:-1.5rem}.tg-indice-lab{flex-basis:100%;padding-bottom:.1rem}.tg-indice a{padding-inline:.8rem}}
+@media (max-width:35em){.tg-indice{margin-top:-1.5rem}.tg-indice-lab{flex-basis:100%;padding-bottom:.1rem}.tg-indice a{padding-inline:.8rem}}
 
 /* ---------- "Para pensar": a pergunta que fecha cada lição ---------- */
 /* "Para pensar": nota de margem, quieta; o lápis e o título levam a cor da lição, o resto é papel */
@@ -242,7 +242,7 @@ body{background-color:var(--color-bg)}
 .tg-anot-mapa{margin-top:.25rem}
 .tg-rec-corpo{position:relative}
 .tg-anot-filtro{position:absolute;right:0;top:-2.6rem}
-@media (max-width:719px){.tg-anot-filtro{display:none}}
+@media (max-width:44.9375em){.tg-anot-filtro{display:none}}
 
 /* ---------- Início: mapa, indicadores e portas ---------- */
 .tg-mapa-fig{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:16px}
@@ -279,7 +279,7 @@ body{background-color:var(--color-bg)}
    (outra grade ou o "Para pensar"), para o vão entre eles também ficar limpo */
 :is(#escolas,#gestores) .tg-sec :is(.tg-grid,.tg-grid2,.tg-grid21){--papel:color-mix(in srgb,var(--color-panel) 92%,transparent);
   border-image:linear-gradient(var(--papel),var(--papel)) fill 0/0/0 16px var(--cds-gap-md) 16px}
-@media (min-width:900px){:is(#escolas,#gestores) .tg-sec :is(.tg-grid,.tg-grid2,.tg-grid21){border-image-outset:0 var(--respiro) var(--cds-gap-md) calc(var(--respiro) - 3px)}}
+@media (min-width:56.25em){:is(#escolas,#gestores) .tg-sec :is(.tg-grid,.tg-grid2,.tg-grid21){border-image-outset:0 var(--respiro) var(--cds-gap-md) calc(var(--respiro) - 3px)}}
 
 /* ---------- "Ver em Libras": vídeo com intérprete (js/libras.js) ---------- */
 .tg button.tg-libras{flex:none;align-self:center;display:inline-flex;align-items:center;gap:.4rem;min-height:2.75rem;padding:.4rem .85rem .4rem .7rem;
@@ -295,7 +295,7 @@ body{background-color:var(--color-bg)}
 .tg .tg-sec-botoes button.tg-sec-toggle{margin-left:0}
 .tg-libras-capa{align-self:flex-start!important;margin-top:.5rem}
 .tg-guide-top .tg-libras{margin-left:auto}
-@media (max-width:560px){.tg-sec-head .tg-libras span,.tg-sec-head .tg-libras small{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:35em){.tg-sec-head .tg-libras span,.tg-sec-head .tg-libras small{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tg-sec-head .tg-libras{min-width:2.75rem;justify-content:center;padding:.45rem}}
 
 /* janela do vídeo: mesma família da janela do guia */
@@ -359,8 +359,8 @@ body{background-color:var(--color-bg)}
 .tg-perg-frase .tg-perg-grifo{font-family:var(--font-display);font-weight:800;color:var(--color-fg);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-inline:.08em;
   background:linear-gradient(100deg,transparent .15em,var(--marca-texto) .25em calc(100% - .15em),transparent calc(100% - .05em)) 0 68%/100% 52% no-repeat}
 .tg-perg-iso{display:flex;gap:3px;max-width:18rem;margin:.9rem 0 .2rem}
-.tg-perg-iso svg{flex:1;height:auto;fill:var(--cds-chart-grid)}
-.tg-perg-iso svg.on{fill:var(--sec,var(--v-blue))}
+.tg-perg-iso svg{flex:1;height:auto;overflow:visible;fill:var(--cds-chart-grid);stroke:var(--cds-chart-vazio);stroke-width:1.3;stroke-linejoin:round}
+.tg-perg-iso svg.on{fill:var(--sec,var(--v-blue));stroke:none}
 .tg-perg-var{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
 .tg-perg-nao ul{margin:.6rem 0 0;padding-left:1.2rem;columns:2 14rem;font-size:var(--cds-font-size-caption)}
 /* barras: as mesmas do painel (trilho fino, traço de marca-texto, margem de erro e traço do Brasil) */

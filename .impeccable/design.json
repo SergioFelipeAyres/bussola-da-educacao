@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-16T20:31:27.465Z",
+  "generatedAt": "2026-11-17T17:17:51.818Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -97,16 +97,16 @@
       "roxo-regras": {
         "role": "secondary",
         "displayName": "Roxo Regras",
-        "canonical": "oklch(52.3% 0.201 293)",
+        "canonical": "oklch(37.9% 0.169 306)",
         "tonalRamp": [
-          "oklch(15% 0.077 293)",
-          "oklch(26% 0.120 293)",
-          "oklch(37% 0.154 293)",
-          "oklch(48% 0.184 293)",
-          "oklch(60% 0.189 293)",
-          "oklch(72% 0.157 293)",
-          "oklch(84% 0.120 293)",
-          "oklch(95% 0.077 293)"
+          "oklch(15% 0.064 306)",
+          "oklch(26% 0.101 306)",
+          "oklch(37% 0.130 306)",
+          "oklch(48% 0.155 306)",
+          "oklch(60% 0.159 306)",
+          "oklch(72% 0.131 306)",
+          "oklch(84% 0.101 306)",
+          "oklch(95% 0.064 306)"
         ]
       },
       "rosa-comunicacao": {
@@ -288,6 +288,21 @@
           "oklch(84% 0.018 272)",
           "oklch(95% 0.012 272)"
         ]
+      },
+      "cinza-vazio": {
+        "role": "neutral",
+        "displayName": "Cinza Vazio",
+        "canonical": "oklch(60.6% 0.029 276)",
+        "tonalRamp": [
+          "oklch(15% 0.011 276)",
+          "oklch(26% 0.017 276)",
+          "oklch(37% 0.022 276)",
+          "oklch(48% 0.027 276)",
+          "oklch(60% 0.027 276)",
+          "oklch(72% 0.023 276)",
+          "oklch(84% 0.017 276)",
+          "oklch(95% 0.011 276)"
+        ]
       }
     },
     "typographyMeta": {
@@ -467,8 +482,8 @@
       "kind": "card",
       "refersTo": "fact",
       "description": "Post-it amarelo preso com fita, inclinado 1.6°; todo o texto em Tinta (a cor do tema fica no ícone e nos pictogramas).",
-      "html": "<aside class=\"ds-postit\"><div class=\"ds-postit-top\"><span class=\"ds-postit-ic\">★</span><span>Você sabia?</span></div><p><b>Cerca de 4 em cada 10</b>escolas permitem que os alunos usem inteligência artificial.</p><div class=\"ds-iso\"><span style=\"color:#7346d0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#7346d0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#7346d0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#7346d0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span></div><p class=\"ds-postit-m\">36,8% (pode variar entre 32,2% e 41,5%)</p></aside>",
-      "css": ".ds-postit{--sec:#7346d0;position:relative;max-width:22rem;margin:1.2rem;padding:1.4rem 1.4rem 1.2rem;background:color-mix(in srgb,#ffd166 62%,#fff);border-radius:2px;rotate:1.6deg;box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(5,12,45,.5);font-family:'Atkinson Hyperlegible Next',system-ui,sans-serif;color:#1b1d24}.ds-postit::before{content:\"\";position:absolute;top:-.8rem;left:50%;width:6.5rem;height:1.6rem;translate:-50% 0;rotate:-3deg;background:color-mix(in srgb,#2f5fd0 16%,rgba(255,255,255,.7));border:1px solid rgba(255,255,255,.6)}.ds-postit-top{display:flex;align-items:center;gap:.6rem;font:500 .875rem 'Atkinson Hyperlegible Mono',ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase}.ds-postit-ic{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:6px;background:var(--sec);color:#fff}.ds-postit p{margin:.7rem 0 .5rem;font:700 1.35rem/1.3 'Bricolage Grotesque',system-ui,sans-serif}.ds-postit b{display:block;font-size:1.5em;line-height:1.1;font-weight:800}.ds-postit .ds-iso{display:flex;gap:2px}.ds-postit-m{font:.875rem/1.5 'Atkinson Hyperlegible Mono',ui-monospace,monospace!important}"
+      "html": "<aside class=\"ds-postit\"><div class=\"ds-postit-top\"><span class=\"ds-postit-ic\">★</span><span>Você sabia?</span></div><p><b>Cerca de 4 em cada 10</b>escolas permitem que os alunos usem inteligência artificial.</p><div class=\"ds-iso\"><span style=\"color:#591987\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#591987\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#591987\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#591987\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span><span style=\"color:#e9eaf0\"><svg viewBox=\"0 0 20 20\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M2 9 10 2l8 7v9H2z\" fill=\"currentColor\"/></svg></span></div><p class=\"ds-postit-m\">36,8% (pode variar entre 32,2% e 41,5%)</p></aside>",
+      "css": ".ds-postit{--sec:#591987;position:relative;max-width:22rem;margin:1.2rem;padding:1.4rem 1.4rem 1.2rem;background:color-mix(in srgb,#ffd166 62%,#fff);border-radius:2px;rotate:1.6deg;box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(5,12,45,.5);font-family:'Atkinson Hyperlegible Next',system-ui,sans-serif;color:#1b1d24}.ds-postit::before{content:\"\";position:absolute;top:-.8rem;left:50%;width:6.5rem;height:1.6rem;translate:-50% 0;rotate:-3deg;background:color-mix(in srgb,#2f5fd0 16%,rgba(255,255,255,.7));border:1px solid rgba(255,255,255,.6)}.ds-postit-top{display:flex;align-items:center;gap:.6rem;font:500 .875rem 'Atkinson Hyperlegible Mono',ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase}.ds-postit-ic{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:6px;background:var(--sec);color:#fff}.ds-postit p{margin:.7rem 0 .5rem;font:700 1.35rem/1.3 'Bricolage Grotesque',system-ui,sans-serif}.ds-postit b{display:block;font-size:1.5em;line-height:1.1;font-weight:800}.ds-postit .ds-iso{display:flex;gap:2px}.ds-postit-m{font:.875rem/1.5 'Atkinson Hyperlegible Mono',ui-monospace,monospace!important}"
     },
     {
       "name": "Para pensar",
@@ -483,7 +498,7 @@
       "kind": "nav",
       "refersTo": "indice",
       "description": "Índice de seções como marcadores de página adesivos, um na cor de cada capítulo, levemente tortos.",
-      "html": "<nav class=\"ds-marc\"><span>Ir para</span><a href=\"#\" style=\"--sec:#0b8a7f\">Conexão</a><a href=\"#\" style=\"--sec:#c95f0e\">Equipamentos</a><a href=\"#\" style=\"--sec:#7346d0\">Regras e IA</a><a href=\"#\" style=\"--sec:#c73674\">Comunicação</a></nav>",
+      "html": "<nav class=\"ds-marc\"><span>Ir para</span><a href=\"#\" style=\"--sec:#0b8a7f\">Conexão</a><a href=\"#\" style=\"--sec:#c95f0e\">Equipamentos</a><a href=\"#\" style=\"--sec:#591987\">Regras e IA</a><a href=\"#\" style=\"--sec:#c73674\">Comunicação</a></nav>",
       "css": ".ds-marc{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.55rem;padding:1rem}.ds-marc span{padding-bottom:.55rem;font:500 .875rem 'Atkinson Hyperlegible Mono',ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase;color:#5d6170}.ds-marc a{min-height:2.75rem;padding:.75rem 1rem .5rem;border-radius:2px 2px 0 0;background:color-mix(in srgb,var(--sec) 15%,#fff);box-shadow:inset 0 5px 0 var(--sec),0 6px 12px -10px rgba(20,30,70,.55);font:700 1.0625rem 'Atkinson Hyperlegible Next',system-ui,sans-serif;color:#1b1d24;text-decoration:none}.ds-marc a:nth-of-type(odd){rotate:-1.2deg}.ds-marc a:nth-of-type(even){rotate:.9deg}.ds-marc a:hover{background:color-mix(in srgb,var(--sec) 26%,#fff)}.ds-marc a:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}"
     },
     {
