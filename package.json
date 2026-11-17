@@ -1,6 +1,7 @@
 {
   "name": "bussola-da-educacao",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE.md",
   "description": "Só para compilar o CSS (Tailwind). O site em si não tem etapa de build: css/site.css vai versionado.",
   "scripts": {
     "css": "tailwindcss -i src/site.css -o css/site.css --minify",

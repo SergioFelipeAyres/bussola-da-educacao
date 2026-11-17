@@ -44,6 +44,7 @@ data/*.json             dados em formato longo (uma linha por indicador, recorte
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data
 DESIGN.md               sistema visual: cores, tipografia, componentes e regras
 PRODUCT.md              público, propósito e compromissos do produto
+LICENCA.md, LICENSE.md  licenças: uso livre, só não comercial (resumo em português e texto oficial)
 ```
 
 O site é estático e não precisa de build para ser publicado: o CSS compilado
@@ -105,3 +106,11 @@ publicadas; exigem os microdados da pesquisa.
 Núcleo de Informação e Coordenação do Ponto BR. (2026). *Pesquisa sobre o uso das
 tecnologias de informação e comunicação nas escolas brasileiras: TIC Educação 2025*
 [Tabelas, v1.0]. Proporções, margens de erro e totais estimados.
+
+## Licença
+
+Livre para uso não comercial. O código está sob a
+[PolyForm Noncommercial 1.0.0](LICENSE.md); textos, design e documentação, sob a
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br). Os dados seguem os termos
+do Cetic.br, e o nome e o logo da Bússola não fazem parte das licenças. Detalhes em [LICENCA.md](LICENCA.md).
+Para uso comercial, peça autorização abrindo uma issue.

@@ -52,7 +52,7 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 - Nome: **Bússola da Educação**; marca com ícone de bússola.
 - Voz: linguagem simples e direta, frases curtas, proporções humanizadas ("7 em cada 10"), margem dita como faixa ("pode variar entre 59% e 64%").
 - Fonte sempre creditada: NIC.br/Cetic.br, TIC Educação 2025, com o "Como citar" na página Sobre.
-- Autoria: Sérgio Felipe Ayres (autor) e Danielle Sanches de Almeida (orientadora), FGV. Código aberto no GitHub.
+- Autoria: Sérgio Felipe Ayres (autor) e Danielle Sanches de Almeida (orientadora), FGV. Código no GitHub, livre para uso não comercial (PolyForm Noncommercial 1.0.0 para o código, CC BY-NC 4.0 para textos e design; ver `LICENCA.md`).
 
 ## Evidence on Hand
 
