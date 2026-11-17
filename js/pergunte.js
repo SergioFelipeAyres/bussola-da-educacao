@@ -187,7 +187,8 @@
       um: 'a cor ou raça mais comum', varios: 'as mais comuns', val: 'se declaram dessa cor ou raça' },
     { nome: 'Gestoras mulheres', sec: 'blue', ds: 'gestores', card: 'card-sexo', pessoa: true, propria: 'SEXO', kw: /mulher|gestoras|diretoras|\bsexo\b|homens/, ind: 'A1', resp: 'Feminino', txt: 'gestores escolares são mulheres' }
   ];
-  const EXEMPLOS = ['Qual o meio de comunicação mais usado no Nordeste?', 'Quantas escolas rurais têm internet?', 'Qual região tem menos escolas com internet?', 'Quantos gestores usam IA no Sul?', 'Para que os gestores usam IA?'];
+  // na ordem em que aparecem; temas de capítulos diferentes lado a lado, para os marcadores não repetirem a cor
+  const EXEMPLOS = ['Qual o meio de comunicação mais usado no Nordeste?', 'Quantas escolas rurais têm internet?', 'Quantos gestores usam IA no Sul?', 'Qual região tem menos escolas com internet?', 'Para que os gestores usam IA?'];
 
   // ---------- dados: os mesmos que o painel carrega (dash.data baixa na primeira vez) ----------
   const dados = (ds) => new Promise((ok) => {
@@ -235,7 +236,19 @@
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const iso = (v, pessoa) => '<div class="tg-perg-iso" aria-hidden="true">' + Array.from({ length: 10 }, (_, i) => '<svg viewBox="0 0 24 24"' + (i < Math.round(v / 10) ? ' class="on"' : '') + '>' + (pessoa ? PESSOA : ESCOLA) + '</svg>').join('') + '</div>';
-  const entendi = (t, cat, seg) => '<p class="tg-perg-entendi">Entendi: <b>' + t.nome + '</b><b>' + (cat ? NOME_TIPO[cat] + ': ' + segCurto(seg) : 'Brasil') + '</b></p>';
+  // cabeça do cartão: o que a caixa entendeu (como o "Você está vendo" do filtro) e o tema como título do cartão
+  const cabeca = (t, grupoTxt) => '<p class="tg-perg-entendi"><span class="tg-perg-lab">Entendi:</span> <span class="tg-perg-grupo">' + esc(grupoTxt) + '</span></p><h3 class="tg-perg-tema">' + esc(t.nome) + '</h3>';
+  const entendi = (t, cat, seg) => cabeca(t, cat ? NOME_TIPO[cat] + ': ' + segCurto(seg) : 'Brasil');
+  // o número da frase vem grifado de marca-texto, como os números da capa
+  const grifo = (n) => '<strong class="tg-perg-grifo">' + n + '</strong>';
+  // a barra do painel: traço de marca-texto, margem de erro (barra de erro) e traço do Brasil
+  const barra = (rot, r, br) => {
+    const m = Number(r.moe) || 0, lo = Math.max(0, r.pct - m), hi = Math.min(100, r.pct + m);
+    return '<li><span>' + esc(rot) + (m ? '' : '*') + '</span><span class="v">' + n1(r.pct) + '%</span><span class="tr" aria-hidden="true"><i class="f" style="width:' + Math.min(100, r.pct) + '%"></i>' +
+      (m ? '<i class="moe" style="left:' + lo + '%;width:' + (hi - lo) + '%"></i>' : '') + (br ? '<i class="ref" style="left:' + Math.min(100, br.pct) + '%"></i>' : '') + '</span></li>';
+  };
+  const legenda = (comBr) => '<p class="tg-perg-leg" aria-hidden="true"><span><i class="lm"></i>margem de erro</span>' + (comBr ? '<span><i class="lr"></i>Brasil</span>' : '') + '</p>';
+  const rodape = (t) => el('p', 'tg-perg-base', (t.base ? t.base + ' ' : '') + 'Fonte: TIC Educação 2025, NIC.br/Cetic.br.');
   const irBotao = (t, cat, seg, rotulo) => {
     const b = el('button', 'tg-perg-ir', esc(rotulo) + ' <span aria-hidden="true">→</span>'); b.type = 'button';
     b.addEventListener('click', () => {
@@ -246,7 +259,7 @@
   };
   const cartao = (t) => { const c = el('article', 'tg-perg-res'); c.style.setProperty('--sec', 'var(--v-' + t.sec + ')'); return c; };
   const sujeito = (t) => t.ds === 'gestores' ? 'gestores ' : 'escolas ';
-  const semDado = (t, cat, seg, c) => { c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">A pesquisa não tem esse número para esse grupo.</p>' + (t.base ? '<p class="tg-perg-var">' + t.base + '</p>' : ''); return c; };
+  const semDado = (t, cat, seg, c) => { c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">A pesquisa não tem esse número para esse grupo.</p>'; c.append(rodape(t)); return c; };
 
   const responde = async (t, cat, seg) => {
     const c = cartao(t), rows = await dados(t.ds), q = quem(t, cat, seg);
@@ -262,14 +275,16 @@
       const um = menos ? t.um.replace(/\bmais\b/, 'menos') : t.um, varios = menos ? t.varios.replace(/\bmais\b/, 'menos') : t.varios;
       const [a, b] = alvo ? [alvo] : ponta, n = freq(a.r.pct, cem);
       const empate = b && (menos ? !separa(b.r, a.r) : !separa(a.r, b.r));
-      const frase = alvo ? q + ', <strong>' + n + '</strong> ' + (cat ? '' : sujeito(t)) + verbo1(n, t.focoTxt(a.l)) + '.'
+      const frase = alvo ? q + ', ' + grifo(n) + ' ' + (cat ? '' : sujeito(t)) + verbo1(n, t.focoTxt(a.l)) + '.'
         : empate
           ? q + ', ' + varios + ' são <strong>' + L(a) + '</strong> e <strong>' + L(b) + '</strong>: com a margem de erro, não dá para dizer qual vem ' + (menos ? 'por último' : 'primeiro') + '.'
-          : q + ', ' + um + ' é <strong>' + L(a) + '</strong>: <strong>' + n + '</strong> ' + (cat ? '' : sujeito(t)) + verbo1(n, t.val) + '.';
+          : q + ', ' + um + ' é <strong>' + L(a) + '</strong>: ' + grifo(n) + ' ' + (cat ? '' : sujeito(t)) + verbo1(n, t.val) + '.';
+      const lis = (alvo ? its : ponta).slice(0, 6);
       c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">' + frase + '</p>' + iso(a.r.pct, t.pessoa) +
-        '<p class="tg-perg-var">' + (t.base ? t.base + ' ' : '') + esc(a.l.charAt(0).toUpperCase() + a.l.slice(1)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (cat && a.br ? '. No Brasil, ' + n1(a.br.pct) + '%.' : '.') + '</p>' +
-        '<ul class="tg-perg-lista">' + (alvo ? its : ponta).slice(0, 6).map((x) => '<li><span>' + esc(x.l.charAt(0).toUpperCase() + x.l.slice(1)) + '</span><span class="v">' + n1(x.r.pct) + '%</span><span class="tr" aria-hidden="true"><i style="width:' + Math.min(100, x.r.pct) + '%"></i></span></li>').join('') + '</ul>';
-      c.append(irBotao(t, cat, seg, 'Ver no painel, com a margem de cada um'));
+        '<ul class="tg-perg-lista">' + lis.map((x) => barra(x.l.charAt(0).toUpperCase() + x.l.slice(1), x.r, cat ? x.br : null)).join('') + '</ul>' + legenda(!!cat && lis.some((x) => x.br)) +
+        '<p class="tg-perg-var">' + esc(a.l.charAt(0).toUpperCase() + a.l.slice(1)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (cat && a.br ? '. No Brasil, ' + n1(a.br.pct) + '%.' : '.') + '</p>' +
+        (lis.some((x) => !Number(x.r.moe)) ? '<p class="tg-perg-var">* sem margem de erro estimada (o valor vale para a amostra).</p>' : '');
+      c.append(irBotao(t, cat, seg, 'Ver no painel'), rodape(t));
       return c;
     }
     const resp = t.resp || 'Sim', r = linha(rows, t.ind, t.grupo || '', resp, cat, seg), br = linha(rows, t.ind, t.grupo || '', resp);
@@ -278,16 +293,17 @@
     const txt = cat ? (t.txtG || t.txt.replace(/^(escolas|gestores escolares|gestores) /, '')) : t.txt;
     let vs = '';
     if (cat && br) { const d = Math.round((r.pct - br.pct) * 10) / 10; vs = ' No Brasil, ' + freq(br.pct, cem) + ' (' + n1(br.pct) + '%)' + (d ? ': são ' + n1(Math.abs(d)) + (Math.abs(d) < 2 ? ' ponto ' : ' pontos ') + (d > 0 ? 'a mais' : 'a menos') + ' no grupo.' : '.'); }
-    c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">' + q + ', <strong>' + n + '</strong> ' + verbo1(n, txt) + '.</p>' + iso(r.pct, t.pessoa) +
+    c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">' + q + ', ' + grifo(n) + ' ' + verbo1(n, txt) + '.</p>' + iso(r.pct, t.pessoa) +
+      '<ul class="tg-perg-lista">' + barra(cat ? segCurto(seg) : 'Brasil', r, cat ? br : null) + '</ul>' + legenda(!!(cat && br)) +
       '<p class="tg-perg-var">' + n1(r.pct) + '% (' + faixa(r) + ').' + vs + '</p>';
-    c.append(irBotao(t, cat, seg, 'Ver no painel'));
+    c.append(irBotao(t, cat, seg, 'Ver no painel'), rodape(t));
     return c;
   };
 
   // compara todos os grupos de um tipo (ex.: as 5 regiões) para um indicador, com a regra das margens
   const compara = async (t, cat, q, aviso, so) => {
     const c = cartao(t), rows = await dados(t.ds);
-    const ent = '<p class="tg-perg-entendi">Entendi: <b>' + t.nome + '</b><b>Comparar: ' + NOME_TIPO[cat] + '</b></p>';
+    const ent = cabeca(t, 'Comparar: ' + NOME_TIPO[cat]);
     if (!rows) { c.innerHTML = ent + '<p class="tg-perg-frase">Não foi possível carregar os dados. Verifique a conexão e tente de novo.</p>'; return c; }
     // o que comparar: o indicador do tema, ou o item citado de um ranking ("qual região mais usa WhatsApp")
     let ind = t.ind, grupo = t.grupo || '', resp = t.resp || 'Sim', txt = cat ? (t.txtG || (t.txt || '').replace(/^(escolas|gestores escolares|gestores) /, '')) : t.txt;
@@ -311,10 +327,10 @@
     const qual = menos ? 'menor' : 'maior';
     const frase = empate
       ? 'A ' + qual + ' parcela que ' + verbo1('1 em cada', txt) + ' fica ' + onde(a.seg) + ' e ' + onde(b.seg) + ', mas as margens de erro se sobrepõem: a ordem entre ' + (t.ds === 'gestores' ? 'eles' : 'elas') + ' pode ser outra.'
-      : 'A ' + qual + ' parcela fica ' + onde(a.seg) + ': <strong>' + n + '</strong> ' + verbo1(n, txt) + '.';
+      : 'A ' + qual + ' parcela fica ' + onde(a.seg) + ': ' + grifo(n) + ' ' + verbo1(n, txt) + '.';
     c.innerHTML = (aviso ? '<p class="tg-perg-var tg-perg-aviso">' + aviso + '</p>' : '') + ent + '<p class="tg-perg-frase">' + frase + (br ? ' No Brasil, ' + freq(br.pct, cem) + '.' : '') + '</p>' + iso(a.r.pct, t.pessoa) +
       '<p class="tg-perg-var">' + esc(segCurto(a.seg)) + ': ' + n1(a.r.pct) + '% (' + faixa(a.r) + ')' + (br ? '. Brasil: ' + n1(br.pct) + '%.' : '.') + '</p>' +
-      '<ul class="tg-perg-lista">' + ponta.map((x) => '<li><span>' + esc(segCurto(x.seg)) + (x.r.moe ? '' : '*') + '</span><span class="v">' + n1(x.r.pct) + '%</span><span class="tr" aria-hidden="true"><i style="width:' + Math.min(100, x.r.pct) + '%"></i></span></li>').join('') + '</ul>' +
+      '<ul class="tg-perg-lista">' + ponta.map((x) => barra(segCurto(x.seg), x.r, br)).join('') + '</ul>' + legenda(!!br) +
       (its.some((x) => !x.r.moe) ? '<p class="tg-perg-var">* sem margem de erro estimada (o valor vale para a amostra).</p>' : '');
     // para a bateria de testes: qual grupo foi apontado e se houve empate
     c.dataset.ponta = a.seg; c.dataset.empate = empate ? '1' : '0'; c.dataset.cat = cat;
@@ -323,7 +339,7 @@
       const j = bt.closest('dialog'); if (j) j.close();
       if (!(window.mostraComparacao && window.mostraComparacao(t.ds, ind, grupo, resp, cat)) && window.mostraNoPainel) window.mostraNoPainel(t.ds, cat + '|' + a.seg, t.card);
     });
-    c.append(bt);
+    c.append(bt, rodape(t));
     return c;
   };
 
@@ -418,7 +434,7 @@
   window.__perg = { TEMAS, DIMS, GRUPOS, SO_GESTOR };
   // para testes no console: window.__pergunte('quantas escolas rurais têm internet?')
   window.__perguntaEl = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => (explicaTermos(d), d)); };
-  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => explicaTermos(d)).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-frase, .tg-perg-var')].map((e) => e.textContent).join(' | ')); };
+  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => explicaTermos(d)).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-tema, .tg-perg-frase, .tg-perg-var, .tg-perg-base')].map((e) => e.textContent).join(' | ')); };
 
   // ---------- a caixa (a mesma no Início e na janela) ----------
   let n = 0;
@@ -426,8 +442,9 @@
     const id = 'perg-' + (++n);
     const form = el('form', 'tg-perg-caixa'); form.setAttribute('role', 'search');
     form.innerHTML = '<label class="tg-perg-tit" for="' + id + '">' + titulo + '</label>' +
-      '<div class="tg-perg-linha"><input id="' + id + '" type="search" autocomplete="off" enterkeyhint="search" placeholder="Ex.: qual o meio de comunicação mais usado no Nordeste?">' +
-      '<button type="submit" class="tg-etq">Perguntar</button></div><div class="tg-perg-ex"><span class="tg-perg-ex-lab">Experimente:</span></div>';
+      '<p class="tg-perg-dica" id="' + id + '-dica">Escreva do seu jeito, com ou sem um grupo: uma região, escolas rurais, gestoras…</p>' +
+      '<div class="tg-perg-linha"><input id="' + id + '" type="search" autocomplete="off" enterkeyhint="search" aria-describedby="' + id + '-dica" placeholder="Ex.: qual o meio de comunicação mais usado no Nordeste?">' +
+      '<button type="submit" class="tg-etq">Perguntar</button></div><div class="tg-perg-ex"><span class="tg-perg-ex-lab">Experimente</span></div>';
     const saida = el('div', 'tg-perg-saida'); saida.setAttribute('aria-live', 'polite');
     const inp = form.querySelector('input'), ex = form.querySelector('.tg-perg-ex');
     // depois de uma resposta das palavras-chave, "Não era isso?" pede à IA para reescrever a pergunta
@@ -447,7 +464,12 @@
       saida.append(b);
     };
     form.addEventListener('submit', (e) => { e.preventDefault(); if (inp.value.trim()) faz(inp.value); });
-    EXEMPLOS.forEach((t) => { const b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = t; b.addEventListener('click', () => { inp.value = t; faz(t); }); ex.append(b); });
+    // exemplos como marcadores de página (os do "Ir para"), na cor do capítulo do tema que cada um pergunta
+    EXEMPLOS.forEach((t) => {
+      const b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = t;
+      const tema = TEMAS.find((x) => x.kw.test(' ' + sem(t) + ' ')); if (tema) b.style.setProperty('--sec', 'var(--v-' + tema.sec + ')');
+      b.addEventListener('click', () => { inp.value = t; faz(t); }); ex.append(b);
+    });
     alvo.append(form, saida);
     return inp;
   };

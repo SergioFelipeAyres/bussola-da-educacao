@@ -180,7 +180,8 @@ const CASOS = [
           const segs = [...new Set(rows.filter((x) => x.cat === cat && x.ind === ind).map((x) => x.seg))].filter((x) => x !== 'Não respondeu' && !/^Públicas/.test(x));
           const its = segs.map((seg) => ({ seg, r: valor(rows, ind, g, resp, cat, seg) })).filter((x) => x.r).sort((a, b) => b.r.pct - a.r.pct);
           const erro = [];
-          if (!txt.includes('Entendi: ' + t.nome)) erro.push('tema errado');
+          const tema = d.querySelector('.tg-perg-tema');
+          if (!tema || tema.textContent !== t.nome) erro.push('tema errado');
           else if (its.length > 1) {
             if (!c) erro.push('não comparou');
             else {
