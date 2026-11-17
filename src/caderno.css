@@ -208,6 +208,9 @@ body{background-color:var(--color-bg)}
 #filtro .tg-rec-mais{margin-top:.1rem}
 #filtro .tg-rec-pedido,#filtro .tg-rec-opts{align-self:stretch}
 @media (min-width:52em){#filtro .tg-rec-pedido,#filtro .tg-rec-opts{padding-left:16.1rem}}
+/* dica do tipo de grupo (ex.: o que são anos iniciais), logo abaixo das alternativas e alinhada com elas */
+#filtro .tg-rec-dica{align-self:stretch;margin-top:0}
+@media (min-width:52em){#filtro .tg-rec-dica{margin-left:16.1rem}}
 /* segundo passo (qual grupo): alternativas com bolinha vazia */
 #rec-opts button{display:inline-flex;align-items:center;gap:.5rem;padding-left:.6rem}
 #rec-opts button::before{content:"";flex:none;width:.9rem;height:.9rem;border-radius:50%;border:1.5px solid var(--color-fg-muted)}

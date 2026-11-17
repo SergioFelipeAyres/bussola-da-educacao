@@ -1037,6 +1037,9 @@
     pedido.hidden = dim === 'TOTAL';
     pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:') : dim === 'TOTAL' ? '' : (DIM[dim] || dim) + ':';
     pedido.classList.toggle('tg-pedindo', !!dimAberta);
+    // "Escolas que vão até": explica anos iniciais, anos finais e Educação Profissional enquanto esse tipo de grupo está aberto ou escolhido
+    const dica = document.getElementById('rec-dica-nivel');
+    if (dica) { dica.hidden = (dimAberta || dim) !== 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO'; dica.style.order = ordem + 3; }
     const novo = recTitulo(rec, v);
     document.getElementById('filtro').dataset.recorte = rec === TOTAL ? 'Brasil' : novo;
     document.getElementById('rec-titulo2').textContent = novo;

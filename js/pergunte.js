@@ -88,7 +88,7 @@
     { nome: 'Velocidade da internet', sec: 'teal', ds: 'escolas', card: 'card-velocidade', ranking: true, kw: /velocidade|lenta|rapida|mbps|megas?\b|banda/,
       itens: [['até 50 Mbps', 'A3_1', '', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps']], ['de 51 a 250 Mbps', 'A3_1', '', ['De 51 Mbps a 100 Mbps', 'De 101 Mbps a 250 Mbps']],
         ['mais de 250 Mbps', 'A3_1', '', ['De 251 Mbps a 500 Mbps', 'De 501 Mbps a 1 Gbps', 'Mais de 1 Gbps']], ['velocidade não informada', 'A3_1', '', 'Não sabe']],
-      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com internet. Mbps mede a velocidade: quanto maior, mais rápida.' },
+      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com internet.' },
     { nome: 'Fibra ótica', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', kw: /fibra/, ind: 'A2', resp: 'Conexão via fibra ótica',
       txt: 'das escolas com internet estão conectadas por fibra ótica', txtG: 'das que têm internet estão conectadas por fibra ótica' },
     { nome: 'Tipo de conexão', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', ranking: true, kw: /tipo de (conexao|internet)|\bcabo\b|satelite|\bradio\b|[345]g\b|rede de celular|dados moveis|(conexao|internet) (por|via) |como .*conecta/,
@@ -342,6 +342,17 @@
   };
   const mudou = (a, b) => !!b && sem(a).replace(/\W+/g, ' ').trim() !== sem(b).replace(/\W+/g, ' ').trim();
   let vezes = 0;
+  // termos que o leitor pode não conhecer: quando aparecem na resposta, uma nota curta explica (a mesma do "Saiba mais" do cartão)
+  const TERMOS = [[/Projeto Político Pedagógico/, 'O Projeto Político Pedagógico (PPP) é o documento em que cada escola escreve seus objetivos e como pretende ensinar, feito com os professores e a comunidade escolar.'],
+    [/Mbps/, 'Mbps (megabits por segundo) mede quantos dados a internet entrega a cada segundo: quanto maior, mais rápida. A velocidade é dividida entre todos que estão conectados.'],
+    [/\bmaker\b/i, 'Material maker é o material para atividades “mão na massa”, em que os alunos constroem, consertam ou inventam objetos com ferramentas, peças eletrônicas, impressora 3D ou sucata.'],
+    [/Smart TV/, 'Smart TV é uma televisão que se conecta à internet. O conversor é um aparelho que faz o mesmo numa TV comum. Com eles, a turma pode ver vídeos e páginas da internet na tela da sala.'],
+    [/sistemas digitais/i, 'Sistemas digitais na gestão são programas que a escola usa para cuidar de matrículas, frequência, notas e documentos, no lugar do papel.'],
+    [/midiática/i, 'Educação midiática é ensinar a ler com olhar crítico notícias, vídeos e redes sociais: checar se uma informação é verdadeira, perceber o que é propaganda e publicar com responsabilidade.'],
+    [/ambiente virtual/i, 'Plataforma ou ambiente virtual de aprendizagem é um site ou aplicativo em que a escola publica aulas, materiais e tarefas, e onde os alunos entregam trabalhos e acompanham as notas.'],
+    [/anos (iniciais|finais)|Educação Profissional/i, 'Anos iniciais do Fundamental vão do 1º ao 5º ano; anos finais, do 6º ao 9º ano. Educação Profissional são os cursos técnicos.']];
+  const explicaTermos = (saida) => { if (saida.querySelector('.tg-perg-nao ul')) return; // a lista de temas de "Ainda não sei" não pede explicação
+    TERMOS.forEach(([re, txt], i) => { if (re.test(saida.textContent) && !saida.querySelector('.tg-perg-termo[data-termo="' + i + '"]')) { const p = el('p', 'tg-perg-var tg-perg-termo', txt); p.dataset.termo = i; saida.append(p); } }); };
 
   // "de": o texto original do leitor, quando "txt" é a versão reescrita pela IA
   const pergunta = async (txt, saida, de) => {
@@ -406,8 +417,8 @@
   // para a bateria de testes (testes/pergunte.html): os temas e os tipos de grupo
   window.__perg = { TEMAS, DIMS, GRUPOS, SO_GESTOR };
   // para testes no console: window.__pergunte('quantas escolas rurais têm internet?')
-  window.__perguntaEl = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => d); };
-  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-frase, .tg-perg-var')].map((e) => e.textContent).join(' | ')); };
+  window.__perguntaEl = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => (explicaTermos(d), d)); };
+  window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => explicaTermos(d)).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-frase, .tg-perg-var')].map((e) => e.textContent).join(' | ')); };
 
   // ---------- a caixa (a mesma no Início e na janela) ----------
   let n = 0;
@@ -423,13 +434,14 @@
     const faz = async (txt) => {
       const p = pergunta(txt, saida), vez = saida.dataset.vez;
       await p;
+      if (saida.dataset.vez === vez) explicaTermos(saida);
       if (saida.dataset.vez !== vez || !iaLigada() || saida.querySelector('.tg-perg-ia') || !saida.querySelector('.tg-perg-entendi')) return;
       const b = el('button', 'tg-perg-ir tg-perg-outro', 'Não era isso? Tentar entender de outro jeito'); b.type = 'button';
       b.addEventListener('click', async () => {
         b.disabled = true; b.textContent = 'Tentando entender de outro jeito…';
         const nova = await reescreve(txt);
         if (saida.dataset.vez !== vez) return;
-        if (mudou(txt, nova)) pergunta(nova, saida, txt);
+        if (mudou(txt, nova)) { await pergunta(nova, saida, txt); explicaTermos(saida); }
         else b.replaceWith(el('p', 'tg-perg-var', 'Não achei outro jeito de entender. Tente escrever com outras palavras.'));
       });
       saida.append(b);
