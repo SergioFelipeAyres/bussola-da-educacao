@@ -187,7 +187,7 @@
       um: 'a cor ou raça mais comum', varios: 'as mais comuns', val: 'se declaram dessa cor ou raça' },
     { nome: 'Gestoras mulheres', sec: 'blue', ds: 'gestores', card: 'card-sexo', pessoa: true, propria: 'SEXO', kw: /mulher|gestoras|diretoras|\bsexo\b|homens/, ind: 'A1', resp: 'Feminino', txt: 'gestores escolares são mulheres' }
   ];
-  const EXEMPLOS = ['Qual o meio de comunicação mais usado no Nordeste?', 'Quantas escolas rurais têm internet?', 'Quantos gestores usam IA no Sul?', 'Para que os gestores usam IA?'];
+  const EXEMPLOS = ['Qual o meio de comunicação mais usado no Nordeste?', 'Quantas escolas rurais têm internet?', 'Qual região tem menos escolas com internet?', 'Quantos gestores usam IA no Sul?', 'Para que os gestores usam IA?'];
 
   // ---------- dados: os mesmos que o painel carrega (dash.data baixa na primeira vez) ----------
   const dados = (ds) => new Promise((ok) => {

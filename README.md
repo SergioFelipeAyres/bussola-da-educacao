@@ -38,7 +38,7 @@ js/dash-shim.js         carrega os dados e redesenha a página quando o filtro m
 js/painel.js            desenho dos gráficos
 js/pergunte.js          "Pergunte à Bússola": entende tema e grupo por palavras-chave e responde com os dados
 workers/pergunte-ia/    Worker da Cloudflare: IA que só reescreve perguntas com erros de grafia (ver o README da pasta)
-testes/pergunte.html    testes do "Pergunte à Bússola": 71 perguntas, 5 casos da ajuda da IA (com uma IA de mentira) e uma varredura de 634 comparações conferidas contra os dados (abra pelo servidor local)
+testes/pergunte.html    testes do "Pergunte à Bússola": 74 perguntas, 5 casos da ajuda da IA (com uma IA de mentira) e uma varredura de 634 comparações conferidas contra os dados (abra pelo servidor local)
 js/libras.js            "Ver em Libras": lista dos vídeos com intérprete (sem endereço, o botão mostra "em breve")
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data
