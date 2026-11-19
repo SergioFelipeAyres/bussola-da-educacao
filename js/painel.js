@@ -211,6 +211,8 @@
     { id: 'e_dados', ds: 'escolas', label: 'Escolas com política de proteção de dados', ind: 'H1', grupo: '', resp: 'Sim' },
     { id: 'e_facial', ds: 'escolas', label: 'Escolas com reconhecimento facial dos alunos', ind: 'E4B', grupo: '', resp: 'Sim' }
   ];
+  // o "Pergunte à Bússola" (pergunte.js) gera uma pergunta pronta para cada comparação possível destes indicadores
+  window.__MEAS = MEAS;
 
   // ---------- "Você sabia?" da tela inicial: frase = "<N em cada 10> <txt>." (txt1: forma no singular) ----------
   const FACTS = [
@@ -699,10 +701,10 @@
 
   // ---------- view (navbar) ----------
   // cada aba tem seu endereço: / (início), /escolas, /gestores, /sobre; #âncora continua apontando seções (/escolas#comparar)
-  const VIEWS = ['inicio', 'escolas', 'gestores', 'sobre'];
+  const VIEWS = ['inicio', 'escolas', 'gestores', 'sobre', 'acessibilidade'];
   const DASH = ['escolas', 'gestores'];
   // pasta onde o site está publicado (a raiz no domínio próprio; funciona também numa subpasta)
-  const BASE = location.pathname.replace(/(escolas|gestores|sobre)(\.html)?\/?$|index\.html$/, '').replace(/[^/]*$/, '') || '/';
+  const BASE = location.pathname.replace(/(escolas|gestores|sobre|acessibilidade)(\.html)?\/?$|index\.html$/, '').replace(/[^/]*$/, '') || '/';
   // o grupo escolhido vai no endereço (?grupo=regiao-norte) nas abas de dados: link compartilhado,
   // "Copiar link", recarregar e Voltar mostram o mesmo grupo
   let grupoUrl = new URLSearchParams(location.search).get('grupo') || '';
@@ -734,7 +736,7 @@
   const showView = (v) => {
     navLinks.forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     VIEWS.forEach((id) => { document.getElementById(id).hidden = v !== id; });
-    document.title = v === 'inicio' ? 'Bússola da Educação' : { escolas: 'Escolas', gestores: 'Gestores', sobre: 'Sobre' }[v] + ' · Bússola da Educação';
+    document.title = v === 'inicio' ? 'Bússola da Educação' : { escolas: 'Escolas', gestores: 'Gestores', sobre: 'Sobre', acessibilidade: 'Acessibilidade' }[v] + ' · Bússola da Educação';
     document.querySelectorAll('.tg-dash-only').forEach((el) => { el.hidden = !DASH.includes(v); }); fixaFiltro();
   };
   const setView = (v) => {
@@ -1790,8 +1792,8 @@
   }
   const MARCA = { gestores: 'como usa a tecnologia', escolas: 'conectadas e equipadas' };
   function draw() {
-    // Sobre não tem dados: não pede (e portanto não baixa) nenhum arquivo; setView chama draw() de novo ao trocar de aba
-    if (view === 'sobre') return;
+    // Sobre e Acessibilidade não têm dados: não pedem (e portanto não baixam) nenhum arquivo; setView chama draw() de novo ao trocar de aba
+    if (view === 'sobre' || view === 'acessibilidade') return;
     const params = dash.params();
     const meta = dash.data(META);
     const take = document.getElementById('tg-take');

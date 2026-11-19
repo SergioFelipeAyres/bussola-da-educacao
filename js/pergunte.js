@@ -1,6 +1,6 @@
 /*
- * "Pergunte à Bússola": o leitor escreve uma pergunta do jeito dele e recebe o número da pesquisa.
- * Procura um TEMA e um GRUPO por palavras-chave e responde com os dados do próprio site,
+ * "Pergunte à Bússola": o leitor toca numa das perguntas prontas (geradas dos dados por prontas(), sorteadas na caixa) e recebe o número da pesquisa.
+ * Não há texto livre. Cada pergunta passa pelo reconhecimento de TEMA e GRUPO por palavras-chave e é respondida com os dados do próprio site,
  * pelas mesmas regras do painel ("N em cada 10" ou "em cada 100", margem de erro como faixa, "o mais citado"
  * só quando as margens não se tocam). Cruzamentos que a pesquisa não publica (ex.: particulares do Nordeste)
  * são avisados, sem explicar o motivo, e cada grupo aparece separado.
@@ -12,8 +12,9 @@
  * Para ensinar uma palavra nova, acrescente-a à expressão "kw" do tema ou à lista GRUPOS.
  * A ordem dos TEMAS importa: o primeiro que casar com a pergunta vence, então os mais específicos vêm antes.
  *
- * Ajuda da IA (opcional, IA_URL abaixo): quando as palavras-chave não reconhecem a pergunta, ou quando o leitor
- * toca em "Não era isso?", a pergunta vai para o Worker em workers/pergunte-ia, que só a REESCREVE em português
+ * Ajuda da IA (IA_URL abaixo): sem texto livre, a caixa não a usa mais (as perguntas prontas sempre casam com um tema);
+ * fica para a bateria de testes. Era assim: quando as palavras-chave não reconheciam a pergunta, ela ia para o
+ * Worker em workers/pergunte-ia, que só a REESCREVE em português
  * correto ("conequissao no nordesti" → "conexão no Nordeste"). A frase reescrita passa pelas mesmas palavras-chave
  * e é respondida com os dados; a IA nunca produz números. O leitor vê "Entendi sua pergunta como: …".
  */
@@ -88,7 +89,8 @@
     { nome: 'Velocidade da internet', sec: 'teal', ds: 'escolas', card: 'card-velocidade', ranking: true, kw: /velocidade|lenta|rapida|mbps|megas?\b|banda/,
       itens: [['até 50 Mbps', 'A3_1', '', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps']], ['de 51 a 250 Mbps', 'A3_1', '', ['De 51 Mbps a 100 Mbps', 'De 101 Mbps a 250 Mbps']],
         ['mais de 250 Mbps', 'A3_1', '', ['De 251 Mbps a 500 Mbps', 'De 501 Mbps a 1 Gbps', 'Mais de 1 Gbps']], ['velocidade não informada', 'A3_1', '', 'Não sabe']],
-      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com internet.' },
+      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', base: 'Entre as escolas com internet.',
+      focoTxt: (l) => /informada/.test(l) ? null : 'têm internet de ' + l },
     { nome: 'Fibra ótica', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', kw: /fibra/, ind: 'A2', resp: 'Conexão via fibra ótica',
       txt: 'das escolas com internet estão conectadas por fibra ótica', txtG: 'das que têm internet estão conectadas por fibra ótica' },
     { nome: 'Tipo de conexão', sec: 'teal', ds: 'escolas', card: 'card-tipo-conexao', ranking: true, kw: /tipo de (conexao|internet)|\bcabo\b|satelite|\bradio\b|[345]g\b|rede de celular|dados moveis|(conexao|internet) (por|via) |como .*conecta/,
@@ -100,7 +102,7 @@
       itens: [['até 5 alunos por computador', 'B4C', '', 'Até 5 alunos'], ['de 5 a 10 alunos por computador', 'B4C', '', 'De 5,1 a 10 alunos'], ['de 10 a 15 alunos por computador', 'B4C', '', 'De 10,1 a 15 alunos'], ['de 15 a 20 alunos por computador', 'B4C', '', 'De 15,1 a 20 alunos'],
         ['de 20 a 30 alunos por computador', 'B4C', '', 'De 20,1 a 30 alunos'], ['de 30 a 40 alunos por computador', 'B4C', '', 'De 30,1 a 40 alunos'], ['de 40 a 50 alunos por computador', 'B4C', '', 'De 40,1 a 50 alunos'], ['de 50 a 100 alunos por computador', 'B4C', '', 'De 50,1 a 100 alunos'],
         ['mais de 100 alunos por computador', 'B4C', '', '100,1 alunos ou mais'], ['sem computador para os alunos', 'B4C', '', 'Não possui computador disponível para uso dos alunos']],
-      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação' },
+      um: 'a situação mais comum', varios: 'as situações mais comuns', val: 'estão nessa situação', focoTxt: (l) => /^sem/.test(l) ? 'não têm computador para os alunos' : 'têm ' + l },
     { nome: 'Tipos de computador', sec: 'orange', ds: 'escolas', card: 'card-computadores', ranking: true, kw: /tipos? de computador|notebook|tablet|computador de mesa|desktop|portat/,
       itens: [['computador de mesa', 'B2', 'Computador de mesa'], ['computador portátil', 'B2', 'Computador portátil'], ['tablet', 'B2', 'Tablet']],
       um: 'o tipo mais comum', varios: 'os tipos mais comuns', val: 'têm esse tipo de computador', base: 'Entre as escolas que têm computador.',
@@ -131,7 +133,8 @@
         'Criar convites, avisos e comunicados automaticamente', 'Gerar mensagens e respostas automáticas', 'Criar cronogramas e fluxos de trabalho escolares', 'Organizar e planejar atividades pedagógicas e de gestão',
         'Analisar dados sobre o desempenho dos alunos, as práticas pedagógicas ou o funcionamento da escola', 'Monitorar os serviços ofertados pela escola, como alimentação escolar, transporte e limpeza', 'Aprimorar os sistemas de segurança da escola']
         .map((g) => [g.charAt(0).toLowerCase() + g.slice(1), 'D9B', g]),
-      um: 'o uso mais citado', varios: 'os usos mais citados', val: 'usam a IA para isso', base: 'Entre os gestores que usam IA na gestão.' },
+      um: 'o uso mais citado', varios: 'os usos mais citados', val: 'usam a IA para isso', base: 'Entre os gestores que usam IA na gestão.',
+      focoTxt: (l) => 'usam a IA para ' + l, focoQ: (l) => 'Gestores que usam IA: quantos a usam para ' + l + '?', focoQuem: 'Entre os gestores que usam IA na gestão' },
     { nome: 'Onde a IA ajudou', sec: 'purple', ds: 'gestores', card: 'card-ia-contrib', ranking: true, pessoa: true, kw: new RegExp('(ajud|contribu|melhor|benefici).*' + IA + '|' + IA + '.*(ajud|contribu|melhor|benefici)'),
       itens: [['comunicação com as famílias', 'D9C', 'Comunicação com pais e responsáveis'], ['bem-estar dos alunos', 'D9C', 'Promoção do bem-estar dos alunos'], ['melhorar a aprendizagem', 'D9C', 'Melhoria da aprendizagem dos alunos'],
         ['identificar dificuldades de aprendizagem', 'D9C', 'Identificação das dificuldades de aprendizagem dos alunos'], ['incluir alunos com deficiência', 'D9C', 'Inclusão de alunos com deficiência'],
@@ -149,7 +152,7 @@
         ['impacto na prática pedagógica', 'D7', 'Impactos das tecnologias digitais na prática pedagógica dos professores'], ['regras para o uso de IA', 'D7', 'Regras para uso de ferramentas de Inteligência Artificial pelos alunos ou professores'],
         ['regras para o uso de celular', 'D7', 'Regras para uso de celulares pelos alunos nas dependências da escola'], ['casos de cyberbullying, discriminação e vazamento de imagens', 'D7', 'Ações em relação a casos de cyberbullying, discriminação, vazamento de imagens ou outras situações ocorridas na Internet com os alunos da escola'],
         ['uso seguro e crítico da tecnologia no currículo', 'D7', 'Inclusão de atividades sobre uso seguro, crítico e responsável das tecnologias digitais no currículo da escola'], ['educação midiática no currículo', 'D7', 'Inclusão de atividades sobre educação midiática e uso crítico das mídias no currículo da escola']],
-      um: 'o tema mais discutido', varios: 'os temas mais discutidos', val: 'discutiram esse tema', base: 'Temas discutidos em reuniões sobre tecnologia nos últimos 12 meses.' },
+      um: 'o tema mais discutido', varios: 'os temas mais discutidos', val: 'discutiram esse tema', focoTxt: (l) => 'discutiram ' + l, base: 'Temas discutidos em reuniões sobre tecnologia nos últimos 12 meses.' },
     { nome: 'Professores sabem usar tecnologia nas aulas', sec: 'blue', ds: 'gestores', card: 'card-percepcao', pessoa: true, kw: /professor.*(sabem|habilidade|preparad|capacit)|(habilidade|preparad|capacit).*professor/,
       ind: 'D8', grupo: 'Os professores da escola possuem habilidades para integrar tecnologias digitais às atividades educacionais', resp: 'Concorda', txt: 'gestores concordam que os professores têm habilidade para integrar a tecnologia às aulas' },
     { nome: 'A tecnologia está integrada ao ensino?', sec: 'blue', ds: 'gestores', card: 'card-percepcao', ranking: true, pessoa: true, kw: /integrad|curriculo|projeto politico|pedagogic/,
@@ -174,21 +177,115 @@
       foco: [[/especializacao|pos.?grad/, 0], [/mestrado|mestres?\b/, 1], [/doutorado|doutor/, 2]], focoTxt: (l) => 'têm ' + l },
     { nome: 'Tempo na direção', sec: 'blue', ds: 'gestores', card: 'card-tempo', ranking: true, pessoa: true, kw: /tempo (na|de) dire|ha quanto tempo|quanto tempo|experiencia|anos (na|de) dire|veteran/,
       itens: [['há menos de 1 ano', 'D2', '', 'Há menos de um ano'], ['entre 1 e 2 anos', 'D2', '', 'Entre 1 e 2 anos'], ['entre 3 e 5 anos', 'D2', '', 'Entre 3 e 5 anos'], ['entre 6 e 10 anos', 'D2', '', 'Entre 6 e 10 anos'], ['há mais de 10 anos', 'D2', '', 'Há mais de 10 anos']],
-      um: 'o tempo mais comum na direção', varios: 'os tempos mais comuns', val: 'estão na direção há esse tempo' },
+      um: 'o tempo mais comum na direção', varios: 'os tempos mais comuns', val: 'estão na direção há esse tempo', focoTxt: (l) => 'estão na direção ' + (/^há/.test(l) ? l : 'há ' + l) },
     { nome: 'Função de quem dirige escolas rurais', sec: 'blue', ds: 'gestores', card: 'card-funcao', ranking: true, pessoa: true, kw: /funca|cargo|quem dirige|vice|coordenador|supervisor/,
       itens: [['diretor ou diretora', 'D1', '', 'Diretor ou diretora'], ['vice-diretor ou vice-diretora', 'D1', '', 'Vice-diretor ou vice-diretora'], ['professor ou professora', 'D1', '', 'Professor ou professora'],
         ['coordenador ou coordenadora', 'D1', '', 'Coordenador ou coordenadora'], ['supervisor ou supervisora', 'D1', '', 'Supervisor ou supervisora'], ['outra função', 'D1', '', 'Outra função']],
       um: 'a função mais comum', varios: 'as funções mais comuns', val: 'têm essa função', base: 'Só nas escolas rurais: a pesquisa pergunta a função de quem responde pela escola.' },
     { nome: 'Idade dos gestores', sec: 'blue', ds: 'gestores', card: 'card-idade', ranking: true, pessoa: true, propria: 'FAIXA ETÁRIA', kw: /idade|quantos anos|jovens?|velhos?|faixa etaria|idosos?/,
       itens: [['até 40 anos', 'A2', '', 'Até 40 anos'], ['de 41 a 50 anos', 'A2', '', 'De 41 a 50 anos'], ['51 anos ou mais', 'A2', '', 'De 51 anos ou mais']],
-      um: 'a faixa de idade mais comum', varios: 'as faixas de idade mais comuns', val: 'estão nessa faixa' },
+      um: 'a faixa de idade mais comum', varios: 'as faixas de idade mais comuns', val: 'estão nessa faixa', focoTxt: (l) => 'têm ' + l },
     { nome: 'Cor ou raça dos gestores', sec: 'blue', ds: 'gestores', card: 'card-raca', ranking: true, pessoa: true, propria: 'COR OU RAÇA', kw: /\braca\b|cor ou raca|cor da pele|\bnegr|\bpret[oa]s?\b|\bpard[oa]s?\b|\bbranc[oa]s?\b|\bindigenas?\b|\bamarel[oa]s?\b/,
       itens: [['branca', 'A3', '', 'Branca'], ['preta', 'A3', '', 'Preta'], ['parda', 'A3', '', 'Parda'], ['amarela', 'A3', '', 'Amarela'], ['indígena', 'A3', '', 'Indígena']],
-      um: 'a cor ou raça mais comum', varios: 'as mais comuns', val: 'se declaram dessa cor ou raça' },
+      um: 'a cor ou raça mais comum', varios: 'as mais comuns', val: 'se declaram dessa cor ou raça', focoTxt: (l) => 'se declaram de cor ' + l },
     { nome: 'Gestoras mulheres', sec: 'blue', ds: 'gestores', card: 'card-sexo', pessoa: true, propria: 'SEXO', kw: /mulher|gestoras|diretoras|\bsexo\b|homens/, ind: 'A1', resp: 'Feminino', txt: 'gestores escolares são mulheres' }
   ];
-  // na ordem em que aparecem; temas de capítulos diferentes lado a lado, para os marcadores não repetirem a cor
-  const EXEMPLOS = ['Qual o meio de comunicação mais usado no Nordeste?', 'Quantas escolas rurais têm internet?', 'Quantos gestores usam IA no Sul?', 'Qual região tem menos escolas com internet?', 'Para que os gestores usam IA?'];
+  // ---------- perguntas prontas: geradas dos dados, para cobrir tudo o que o painel deixa escolher ----------
+  // 1) cada tema no Brasil; 2) cada tema em cada grupo que as tabelas publicam (o mesmo filtro do painel);
+  // 3) cada comparação do "Compare grupos" (indicadores de window.__MEAS, do painel.js) por cada tipo de grupo.
+  // Só entra a pergunta que tem resposta nas tabelas. A caixa sorteia MOSTRA delas a cada visita e mostra as que cabem em LINHAS linhas.
+  const MOSTRA = 24, LINHAS = 3; // sorteia de sobra: as curtas preenchem o fim das linhas
+  const POR_TEMA = 2, MIN_TEMAS = 4; // no máximo 2 perguntas do mesmo tema; o que aparece cobre pelo menos 4 temas (ou, se couberem menos de 4 perguntas, como no celular, todas de temas diferentes)
+  const COTA = { brasil: 2, compara: 2, grupo: 4 }; // a amostra mistura os três tipos
+  // temas em ranking: o que a pergunta quer saber (sem o grupo)
+  const CAUDA = {
+    'Motivos para não ter internet': 'qual o motivo mais citado para não ter internet', 'Problemas com a internet': 'qual o problema mais frequente com a internet',
+    'Velocidade da internet': 'qual a velocidade de internet mais comum', 'Tipo de conexão': 'qual o tipo de conexão mais usado',
+    'Alunos por computador': 'quantos alunos costumam dividir cada computador', 'Tipos de computador': 'qual o tipo de computador mais comum',
+    'Última compra de equipamentos': 'há quanto tempo foi a última compra ou doação de computadores', 'Para que os gestores usam IA': 'para que a IA é mais usada na gestão',
+    'Onde a IA ajudou': 'em que a IA mais ajudou', 'Temas das reuniões': 'qual tema mais apareceu nas reuniões',
+    'A tecnologia está integrada ao ensino?': 'a tecnologia está integrada ao ensino', 'Comunicação': 'qual o meio de comunicação mais usado',
+    'Redes sociais': 'qual a rede social mais usada', 'Formação dos gestores': 'qual a formação mais comum além da graduação',
+    'Tempo na direção': 'há quanto tempo estão na direção', 'Função de quem dirige escolas rurais': 'qual a função de quem dirige as escolas rurais',
+    'Idade dos gestores': 'qual a faixa de idade mais comum', 'Cor ou raça dos gestores': 'qual a cor ou raça mais comum'
+  };
+  // frases mais curtas para o botão (a resposta continua a do tema): temas cujo texto completo deixaria a pergunta longa demais
+  const PRED = { 'Reuniões com professores sobre tecnologia': 'reuniram professores sobre tecnologia', 'Reuniões com as famílias sobre tecnologia': 'reuniram as famílias sobre tecnologia',
+    'Professores sabem usar tecnologia nas aulas': 'acham que os professores sabem usar tecnologia', 'Gestores que usam IA': 'usam IA na gestão',
+    'Computador e internet para os alunos': 'dão computador e internet aos alunos', 'Internet para os alunos': 'dão internet aos alunos' };
+  // de quem a pergunta fala: "escolas rurais", "gestoras", "gestores da região Sul", "gestores das escolas particulares"
+  const sujeitoDe = (t, cat, seg) => {
+    if (t.ds === 'escolas') return cat ? nomeGrupo(cat, seg) : 'escolas';
+    if (!cat) return 'gestores';
+    if (cat === 'SEXO') return seg === 'Feminino' ? 'gestoras' : 'gestores homens';
+    if (SO_GESTOR.includes(cat)) return nomeGrupo(cat, seg);
+    return cat === 'REGIÃO' ? 'gestores da região ' + seg : 'gestores das ' + nomeGrupo(cat, seg);
+  };
+  const maiuscula = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const textoDe = (t, cat, seg) => {
+    const S = sujeitoDe(t, cat, seg), fem = /^(escolas|gestoras)/.test(S), art = fem ? 'as' : 'os';
+    if (t.ranking) return maiuscula('entre ' + art + ' ' + S + ', ' + (CAUDA[t.nome] || 'qual é ' + t.um) + '?');
+    if (t.nome === 'Fibra ótica') return 'Entre ' + art + ' ' + S + ' com internet, quantas estão conectadas por fibra ótica?';
+    return (fem ? 'Quantas ' : 'Quantos ') + S + ' ' + (PRED[t.nome] || t.txt.replace(/^(escolas|gestores escolares|gestores) /, '')) + '?';
+  };
+  // comparações: "Escolas com internet: qual região tem a maior parcela?"
+  // comparações, curtas: "Escolas com internet: qual região tem mais?"
+  const DIMQ = { 'REGIÃO': 'qual região tem mais?', 'ÁREA': 'urbanas ou rurais?', 'LOCALIZAÇÃO': 'capitais ou interior?', 'DEPENDÊNCIA ADMINISTRATIVA': 'qual rede tem mais?',
+    'PORTE': 'qual tamanho de escola tem mais?', 'NÍVEL DE ENSINO MAIS ELEVADO OFERTADO': 'qual nível de ensino tem mais?', 'SEXO': 'homens ou mulheres?', 'FAIXA ETÁRIA': 'qual idade tem mais?', 'COR OU RAÇA': 'qual cor ou raça tem mais?' };
+  const textoCompara = (rot, cat) => maiuscula(rot) + ': ' + DIMQ[cat];
+  // tamanho: até MAX_CARS caracteres entram; acima de LONGA a pergunta é longa, e no máximo MAX_LONGAS aparecem juntas.
+  // Numa caixa de LARGA px ou mais (computador), no máximo 1 linha pode ter menos de 3 perguntas.
+  const MAX_CARS = 70, LONGA = 48, MAX_LONGAS = 2, LARGA = 700;
+  // indicador do Compare que é um item de ranking (ex.: mestrado): vira um tema de um número só, com a frase dele
+  const TXT_ITEM = { pos: 'gestores têm especialização ou pós-graduação', mestrado: 'gestores têm mestrado', veteranos: 'gestores estão há mais de 10 anos na direção da escola', jovens: 'gestores têm até 40 anos' };
+  const temaDaMedida = (m) => {
+    const t = TEMAS.find((x) => !x.ranking && x.ds === m.ds && x.ind === m.ind && (x.resp || 'Sim') === m.resp && (x.grupo || '') === (m.grupo || ''));
+    if (t) return t;
+    const base = TEMAS.find((x) => x.ranking && x.ds === m.ds && x.itens.some((it) => it[1] === m.ind));
+    return base && TXT_ITEM[m.id] ? Object.assign({}, base, { ranking: false, nome: m.label, ind: m.ind, grupo: m.grupo || '', resp: m.resp, txt: TXT_ITEM[m.id], txtG: undefined }) : null;
+  };
+  // capítulos do painel (as cores): toda amostra tem pelo menos uma pergunta de cada
+  const CAPS = ['Escolas · Conexão', 'Escolas · Equipamentos', 'Escolas · Regras, IA e proteção de dados', 'Escolas · Comunicação',
+    'Gestores · Quem são os gestores', 'Gestores · Tecnologia na gestão', 'Gestores · Inteligência artificial'];
+  const capDe = (t) => t.ds === 'escolas' ? 'Escolas · ' + { teal: 'Conexão', orange: 'Equipamentos', purple: 'Regras, IA e proteção de dados', pink: 'Comunicação' }[t.sec]
+    : t.sec === 'purple' ? 'Gestores · Inteligência artificial' : /card-(reunioes|temas|percepcao)/.test(t.card) ? 'Gestores · Tecnologia na gestão' : 'Gestores · Quem são os gestores';
+  let prontasP = null;
+  const prontas = () => prontasP || (prontasP = (async () => {
+    const R = { escolas: await dados('escolas'), gestores: await dados('gestores') }, lista = [];
+    const segsDe = (rows, cat) => [...new Set(rows.filter((r) => r.cat === cat).map((r) => r.seg))].filter((s) => s !== 'Total' && s !== 'Não respondeu');
+    const tipos = (t) => Object.keys(NOME_TIPO).filter((c) => c !== t.propria && (t.ds === 'gestores' || !SO_GESTOR.includes(c)));
+    for (const t of TEMAS) {
+      const rows = R[t.ds]; if (!rows) continue;
+      const tem = (cat, seg) => t.ranking ? t.itens.some(([, ind, g, resp = 'Sim']) => valor(rows, ind, g, resp, cat, seg)) : !!linha(rows, t.ind, t.grupo || '', t.resp || 'Sim', cat, seg);
+      if (tem()) lista.push({ txt: textoDe(t), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'brasil', faz: () => responde(t, null, null) });
+      for (const cat of tipos(t)) for (const seg of segsDe(rows, cat))
+        if (tem(cat, seg)) lista.push({ txt: textoDe(t, cat, seg), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'grupo', faz: () => responde(t, cat, seg) });
+      // 4) cada item de um ranking que tem frase própria (focoTxt): "Quantas escolas usam WhatsApp?", nos grupos e comparado
+      if (t.ranking && t.focoTxt) t.itens.forEach(([l, ind, g, resp = 'Sim'], i) => {
+        const ft = t.focoTxt(l); if (!ft || /não sabem|outra função/.test(l)) return;
+        // item que já é um indicador do Compare (ex.: mestrado): a comparação já vem de lá
+        const jaNoCompare = (window.__MEAS || []).some((m) => m.ds === t.ds && m.ind === ind && (m.grupo || '') === g && (m.resp || 'Sim') === resp);
+        const temI = (cat, seg) => !!valor(rows, ind, g, resp, cat, seg), base = { sec: t.sec, tema: t.nome, cap: capDe(t) };
+        const txtI = (cat, seg) => { const S = sujeitoDe(t, cat, seg); return (/^(escolas|gestoras)/.test(S) ? 'Quantas ' : 'Quantos ') + S + ' ' + ft + '?'; };
+        if (temI()) lista.push(Object.assign({ txt: t.focoQ ? t.focoQ(l) : txtI(), tipo: 'brasil', faz: () => responde(t, null, null, i) }, base));
+        if (t.focoQ) return; // a base é outra (ex.: só quem usa IA): fica só a pergunta do Brasil
+        for (const cat of tipos(t)) {
+          const segs = segsDe(rows, cat).filter((seg) => temI(cat, seg));
+          segs.forEach((seg) => lista.push(Object.assign({ txt: txtI(cat, seg), tipo: 'grupo', faz: () => responde(t, cat, seg, i) }, base)));
+          if (!jaNoCompare && segs.filter((seg) => !/^Públicas/.test(seg)).length >= 2)
+            lista.push(Object.assign({ txt: textoCompara((t.ds === 'escolas' ? 'escolas que ' : 'gestores que ') + ft, cat), tipo: 'compara', faz: () => compara(t, cat, '', '', null, i) }, base));
+        }
+      });
+    }
+    for (const m of window.__MEAS || []) {
+      const t = temaDaMedida(m), rows = t && R[t.ds]; if (!rows) continue;
+      for (const cat of tipos(t)) {
+        const n = segsDe(rows, cat).filter((s) => !/^Públicas/.test(s) && valor(rows, t.ind, t.grupo || '', t.resp || 'Sim', cat, s)).length;
+        if (n >= 2) lista.push({ txt: textoCompara(m.label, cat), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'compara', faz: () => compara(t, cat, '', '') });
+      }
+    }
+    const vistos = new Set(); return lista.filter((q) => !vistos.has(q.txt) && vistos.add(q.txt));
+  })());
 
   // ---------- dados: os mesmos que o painel carrega (dash.data baixa na primeira vez) ----------
   const dados = (ds) => new Promise((ok) => {
@@ -261,7 +358,7 @@
   const sujeito = (t) => t.ds === 'gestores' ? 'gestores ' : 'escolas ';
   const semDado = (t, cat, seg, c) => { c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">A pesquisa não tem esse número para esse grupo.</p>'; c.append(rodape(t)); return c; };
 
-  const responde = async (t, cat, seg) => {
+  const responde = async (t, cat, seg, fi) => {
     const c = cartao(t), rows = await dados(t.ds), q = quem(t, cat, seg);
     if (!rows) { c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">Não foi possível carregar os dados. Verifique a conexão e tente de novo.</p>'; return c; }
     if (t.ranking) {
@@ -269,13 +366,14 @@
       if (!its.length) return semDado(t, cat, seg, c);
       const cem = its.some((x) => precisaCem(x.r.pct)), L = (x) => t.aspas ? '“' + x.l + '”' : x.l;
       // a pergunta cita um item (ex.: "mestrado", "Instagram"): a frase fala dele, e a lista mostra o resto
-      const f = t.foco && t.foco.find(([re]) => re.test(pergunta.ultima || '')), alvo = f && its.find((x) => x.l === t.itens[f[1]][0]);
+      const f = fi != null ? [null, fi] : t.foco && t.foco.find(([re]) => re.test(pergunta.ultima || '')), alvo = f && its.find((x) => x.l === t.itens[f[1]][0]);
       // "o menos usado", "a faixa menos comum": a mesma resposta, olhando a outra ponta da lista
       const menos = MENOS.test(pergunta.ultima || ''), ponta = menos ? its.slice().reverse() : its;
       const um = menos ? t.um.replace(/\bmais\b/, 'menos') : t.um, varios = menos ? t.varios.replace(/\bmais\b/, 'menos') : t.varios;
       const [a, b] = alvo ? [alvo] : ponta, n = freq(a.r.pct, cem);
       const empate = b && (menos ? !separa(b.r, a.r) : !separa(a.r, b.r));
-      const frase = alvo ? q + ', ' + grifo(n) + ' ' + (cat ? '' : sujeito(t)) + verbo1(n, t.focoTxt(a.l)) + '.'
+      const fq = fi != null && t.focoQuem; // a pergunta pronta já diz de quem se fala (ex.: só quem usa IA)
+      const frase = alvo ? (fq || q) + ', ' + grifo(n) + ' ' + (cat || fq ? '' : sujeito(t)) + verbo1(n, t.focoTxt(a.l)) + '.'
         : empate
           ? q + ', ' + varios + ' são <strong>' + L(a) + '</strong> e <strong>' + L(b) + '</strong>: com a margem de erro, não dá para dizer qual vem ' + (menos ? 'por último' : 'primeiro') + '.'
           : q + ', ' + um + ' é <strong>' + L(a) + '</strong>: ' + grifo(n) + ' ' + (cat ? '' : sujeito(t)) + verbo1(n, t.val) + '.';
@@ -301,14 +399,14 @@
   };
 
   // compara todos os grupos de um tipo (ex.: as 5 regiões) para um indicador, com a regra das margens
-  const compara = async (t, cat, q, aviso, so) => {
+  const compara = async (t, cat, q, aviso, so, fi) => {
     const c = cartao(t), rows = await dados(t.ds);
     const ent = cabeca(t, 'Comparar: ' + NOME_TIPO[cat]);
     if (!rows) { c.innerHTML = ent + '<p class="tg-perg-frase">Não foi possível carregar os dados. Verifique a conexão e tente de novo.</p>'; return c; }
     // o que comparar: o indicador do tema, ou o item citado de um ranking ("qual região mais usa WhatsApp")
     let ind = t.ind, grupo = t.grupo || '', resp = t.resp || 'Sim', txt = cat ? (t.txtG || (t.txt || '').replace(/^(escolas|gestores escolares|gestores) /, '')) : t.txt;
     if (t.ranking) {
-      const f = t.foco && t.foco.find(([re]) => re.test(q));
+      const f = fi != null ? [null, fi] : t.foco && t.foco.find(([re]) => re.test(q));
       if (!f) {
         c.innerHTML = ent + '<p class="tg-perg-frase">Para comparar os grupos, diga qual item: por exemplo, "' + (t.nome === 'Comunicação' ? 'qual região mais usa WhatsApp?' : 'qual região tem mais \u201c' + t.itens[0][0] + '\u201d?') + '"</p>' +
           '<p class="tg-perg-var">Itens deste tema: ' + t.itens.map((x) => x[0]).join(', ') + '.</p>';
@@ -431,55 +529,126 @@
     for (const c of await Promise.all((gs.length ? gs.slice(0, 3) : [[null, null]]).map(([c, s]) => responde(t, c, s)))) saida.append(c);
   };
   // para a bateria de testes (testes/pergunte.html): os temas e os tipos de grupo
-  window.__perg = { TEMAS, DIMS, GRUPOS, SO_GESTOR };
+  window.__perg = { TEMAS, DIMS, GRUPOS, SO_GESTOR, prontas };
   // para testes no console: window.__pergunte('quantas escolas rurais têm internet?')
   window.__perguntaEl = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => (explicaTermos(d), d)); };
   window.__pergunte = (txt) => { const d = document.createElement('div'); return pergunta(txt, d).then(() => explicaTermos(d)).then(() => [...d.querySelectorAll('.tg-perg-entendi, .tg-perg-tema, .tg-perg-frase, .tg-perg-var, .tg-perg-base')].map((e) => e.textContent).join(' | ')); };
 
-  // ---------- a caixa (a mesma no Início e na janela) ----------
+  // ---------- a caixa (a mesma no Início e na janela): só perguntas prontas, sem texto livre ----------
   let n = 0;
   const caixa = (alvo, titulo) => {
     const id = 'perg-' + (++n);
-    const form = el('form', 'tg-perg-caixa'); form.setAttribute('role', 'search');
-    form.innerHTML = '<label class="tg-perg-tit" for="' + id + '">' + titulo + '</label>' +
-      '<p class="tg-perg-dica" id="' + id + '-dica">Escreva do seu jeito, com ou sem um grupo: uma região, escolas rurais, gestoras…</p>' +
-      '<div class="tg-perg-linha"><input id="' + id + '" type="search" autocomplete="off" enterkeyhint="search" aria-describedby="' + id + '-dica" placeholder="Ex.: qual o meio de comunicação mais usado no Nordeste?">' +
-      '<button type="submit" class="tg-etq">Perguntar</button></div><div class="tg-perg-ex"><span class="tg-perg-ex-lab">Experimente</span></div>';
+    const box = el('div', 'tg-perg-caixa'); box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', id + '-tit');
+    box.innerHTML = '<p class="tg-perg-tit" id="' + id + '-tit">' + titulo + '</p>' +
+      '<p class="tg-perg-dica">Toque em uma pergunta para ver a resposta da pesquisa.</p><ul class="tg-perg-ex"></ul>';
     const saida = el('div', 'tg-perg-saida'); saida.setAttribute('aria-live', 'polite');
-    const inp = form.querySelector('input'), ex = form.querySelector('.tg-perg-ex');
-    // depois de uma resposta das palavras-chave, "Não era isso?" pede à IA para reescrever a pergunta
-    const faz = async (txt) => {
-      const p = pergunta(txt, saida), vez = saida.dataset.vez;
-      await p;
-      if (saida.dataset.vez === vez) explicaTermos(saida);
-      if (saida.dataset.vez !== vez || !iaLigada() || saida.querySelector('.tg-perg-ia') || !saida.querySelector('.tg-perg-entendi')) return;
-      const b = el('button', 'tg-perg-ir tg-perg-outro', 'Não era isso? Tentar entender de outro jeito'); b.type = 'button';
-      b.addEventListener('click', async () => {
-        b.disabled = true; b.textContent = 'Tentando entender de outro jeito…';
-        const nova = await reescreve(txt);
-        if (saida.dataset.vez !== vez) return;
-        // o botão some com a nova resposta: o foco vai para o começo dela, para quem usa teclado ou leitor de tela não voltar ao topo da página (WCAG 2.4.3)
-        const foca = (x) => { if (x) { x.tabIndex = -1; x.focus({ preventScroll: false }); } };
-        if (mudou(txt, nova)) { await pergunta(nova, saida, txt); explicaTermos(saida); foca(saida.firstElementChild); }
-        else { const p = el('p', 'tg-perg-var', 'Não achei outro jeito de entender. Tente escrever com outras palavras.'); b.replaceWith(p); foca(p); }
-      });
-      saida.append(b);
+    const ex = box.querySelector('.tg-perg-ex');
+    const faz = async (q) => {
+      const vez = saida.dataset.vez = String(++vezes); pergunta.ultima = ''; // nada da última pergunta escrita interfere
+      const res = await q.faz();
+      if (saida.dataset.vez !== vez) return; // o leitor já tocou outra pergunta
+      saida.replaceChildren(res); explicaTermos(saida);
     };
-    form.addEventListener('submit', (e) => { e.preventDefault(); if (inp.value.trim()) faz(inp.value); });
-    // exemplos como marcadores de página (os do "Ir para"), na cor do capítulo do tema que cada um pergunta
-    EXEMPLOS.forEach((t) => {
-      const b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = t;
-      const tema = TEMAS.find((x) => x.kw.test(' ' + sem(t) + ' ')); if (tema) b.style.setProperty('--sec', 'var(--v-' + tema.sec + ')');
-      b.addEventListener('click', () => { inp.value = t; faz(t); }); ex.append(b);
+    // perguntas como marcadores de página (os do "Ir para"), na cor do capítulo do tema que cada uma pergunta
+    let listaAtual = null, ordemAtual = [], melhor = null, tentativas = 0;
+    const mostra = (lista) => {
+      listaAtual = lista;
+      // sorteia MOSTRA perguntas, misturando os tipos (COTA), no máximo 2 por cor de capítulo
+      // e no máximo POR_TEMA do mesmo tema, e evita duas cores iguais lado a lado
+      // e no máximo MAX_LONGAS perguntas longas (mais de LONGA caracteres), para os tamanhos variarem sem encher a caixa
+      const porT = {}; embaralha(lista).forEach((x) => (porT[x.tema] = porT[x.tema] || []).push(x));
+      const filas = embaralha(Object.values(porT)), todas = [];
+      while (filas.some((q) => q.length)) filas.forEach((q) => { if (q.length) todas.push(q.shift()); });
+      const cota = Object.assign({}, COTA), conta = {}, porTema = {}, sorte = [];
+      let longas = 0;
+      const cabeTema = (x) => (porTema[x.tema] || 0) < POR_TEMA && (x.txt.length <= LONGA || longas < MAX_LONGAS);
+      const pega = (x) => { sorte.push(x); conta[x.sec] = (conta[x.sec] || 0) + 1; porTema[x.tema] = (porTema[x.tema] || 0) + 1; if (x.txt.length > LONGA) longas++; if (cota[x.tipo] > 0) cota[x.tipo]--; };
+      // 1) uma pergunta de cada capítulo. Os capítulos com menos perguntas curtas escolhem primeiro,
+      //    para as poucas longas permitidas irem para quem não tem opção curta (ex.: Tecnologia na gestão)
+      const curtasDe = (c) => todas.filter((x) => x.cap === c && x.txt.length <= LONGA).length;
+      const caps = embaralha(CAPS).sort((a, b) => curtasDe(a) - curtasDe(b));
+      for (const c of caps) { const x = todas.find((y) => y.cap === c && cabeTema(y)); if (x) pega(x); }
+      const doCap = sorte.slice();
+      // 2) o resto, misturando os tipos (COTA) e no máximo 2 por cor
+      for (const x of todas) if (sorte.length < MOSTRA && !sorte.includes(x) && cota[x.tipo] > 0 && (conta[x.sec] || 0) < 2 && cabeTema(x)) pega(x);
+      for (const x of todas) if (sorte.length < MOSTRA && !sorte.includes(x) && cabeTema(x)) pega(x);
+      // ordem: primeiro as de cada capítulo (o corte das 3 linhas tira do fim), depois o resto;
+      // dentro de cada parte, sempre da cor que mais sobra, sem repetir a anterior
+      const ordem = [];
+      const ordena = (parte) => {
+        for (let k = 0; k < 80; k++) { // primeiro tenta uma ordem ao acaso que não repita cor
+          const p = embaralha(parte), ult = ordem.length && ordem[ordem.length - 1].sec;
+          if (p[0].sec !== ult && p.every((x, j) => !j || x.sec !== p[j - 1].sec)) { ordem.push(...p); return; }
+        }
+        parte = embaralha(parte); // não deu: a regra antiga (a cor que mais sobra), com empates ao acaso
+        while (parte.length) {
+          const ult = ordem.length && ordem[ordem.length - 1].sec, n = (s) => parte.filter((x) => x.sec === s).length;
+          const cands = parte.filter((x) => x.sec !== ult), pool = cands.length ? cands : parte;
+          const prox = pool.reduce((a, x) => (n(x.sec) > n(a.sec) ? x : a), pool[0]);
+          ordem.push(parte.splice(parte.indexOf(prox), 1)[0]);
+        }
+      };
+      ordena(doCap); ordena(sorte.filter((x) => !ordem.includes(x)));
+      desenha(ordem);
+    };
+    const desenha = (ordem, final) => {
+      ordemAtual = ordem;
+      ex.replaceChildren(...ordem.map((q) => {
+        const li = el('li'), b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = q.txt; b.setAttribute('aria-pressed', 'false'); li.dataset.tema = q.tema; li.dataset.cap = q.cap; if (q.txt.length > LONGA) li.dataset.longa = '';
+        if (q.sec) b.style.setProperty('--sec', 'var(--v-' + q.sec + ')');
+        b.addEventListener('click', () => {
+          ex.querySelectorAll('.tg-perg-chip').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+          faz(q);
+        });
+        li.append(b); return li;
+      }));
+      corta(final);
+    };
+    // no máximo LINHAS linhas de perguntas: as que passariam disso ficam escondidas. Medido na tela,
+    // então vale em qualquer largura; refeito quando a largura muda (e quando a janela de Escolas/Gestores abre)
+    // uma a uma, na ordem: a pergunta que cairia na 4ª linha sai, e uma mais curta depois dela ainda pode caber
+    const corta = (final) => {
+      const lis = [...ex.children]; lis.forEach((li) => { li.hidden = false; });
+      if (!ex.offsetWidth) return; // escondida (janela fechada): mede quando aparecer
+      const linhasAte = (k) => new Set(lis.slice(0, k + 1).filter((li) => !li.hidden).map((li) => Math.round(li.getBoundingClientRect().bottom))).size; // a lista alinha pela base (align-items:flex-end)
+      // caixa estreita (celular): as longas ficam de fora, porque quebrariam em várias linhas
+      if (ex.offsetWidth < LARGA) lis.forEach((li) => { if ('longa' in li.dataset) li.hidden = true; });
+      lis.forEach((li, k) => { if (!li.hidden && linhasAte(k) > LINHAS) li.hidden = true; });
+      // o que ficou visível precisa ter pelo menos MIN_TEMAS temas diferentes (ou todas diferentes, se couberem menos)
+      // e, numa caixa larga (computador), no máximo 1 linha com menos de 3 perguntas; se não, sorteia de novo (com limite de tentativas)
+      // e todos os capítulos à vista (no celular, onde cabem menos, todas de capítulos diferentes)
+      const vis = lis.filter((li) => !li.hidden), temas = new Set(vis.map((li) => li.dataset.tema)), caps = new Set(vis.map((li) => li.dataset.cap));
+      const porLinha = {}; vis.forEach((li) => { const b = Math.round(li.getBoundingClientRect().bottom); porLinha[b] = (porLinha[b] || 0) + 1; });
+      const ralas = ex.offsetWidth >= LARGA ? Object.values(porLinha).filter((n) => n < 3).length : 0;
+      const precisaCaps = Math.min(CAPS.length, vis.length), precisaTemas = Math.min(MIN_TEMAS, vis.length);
+      const ok = caps.size >= precisaCaps && temas.size >= precisaTemas && ralas <= 1;
+      if (ok || final || !listaAtual) { tentativas = 0; melhor = null; return; }
+      // nem sempre dá para cumprir tudo (caixa mais estreita): guarda o melhor sorteio, nesta ordem de prioridade:
+      // todos os capítulos, depois os temas, depois as linhas cheias, depois mais perguntas
+      const nota = Math.min(caps.size, precisaCaps) * 1000 + Math.min(temas.size, precisaTemas) * 100 - Math.min(ralas, 3) * 10 + vis.length;
+      if (!melhor || nota > melhor.nota) melhor = { nota, ordem: ordemAtual };
+      if (tentativas++ < 60) mostra(listaAtual);
+      else { const m = melhor; tentativas = 0; melhor = null; desenha(m.ordem, true); }
+    };
+    // as fontes do site podem chegar depois da primeira medida e alargar as perguntas: mede de novo
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(() => corta()); document.fonts.addEventListener('loadingdone', () => corta()); }
+    if (window.ResizeObserver) { let w = -1; new ResizeObserver(([e]) => { const nw = Math.round(e.contentRect.width); if (nw !== w) { w = nw; corta(); } }).observe(ex); }
+    // as perguntas saem dos dados: enquanto eles carregam, a lista avisa
+    ex.append(el('li', 'tg-perg-var', 'Carregando perguntas…'));
+    prontas().then((lista) => {
+      const curtas = lista.filter((q) => q.txt.length <= MAX_CARS);
+      if (!curtas.length) { ex.replaceChildren(el('li', 'tg-perg-var', 'Não foi possível carregar as perguntas. Verifique a conexão e recarregue a página.')); return; }
+      mostra(curtas);
     });
-    alvo.append(form, saida);
-    return inp;
+    alvo.append(box, saida);
+    return { focus: () => (ex.querySelector('.tg-perg-chip') || ex).focus() };
   };
+  const embaralha = (a) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 
   const monta = () => {
     // Início: aberta, logo depois da capa
     const ini = document.getElementById('pergunte');
-    if (ini) caixa(ini, 'Faça uma pergunta, a pesquisa responde');
+    if (ini) caixa(ini, 'Escolha uma pergunta, a pesquisa responde');
     // Escolas e Gestores: botão "Perguntar" ao lado de "Como ler este painel", abrindo uma janela
     const guiaBtn = document.querySelector('#topo .tg-guide-btn'), guia = document.getElementById('como-ler');
     if (!guiaBtn || !guia) return;

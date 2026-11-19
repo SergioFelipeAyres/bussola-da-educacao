@@ -27,8 +27,8 @@ com margem, lições numeradas, marca-texto e uma pergunta "Para pensar" no fim 
 ## Estrutura
 
 ```
-index.html              página (o site inteiro; as abas abrem em /, /escolas, /gestores e /sobre)
-escolas.html, gestores.html, sobre.html
+index.html              página (o site inteiro; as abas abrem em /, /escolas, /gestores, /sobre e /acessibilidade)
+escolas.html, gestores.html, sobre.html, acessibilidade.html
                         páginas de entrada dos endereços /escolas etc.: só abrem a aba certa do index.html
 src/site.css            entrada do Tailwind: paleta (@theme) e famílias de fonte
 src/painel.css          estilos do painel (gráficos, filtro, cartões, escala de texto)
