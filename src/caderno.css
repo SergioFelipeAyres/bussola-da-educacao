@@ -86,10 +86,11 @@ body{background-color:var(--color-bg)}
 @media (min-width:60.0625em) and (max-width:68em){.nav-link{padding-inline:.55rem}}
 
 /* ---------- marca-texto: grifo amarelo atrás da palavra (o texto continua em tinta) ---------- */
-.tg-hero-title span span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
+.tg-hero-title span span,.tg-title .tg-marca,.tg-hero-text .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
   color:var(--color-fg);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-inline:.08em;
   background:linear-gradient(100deg,transparent .15em,var(--marca-texto) .25em calc(100% - .15em),transparent calc(100% - .05em)) 0 68%/100% 52% no-repeat}
-.tg-head .tg-take b,.tg-mapa-txt b{font-weight:800}
+.tg-head .tg-take b,.tg-mapa-txt b,.tg-hero-text .tg-marca{font-weight:800}
+.tg-hero-text .tg-marca{white-space:nowrap} /* o nome da pesquisa não quebra no meio */
 /* texto sobre amarelo (marca-texto ou post-it) é sempre Tinta: as cores de tema ficam abaixo de 4.5:1 no amarelo (teal e laranja chegam a 2.9:1) */
 .tg .tg-mapa-txt b,.tg .tg-hero-home .tg-fact-txt b{color:var(--color-fg)}
 .tg .tg-mapa-txt b{display:table;background:none;padding:0;font:800 1.45em/1.15 var(--font-display);letter-spacing:-.02em}
