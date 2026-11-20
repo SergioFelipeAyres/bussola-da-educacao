@@ -2,10 +2,11 @@
   "name": "bussola-da-educacao",
   "private": true,
   "license": "SEE LICENSE IN LICENSE.md",
-  "description": "Só para compilar o CSS (Tailwind). O site em si não tem etapa de build: css/site.css vai versionado.",
+  "description": "Só para compilar o CSS (Tailwind) e carimbar a versão dos arquivos nas páginas. O site em si não tem etapa de build: css/site.css vai versionado.",
   "scripts": {
-    "css": "tailwindcss -i src/site.css -o css/site.css --minify",
-    "css:watch": "tailwindcss -i src/site.css -o css/site.css --watch"
+    "css": "tailwindcss -i src/site.css -o css/site.css --minify && node scripts/versao.js",
+    "css:watch": "tailwindcss -i src/site.css -o css/site.css --watch",
+    "versao": "node scripts/versao.js"
   },
   "devDependencies": {
     "@tailwindcss/cli": "4.1.13",

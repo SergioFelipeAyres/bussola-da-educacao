@@ -50,6 +50,7 @@ workers/pergunte-ia/    Worker da Cloudflare: IA que só reescreve perguntas com
 testes/pergunte.html    testes do "Pergunte à Bússola": 80 perguntas, 5 casos da ajuda da IA (com uma IA de mentira) e uma varredura de 634 comparações conferidas contra os dados (abra pelo servidor local)
 js/libras.js            "Ver em Libras": lista dos vídeos com intérprete (sem endereço, o botão mostra "em breve")
 data/*.json             dados em formato longo (uma linha por indicador, recorte e resposta)
+scripts/versao.js       carimba a versão (resumo do conteúdo) no endereço de cada CSS e JS das páginas
 scripts/atualizar_dados.py  converte as tabelas .xlsx do Cetic.br nos arquivos de /data
 DESIGN.md               sistema visual: cores, tipografia, componentes e regras
 PRODUCT.md              público, propósito e compromissos do produto
@@ -82,12 +83,17 @@ O CSS é escrito em `src/` e compilado com o [Tailwind CSS](https://tailwindcss.
 
 ```bash
 npm install
-npm run css         # gera css/site.css uma vez
+npm run css         # gera css/site.css e carimba as versões dos arquivos nas páginas
+npm run versao      # só carimba as versões (depois de mexer só num .js)
 npm run css:watch   # recompila a cada mudança em src/ ou no HTML
 ```
 
 Depois de mudar `src/*.css` (ou classes do Tailwind no HTML), rode `npm run css` e
-versione o `css/site.css` junto. As regras do visual (paleta, tamanhos mínimos de texto,
+versione o `css/site.css` junto. Antes de publicar uma mudança num `.js`, rode `npm run versao`:
+ele põe no endereço de cada CSS e JS do `index.html` e do `404.html` uma versão tirada do conteúdo
+(`js/painel.js?v=1c1e57ff`). Sem isso, quem abriu o site pouco antes da publicação recebe o HTML novo
+com o CSS ou o JS antigo guardado pelo navegador (o GitHub Pages deixa reaproveitar por uns 10 minutos).
+As regras do visual (paleta, tamanhos mínimos de texto,
 contraste) estão no `DESIGN.md`.
 
 ## Publicar no GitHub Pages
