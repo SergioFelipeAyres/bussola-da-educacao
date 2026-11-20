@@ -701,7 +701,7 @@
 
   // ---------- view (navbar) ----------
   // cada aba tem seu endereço: / (início), /escolas, /gestores, /sobre; #âncora continua apontando seções (/escolas#comparar)
-  const VIEWS = ['inicio', 'escolas', 'gestores', 'sobre', 'acessibilidade'];
+  const VIEWS = ['inicio', 'escolas', 'gestores', 'acessibilidade', 'sobre'];
   const DASH = ['escolas', 'gestores'];
   // pasta onde o site está publicado (a raiz no domínio próprio; funciona também numa subpasta)
   const BASE = location.pathname.replace(/(escolas|gestores|sobre|acessibilidade)(\.html)?\/?$|index\.html$/, '').replace(/[^/]*$/, '') || '/';

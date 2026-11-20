@@ -1,0 +1,83 @@
+/* =====================================================================
+   Alto contraste (versão para baixa visão): botão "Alto contraste" no topo (js/contraste.js),
+   guardado no navegador e aplicado antes de a página aparecer (script no <head>).
+   Segue o padrão dos sites do governo (e-MAG): fundo preto, texto branco, links e destaques em amarelo.
+   As cores dos capítulos continuam, em versões claras (acima de 7:1 contra o preto), para os
+   gráficos e as perguntas manterem o código de cores. Pautas, quadriculado e sombras saem.
+   Só troca cores: o desenho é o mesmo.
+   ===================================================================== */
+html[data-contraste]{
+  --hc-amarelo:#ffe600;
+  --color-bg:#000;--color-panel:#000;--color-fg:#fff;--color-fg-muted:#e8e8e8;--color-border-line:#d0d0d0;
+  --v-slate:#c8cede;--v-blue:#8ab4ff;--v-teal:#2fe0c8;--v-orange:#ffa04a;--v-purple:#c9a0ff;--v-pink:#ff7fb8;
+  --v-blue-deep:var(--hc-amarelo);--v-yellow:var(--hc-amarelo);
+  --hero-a:#000;--hero-b:#000;--hero-c:#000;--hero-hi:var(--hc-amarelo);
+  --cds-chart-categorical-1:#8ab4ff;--cds-chart-categorical-2:#ffa04a;--cds-chart-categorical-3:#5be39b;--cds-chart-categorical-4:#c9a0ff;
+  --cds-chart-categorical-5:#ff7fb8;--cds-chart-categorical-6:#5fd4f5;--cds-chart-categorical-7:#e0c560;--cds-chart-categorical-8:#c8cede;
+  --cds-chart-muted:#a6a6a6;--cds-chart-grid:#333;--cds-chart-axis:#d0d0d0;--color-homens:#b8b8b8;--cds-chart-vazio:#d0d0d0;
+  --seq-claro:#d6e2ff;--seq-escuro:#4a6699;--color-positivo:#5be39b;--color-negativo:#ff7a70;
+  --cds-text-secondary:#e8e8e8;--cds-surface-popover:#000;--cds-border:#d0d0d0;
+  --v-shadow:none;--cds-shadow-popover:none;
+  /* o caderno some: sem pautas, quadriculado nem margem rosa */
+  --pautado:none;--quadriculado:none;--pauta-cor:transparent;--margem-cor:transparent;--margem-cor2:transparent;
+  /* grifo amarelo vira texto amarelo (texto branco sobre amarelo não teria contraste) */
+  --marca-texto:transparent;
+  /* tokens do Tailwind (links do texto, seleção) */
+  --color-azul-profundo:var(--hc-amarelo);--color-azul:#8ab4ff;--color-tinta:#fff;--color-papel:#000;--color-painel:#000;--color-cinza:#a6a6a6;
+  color-scheme:dark;
+}
+/* tom de texto do tema: no preto, a cor clara do tema já passa de 7:1 (não escurece) */
+html[data-contraste] .tg,html[data-contraste] .tg *{--sec-texto:var(--sec,var(--v-blue))}
+/* escala sequencial: continua do claro ao escuro (os textos dizem "do tom mais claro ao mais escuro"),
+   mas o tom escuro para antes do preto, para não sumir no fundo (acima de 3:1) */
+html[data-contraste] .tg-sec[id]:not(#perfil),html[data-contraste] .tg-mapa-card{--seq-claro:color-mix(in oklab,var(--sec,var(--v-blue)) 35%,#fff);--seq-escuro:color-mix(in oklab,var(--sec,var(--v-blue)) 62%,#000)}
+
+/* marca: o Azul Noite sumiria no preto; vira branco, e "Educação" fica em Ouro (8:1 no preto) */
+html[data-contraste] .nav-brand b{color:var(--logo-ouro)}
+html[data-contraste] .nav-logo .marca-a{fill:#fff}
+
+/* links e foco em amarelo */
+html[data-contraste] a:not([class]),html[data-contraste] .tg-fim-citar,html[data-contraste] .tg-fact-link{color:var(--hc-amarelo)}
+html[data-contraste] :focus-visible{outline:3px solid var(--hc-amarelo)!important;outline-offset:3px}
+html[data-contraste] ::selection{background:var(--hc-amarelo);color:#000}
+
+/* grifos: o número ou a palavra em amarelo */
+html[data-contraste] :is(.tg-hero-title span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b,.tg-perg-frase .tg-perg-grifo),
+html[data-contraste] .tg .tg-mapa-txt b,html[data-contraste] .tg .tg-hero-home .tg-fact-txt b{color:var(--hc-amarelo)}
+/* aba atual do menu: amarela e sublinhada */
+html[data-contraste] .nav-link[aria-current=page]{color:var(--hc-amarelo);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+html[data-contraste] .nav{background:#000}
+html[data-contraste] .tg::after{display:none} /* furos de fichário */
+
+/* botões cheios (etiquetas, "Pular para o conteúdo"): amarelo com texto preto */
+html[data-contraste] .tg :is(.tg-etq,.tg-hero-home #fato-outro,button.tg-mapa-ir,button.tg-guide-btn,button.tg-guide-volta,button.tg-perg-btn){--etq-bg:var(--hc-amarelo);--etq-fg:#000}
+html[data-contraste] .pular{background:var(--hc-amarelo);color:#000}
+html[data-contraste] .tg .tg-fact-ic,html[data-contraste] .tg-lesson-combo li span{color:#000}
+html[data-contraste] #rec-dims.tg-agrupado button[aria-checked=true]::before{color:#000}
+
+/* "Você sabia?": o post-it vira um quadro de borda amarela */
+html[data-contraste] .tg-hero-home .tg-fact{background:#000;border:2px solid var(--hc-amarelo);rotate:none}
+html[data-contraste] .tg-hero-home .tg-fact::before{display:none}
+html[data-contraste] .tg-hero-home .tg-fact-meta{color:var(--color-fg-muted)}
+
+/* mapa e pictogramas: região clara pede texto preto (a Tinta, aqui, é branca); escura, branco */
+html[data-contraste] :is(.tg-mapa-reg,.tg-mapa-pick).tg-claro text{fill:#000}
+html[data-contraste] .tg-mapa-reg path{stroke:#000;stroke-width:1.4}
+
+/* cartões e marcadores: borda visível em vez de sombra */
+html[data-contraste] :is(.tg-card,.tg-kpi,.tg-filter,.tg-perg-caixa,.tg-perg-res,.tg-porta,.tg-fim-outra){border:1px solid var(--color-border-line)}
+html[data-contraste] .tg :is(.tg-indice a,button.tg-perg-chip){box-shadow:inset 0 5px 0 var(--sec);outline:1px solid color-mix(in srgb,var(--sec) 70%,#000)}
+html[data-contraste] .tg button.tg-perg-chip[aria-pressed=true]{outline:2px solid var(--hc-amarelo)}
+html[data-contraste] :is(.tg-guide,.tg-libras-janela){border:2px solid var(--color-fg)}
+html[data-contraste] :is(.tg-guide,.tg-libras-janela)::backdrop{background:rgba(0,0,0,.8)}
+
+/* ---------- o botão "Alto contraste" (sempre visível no topo, nos dois modos) ---------- */
+.nav-contraste{flex:none;display:inline-flex;align-items:center;gap:.45rem;min-height:2.75rem;padding:.4rem .8rem;border:1px solid var(--color-border-line);border-radius:999px;
+  background:var(--color-panel);color:var(--color-fg);font:500 .875rem/1 var(--font-mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.nav-contraste svg{width:1.25rem;height:1.25rem;flex:none}
+.nav-contraste:hover{border-color:var(--color-fg)}
+.nav-contraste:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
+.nav-contraste[aria-pressed=true]{background:var(--hc-amarelo,#ffe600);border-color:var(--hc-amarelo,#ffe600);color:#000}
+/* celular: só o ícone (o nome continua para o leitor de tela), para o topo não ganhar mais uma linha */
+@media (max-width:35em){.nav-contraste{margin-left:auto;width:2.75rem;justify-content:center;padding:0}
+  .nav-contraste span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}

@@ -33,6 +33,8 @@ escolas.html, gestores.html, sobre.html, acessibilidade.html
 src/site.css            entrada do Tailwind: paleta (@theme) e famílias de fonte
 src/painel.css          estilos do painel (gráficos, filtro, cartões, escala de texto)
 src/caderno.css         a linguagem visual do caderno escolar (folha, lições, marca-texto)
+src/contraste.css       modo alto contraste (baixa visão), ligado pelo botão do topo (js/contraste.js)
+img/marca.svg           a marca (original); img/favicon.svg é o ícone da aba, gerado a partir dela
 css/site.css            CSS compilado a partir de src/ (vai versionado; não editar à mão)
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos

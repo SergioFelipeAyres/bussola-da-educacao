@@ -7,6 +7,8 @@
   --color-bg:#f4f6fb;--color-panel:#ffffff;--color-fg:#1b1d24;--color-fg-muted:#5d6170;--color-border-line:#e2e3ea;
   /* cores dos capítulos (DESIGN.md, regra do Capítulo) e da capa */
   --v-slate:#454d60;--v-blue:#2f5fd0;--v-teal:#0b8a7f;--v-orange:#c95f0e;--v-purple:#591987;--v-pink:#c73674;
+  /* cores do logo: Azul Noite (principal) e Ouro (secundária); o ouro não passa de 3:1 no papel, então nunca é cor de texto no modo normal */
+  --logo-azul:#06234D;--logo-ouro:#D59F18;
   --hero-a:#2448b8;--hero-b:#3b6be6;--hero-c:#591987;--hero-hi:#ffd166;
   /* paleta dos gráficos fora das seções temáticas (dentro delas, a 1 vira a cor do tema; ver o fim do arquivo) */
   --cds-chart-categorical-1:#2f5fd0;--cds-chart-categorical-2:#d4731c;--cds-chart-categorical-3:#2c9a6a;--cds-chart-categorical-4:#8a4fc4;
@@ -289,10 +291,12 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-in{max-width:calc(76rem + 32px);margin-inline:auto;min-height:3.6rem;display:flex;align-items:center;justify-content:space-between;gap:var(--cds-gap-md);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 @media (min-width:56.25em){.nav-in{max-width:calc(76rem + 5rem);padding-left:max(2.5rem,env(safe-area-inset-left,0px));padding-right:max(2.5rem,env(safe-area-inset-right,0px))}}
 .nav-brand{display:inline-flex;align-items:center;min-height:1.75rem;gap:.55rem;color:var(--color-fg);text-decoration:none;font-family:var(--font-display);font-size:1.3rem;line-height:1;white-space:nowrap;flex:none}
-.nav-brand b{font-weight:600;color:var(--cds-chart-categorical-1)}
-.nav-logo{width:1.75rem;height:1.75rem;flex:none}
-.nav-logo rect{fill:var(--cds-chart-categorical-1)}
-.nav-logo path{fill:var(--color-panel)}
+.nav-brand b{font-weight:600;color:var(--logo-azul)}
+/* marca (img/marca.svg, desenhada na página): bússola com lápis em Azul Noite, pontas em Ouro. Maior que o texto,
+   porque as quatro pontas deixam a bússola no meio do desenho */
+.nav-logo{width:2.4rem;height:2.4rem;flex:none}
+.nav-logo .marca-a{fill:var(--logo-azul)}
+.nav-logo .marca-b{fill:var(--logo-ouro)}
 .nav-links{display:flex;gap:.2rem;overflow-x:auto;scrollbar-width:none;min-width:0}
 .nav-link{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border-radius:999px;color:var(--color-fg-muted);text-decoration:none;font-size:var(--cds-font-size-body);white-space:nowrap}
 .nav-link:hover{color:var(--color-fg);background:var(--cds-chart-grid)}
@@ -300,7 +304,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 .nav-link[aria-current=page] .tg-ic{color:var(--cds-chart-categorical-1)}
 .nav-links{margin-left:auto}
 .nav-brand:focus-visible,.nav-link:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
-@media (max-width:32.5em){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.9375rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:1.4rem;height:1.4rem}}
+@media (max-width:32.5em){.nav-in{gap:var(--cds-gap-sm)}.nav-link .tg-ic{display:none}.nav-links{gap:0}.nav-link{padding:.4rem .5rem;font-size:.9375rem}.nav-brand{font-size:1.05rem;gap:.4rem}.nav-logo{width:2rem;height:2rem}}
 @media (max-width:47.5em){.nav-link .tg-ic{display:none}}
 @media (max-width:35em){.nav-in{flex-wrap:wrap;row-gap:.65rem;padding-top:.6rem}.nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:space-between;padding-bottom:.5rem}.nav-link{font-size:.875rem}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8rem}}
 .tg-sec,.tg-kpis,.tg-card{scroll-margin-top:5rem}

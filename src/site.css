@@ -4,6 +4,7 @@
 @import "tailwindcss";
 @import "./painel.css" layer(components);
 @import "./caderno.css" layer(components);
+@import "./contraste.css" layer(components);
 
 @source "../index.html";
 @source "../404.html";
