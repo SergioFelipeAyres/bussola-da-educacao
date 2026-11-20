@@ -1567,7 +1567,7 @@
     { ds: 'escolas', ind: 'A1', resp: 'Sim', label: 'Escolas com internet', txt: 'escolas têm acesso à internet', cor: 'teal', icon: 'radio' },
     { ds: 'escolas', ind: 'A8', resp: 'Sim', label: 'Computador e internet para alunos', txt: 'escolas oferecem computador e internet para os alunos', cor: 'teal', icon: 'notebook' },
     { ds: 'escolas', ind: 'C3C', resp: 'Sim', label: 'Regras para o celular', txt: 'escolas têm regras para o uso do celular pelos alunos', cor: 'purple', icon: 'celular' },
-    { ds: 'escolas', ind: 'E5A', resp: 'Sim', label: 'Guia sobre uso de IA', txt: 'escolas têm um guia sobre o uso de inteligência artificial', cor: 'purple', icon: 'ia' },
+    { ds: 'escolas', ind: 'E5A', resp: 'Sim', label: 'Guia sobre uso de IA', txt: 'escolas têm um guia sobre o uso de inteligência artificial', cor: 'purple', icon: 'livro' },
     { ds: 'gestores', ind: 'A1', resp: 'Feminino', label: 'Gestoras mulheres', txt: 'gestores escolares são mulheres', cor: 'blue', icon: 'pessoa' },
     { ds: 'gestores', ind: 'D9A', resp: 'Sim', label: 'Gestores que usam IA', txt: 'gestores já usam inteligência artificial na gestão da escola', cor: 'purple', icon: 'ia' }
   ];
@@ -1576,16 +1576,79 @@
   let mapaInd = 0, mapaReg = null;
   const mapaSvg = document.getElementById('mapa-svg'), mapaInds = document.getElementById('mapa-inds');
   const mapaRow = (m, reg) => get(m.ind, '', m.resp, reg ? regRec(reg) : TOTAL, m.ds);
-  const mapaPick = (reg) => {
-    pararFala(); mapaReg = reg === mapaReg ? null : reg; drawMapa();
-    // a resposta (nome da região, frase e figuras) precisa ficar à vista: no celular ela vem depois do mapa.
-    // Mede o bloco da frase, não o painel (que no celular vira display:contents e não tem caixa própria)
-    const alvo = document.querySelector('.tg-mapa-destaque'), r = alvo && alvo.getBoundingClientRect();
-    if (mapaReg && r && r.bottom > innerHeight - 8) {
-      const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      alvo.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'end' });
-    }
+  // mapaAnima diz ao próximo desenho que movimento fazer: 'voa' (região nova: o post-it voa e a seta é desenhada)
+  // ou 'mexe' (indicador novo: o post-it balança); os desenhos de medida (igualaMapa) não animam
+  let mapaAnima = null;
+  const mapaPick = (reg) => { pararFala(); mapaReg = reg === mapaReg ? null : reg; mapaAnima = 'voa'; drawMapa(); };
+  // siglas das regiões, para o mapa estreito do celular (os nomes inteiros se encostariam)
+  const SIGLA = { Norte: 'N', Nordeste: 'NE', 'Centro-Oeste': 'CO', Sudeste: 'SE', Sul: 'S' };
+
+  // ---------- rosa dos ventos: o seletor do indicador ----------
+  // os indicadores ficam em volta do mostrador; a agulha (o lápis da marca) gira pelo caminho mais curto até o escolhido
+  const ROSA_PASSO = 360 / MAPA.length, rosaDial = document.getElementById('rosa-dial');
+  let rosaAng = 0;
+  const rosaMostra = (i) => {
+    const alvo = i * ROSA_PASSO; rosaAng += ((alvo - rosaAng) % 360 + 540) % 360 - 180;
+    rosaDial.style.setProperty('--ang', rosaAng + 'deg');
+    const a = alvo * Math.PI / 180, r = document.getElementById('rosa-rastro');
+    if (r) r.setAttribute('d', alvo ? 'M0 -37 A37 37 0 ' + (alvo > 180 ? 1 : 0) + ' 1 ' + (Math.sin(a) * 37).toFixed(2) + ' ' + (-Math.cos(a) * 37).toFixed(2) : '');
   };
+  const rosaVai = (i, foco) => {
+    if (foco) mapaInds.children[i].focus();
+    if (i === mapaInd) return;
+    pararFala(); mapaInd = i; mapaAnima = 'mexe'; drawMapa();
+  };
+  // mostrador: estrela de oito pontas atrás, disco de papel, aro duplo, marcas de 5 em 5 graus e o rastro da cor
+  const rosaFundo = () => {
+    const pt = (r, g) => (Math.sin(g * Math.PI / 180) * r).toFixed(2) + ' ' + (-Math.cos(g * Math.PI / 180) * r).toFixed(2);
+    let estrela = '';
+    for (let k = 0; k < 8; k++) estrela += (k ? 'L' : 'M') + pt(k % 2 ? 50 : 59, k * 45) + 'L' + pt(13, k * 45 + 22.5);
+    let f = '<path class="estrela" d="' + estrela + 'Z"/><circle class="disco" r="47"/><circle class="aro2" r="44.6"/><circle class="aro3" r="33"/>';
+    for (let g = 0; g < 360; g += 5) {
+      const forte = g % ROSA_PASSO === 0, r1 = forte ? 40.5 : 42.6;
+      f += '<line class="tq' + (forte ? ' g' : '') + '" x1="' + pt(r1, g).replace(' ', '" y1="') + '" x2="' + pt(44.6, g).replace(' ', '" y2="') + '"/>';
+    }
+    document.getElementById('rosa-fundo').innerHTML = f + '<path class="rastro" id="rosa-rastro"/>';
+  };
+
+  // post-it e seta: no computador o post-it fica na faixa livre à direita, na altura da região; no celular, embaixo do mapa.
+  // A seta à mão liga o post-it à região escolhida
+  const mapaPalco = document.getElementById('mapa-palco'), postit = document.getElementById('mapa-postit');
+  const seta = document.getElementById('mapa-seta'), setaP = document.getElementById('mapa-seta-p');
+  function posicionaPostit() {
+    const anima = mapaAnima; mapaAnima = null;
+    const pr = mapaPalco.getBoundingClientRect(); if (!pr.width) return;
+    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches, solto = getComputedStyle(postit).position === 'absolute';
+    const regP = mapaReg && mapaSvg.querySelector('.tg-mapa-reg.tg-on path'), b = regP && regP.getBoundingClientRect();
+    const pad = 24, pw = postit.offsetWidth, ph = postit.offsetHeight;
+    let x = 0, y = 0;
+    if (solto) {
+      x = pr.width - pw - pad;
+      y = b ? Math.min(Math.max(pad, b.top + b.height / 2 - pr.top - ph / 2), pr.height - ph - 64) : pad;
+      postit.style.left = x + 'px'; postit.style.top = y + 'px';
+    } else { postit.style.left = ''; postit.style.top = ''; }
+    if (anima && !reduz) {
+      postit.classList.remove('tg-voa', 'tg-mexe'); void postit.offsetWidth;
+      postit.classList.add(anima === 'voa' ? 'tg-voa' : 'tg-mexe');
+    }
+    seta.classList.remove('tg-desenha');
+    if (!b) { setaP.removeAttribute('d'); return; }
+    const ax = b.left + b.width / 2 - pr.left, ay = b.top + b.height / 2 - pr.top;
+    let sx, sy, cx, cy, ex, ey;
+    if (solto) { // da borda esquerda do post-it, em curva por cima, até perto do centro da região
+      sx = x - 6; sy = y + 44; ex = ax + 14; ey = ay; cx = (sx + ax) / 2; cy = Math.min(sy, ay) - 30;
+    } else { // do alto do post-it (embaixo do mapa), subindo até a região
+      const q = postit.getBoundingClientRect();
+      sx = q.left - pr.left + q.width * 0.72; sy = q.top - pr.top - 6; ex = ax; ey = ay + 8; cx = Math.max(sx, ex) + 34; cy = (sy + ey) / 2;
+    }
+    const ang = Math.atan2(ey - cy, ex - cx), ponta = (d) => (ex - 10 * Math.cos(ang + d)).toFixed(1) + ' ' + (ey - 10 * Math.sin(ang + d)).toFixed(1);
+    setaP.setAttribute('d', 'M' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1) + ' M' + ponta(0.45) + ' L' + ex.toFixed(1) + ' ' + ey.toFixed(1) + ' L' + ponta(-0.45));
+    setaP.style.setProperty('--len', Math.ceil(setaP.getTotalLength()));
+    if (anima === 'voa' && !reduz) { void seta.getBoundingClientRect(); seta.classList.add('tg-desenha'); }
+    // no celular, o post-it precisa entrar na tela para a seta fazer sentido
+    if (anima === 'voa' && !solto) { const q = postit.getBoundingClientRect(); if (q.bottom > innerHeight - 8) postit.scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'end' }); }
+  }
+  if ('ResizeObserver' in window) new ResizeObserver(() => { if (view === 'inicio') posicionaPostit(); }).observe(mapaPalco);
 
   // desenha o mapa e a lista de indicadores uma vez; depois só atualiza valores
   const buildMapa = () => {
@@ -1605,13 +1668,31 @@
     }
     // camada da região escolhida, desenhada por cima das demais
     const selG = document.createElementNS(NS, 'g'); selG.setAttribute('class', 'tg-mapa-sel'); selG.setAttribute('aria-hidden', 'true'); mapaSvg.append(selG);
+    rosaFundo();
     MAPA.forEach((m, i) => {
-      const b = document.createElement('button'); b.type = 'button'; b.className = 'tg-mapa-ind'; b.style.setProperty('--sec', 'var(--v-' + m.cor + ')');
-      b.innerHTML = ic(m.icon) + '<span class="tg-mapa-ind-l"></span><b class="tg-mapa-ind-v"></b><span class="tg-mapa-ind-bar"><i></i></span>';
-      b.querySelector('.tg-mapa-ind-l').textContent = m.label;
-      b.addEventListener('click', () => { pararFala(); mapaInd = i; drawMapa(); });
+      const a = i * ROSA_PASSO * Math.PI / 180, b = document.createElement('button');
+      b.type = 'button'; b.className = 'tg-rosa-ponto'; b.setAttribute('role', 'radio'); b.setAttribute('aria-label', m.label); b.title = m.label;
+      b.style.cssText = '--x:' + Math.sin(a).toFixed(3) + ';--y:' + (-Math.cos(a)).toFixed(3) + ';--sec:var(--v-' + m.cor + ')';
+      b.innerHTML = ic(m.icon);
+      b.addEventListener('click', (e) => { e.stopPropagation(); rosaVai(i); });
       mapaInds.append(b);
     });
+    // teclado: um só ponto no Tab, e as setas giram a agulha
+    mapaInds.addEventListener('keydown', (e) => {
+      const n = MAPA.length, mov = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (mov) { e.preventDefault(); rosaVai((mapaInd + mov + n) % n, true); }
+      else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); rosaVai(e.key === 'Home' ? 0 : n - 1, true); }
+    });
+    // girar arrastando no mostrador: um extra (tocar no ponto continua sendo o caminho principal)
+    const pelaPosicao = (e) => {
+      const r = rosaDial.getBoundingClientRect(), g = Math.atan2(e.clientX - r.left - r.width / 2, -(e.clientY - r.top - r.height / 2)) * 180 / Math.PI;
+      rosaVai(Math.round(((g + 360) % 360) / ROSA_PASSO) % MAPA.length);
+    };
+    let arrasta = false;
+    rosaDial.addEventListener('pointerdown', (e) => { if (e.target.closest('.tg-rosa-ponto')) return; arrasta = true; rosaDial.setPointerCapture(e.pointerId); pelaPosicao(e); });
+    rosaDial.addEventListener('pointermove', (e) => { if (arrasta) pelaPosicao(e); });
+    rosaDial.addEventListener('pointerup', () => { arrasta = false; });
+    rosaDial.addEventListener('pointercancel', () => { arrasta = false; });
     document.getElementById('mapa-reset').addEventListener('click', () => { pararFala(); mapaReg = null; drawMapa(); mapaSvg.querySelector('.tg-mapa-reg').focus(); });
     // versão em texto que também pode ser ouvida, como nos demais gráficos
     const alt = document.getElementById('mapa-alt'), card = mapaSvg.closest('.tg-card');
@@ -1648,8 +1729,10 @@
     const vals = rows.map((x) => x.row.pct), lo = Math.min(...vals), hi = Math.max(...vals); // a cor vai do menor ao maior valor (não do zero): a legenda diz onde começa e onde termina
     if (rows.length) { document.getElementById('mapa-leg-lo').textContent = pct(lo); document.getElementById('mapa-leg-hi').textContent = pct(hi); }
     // regiões: do tom claro (menor valor) ao escuro (maior valor)
+    const curto = mapaSvg.getBoundingClientRect().width < 420;
     for (const g of mapaSvg.querySelectorAll('.tg-mapa-reg')) {
       const x = rows.find((k) => k.r === g.dataset.reg), on = g.dataset.reg === mapaReg;
+      g.querySelector('.tg-mapa-nome').textContent = curto ? SIGLA[g.dataset.reg] : g.dataset.reg;
       const t = x ? (hi > lo ? 0.12 + 0.88 * (x.row.pct - lo) / (hi - lo) : 0.6) : 0;
       g.classList.toggle('tg-on', on); g.classList.toggle('tg-off', !!mapaReg && !on); g.setAttribute('aria-pressed', on ? 'true' : 'false');
       g.classList.toggle('tg-claro', t < 0.5); // fundo claro pede texto escuro; fundo escuro, texto branco
@@ -1685,8 +1768,8 @@
 
     // painel: frase, pictograma, margem de erro e comparação com o Brasil
     const row = mapaRow(m, mapaReg) || br, txt = document.getElementById('mapa-txt');
-    document.getElementById('mapa-eyebrow').textContent = mapaReg ? 'Região' : 'Você está vendo';
-    document.getElementById('mapa-regiao').textContent = mapaReg || 'Brasil';
+    document.getElementById('mapa-ind-nome').textContent = m.label;
+    document.getElementById('mapa-regiao').textContent = mapaReg ? 'Região ' + mapaReg : 'Brasil';
     document.getElementById('mapa-reset').hidden = !mapaReg;
     txt.classList.remove('dash-skeleton'); txt.replaceChildren();
     if (row) {
@@ -1705,13 +1788,12 @@
       // sem região escolhida não há comparação: a pastilha some (antes dizia só "Brasil todo")
       vs.hidden = !(mapaReg && br);
     }
-    // lista de indicadores: mostra o valor de cada um no lugar escolhido e serve de seletor
-    [...mapaInds.children].forEach((b, i) => {
-      const r = mapaRow(MAPA[i], mapaReg) || mapaRow(MAPA[i], null);
-      b.setAttribute('aria-pressed', i === mapaInd ? 'true' : 'false');
-      b.querySelector('.tg-mapa-ind-v').textContent = r ? pct(r.pct) : '—';
-      b.querySelector('.tg-mapa-ind-bar i').style.width = (r ? r.pct : 0) + '%';
-    });
+    // rosa dos ventos: o ponto escolhido, o nome embaixo e a agulha
+    [...mapaInds.children].forEach((b, i) => { const on = i === mapaInd; b.setAttribute('aria-checked', on ? 'true' : 'false'); b.tabIndex = on ? 0 : -1; });
+    document.getElementById('rosa-rot').textContent = m.label;
+    document.getElementById('mapa-rosa').style.setProperty('--sec', 'var(--v-' + m.cor + ')');
+    rosaMostra(mapaInd);
+    posicionaPostit();
     const ir = document.getElementById('mapa-ir');
     ir.firstChild.textContent = 'Ver o painel de ' + m.ds + (mapaReg ? ' do ' + mapaReg : ' do Brasil') + ' ';
   }

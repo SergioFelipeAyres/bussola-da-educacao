@@ -488,67 +488,125 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-hero-home .tg-fact-actions{justify-content:space-between}
 .tg .tg-hero-home #fato-outro{padding:.55rem 1rem .55rem .8rem;border:0;background:var(--v-blue);color:#fff;font-size:var(--cds-font-size-body);font-weight:700}
 
-/* ---------- Início: mapa das cinco regiões ---------- */
-.tg-mapa-card{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(1.25rem,3vw,2.75rem);align-items:center;padding:clamp(1.15rem,2.5vw,2rem)}
-@media (min-width:53.75em){.tg-mapa-card{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
-.tg-mapa-fig{display:flex;flex-direction:column;align-items:center;gap:var(--cds-gap-md);min-width:0;padding:clamp(1rem,2.5vw,1.75rem);border-radius:calc(var(--cds-radius) * 1.1);background:color-mix(in srgb,var(--sec) 5%,var(--color-bg));transition:background .5s ease}
-.tg-mapa-svg{display:block;width:100%;max-width:27rem;height:auto;overflow:visible}
+/* ---------- Início: mapa das cinco regiões ----------
+   O palco: o mapa grande à esquerda; o post-it na faixa livre à direita, na altura da região escolhida, ligado a ela por
+   uma seta à mão (painel.js, posicionaPostit); a rosa dos ventos, que escolhe o indicador, no canto do oceano.
+   No celular, numa coluna: mapa, post-it (a seta sobe dele até a região) e a rosa embaixo do quadro. */
+.tg-mapa-card{display:flex;flex-direction:column;gap:var(--cds-gap-lg);padding:clamp(1rem,2.5vw,2rem)}
+.tg-mapa-cena{position:relative}
+.tg-mapa-palco{position:relative;display:flex;flex-direction:column;gap:var(--cds-gap-md);padding:clamp(1rem,2.5vw,1.75rem);border-radius:calc(var(--cds-radius) * 1.1);
+  background:color-mix(in srgb,var(--sec) 5%,var(--color-bg));transition:background .5s ease}
+.tg-mapa-fig{min-width:0}
+.tg-mapa-svg{display:block;width:100%;height:auto;overflow:visible}
 .tg-mapa-reg{cursor:pointer;outline:none}
-.tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .5s ease,filter .2s ease,opacity .35s ease}
+.tg-mapa-reg path{stroke:var(--color-panel);stroke-width:.9;stroke-linejoin:round;transition:fill .7s cubic-bezier(.22,1,.36,1),filter .2s ease,opacity .35s ease}
 .tg-mapa-reg text,.tg-mapa-pick text{fill:#fff;pointer-events:none;transition:fill .3s ease,opacity .35s ease}
 .tg-mapa-reg.tg-claro text,.tg-mapa-pick.tg-claro text{fill:var(--color-fg)}
 /* rótulos do mapa: --esc é a escala do desenho na tela (painel.js); o tamanho cresce quando o mapa encolhe,
-   para o texto nunca ficar abaixo de 14px na tela */
-.tg-mapa-nome{font-size:max(10.5px,calc(14px / var(--esc,1)));font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.9}
-.tg-mapa-val{font-size:max(14px,calc(14.5px / var(--esc,1)));font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+   para o texto nunca ficar abaixo de 14px na tela. No mapa estreito, o nome vira sigla (painel.js) */
+/* tamanho em pixels de tela: o desenho é escrito em unidades do mapa, então divide-se pela escala (--esc). Um piso em unidades do
+   desenho cresceria junto com o mapa (no mapa grande, os nomes passavam de 20px e batiam nas bordas das regiões) */
+.tg-mapa-nome{font-size:calc(14px / var(--esc,1));font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
+.tg-mapa-val{font-size:calc(20px / var(--esc,1));font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+/* o número só aparece na região escolhida (a que salta do mapa); no mapa, só os nomes. O leitor de tela ouve o valor de todas */
+.tg-mapa-reg .tg-mapa-val{opacity:0}
 .tg-mapa-reg:hover path{filter:brightness(1.08)}
 .tg-mapa-reg:focus-visible path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
-/* região escolhida: ela "salta" do mapa, com contorno escuro e sombra; as demais perdem a cor (cinza) mas
+/* região escolhida: ela "salta" do mapa, com contorno claro e sombra; as demais perdem a cor (cinza) mas
    mantêm a claridade, então os rótulos continuam com o mesmo contraste */
 .tg-mapa-reg.tg-off path{filter:grayscale(.85)}
 .tg-mapa-reg.tg-off:hover path{filter:grayscale(.4)}
 .tg-mapa-sel{pointer-events:none}
-.tg-mapa-pick{transform-box:fill-box;transform-origin:center;transform:scale(1.06);filter:drop-shadow(0 6px 14px rgba(10,20,50,.32));animation:tg-mapa-pop .4s var(--tg-ease,ease-out)}
+.tg-mapa-pick{transform-box:fill-box;transform-origin:center;transform:scale(1.07);filter:drop-shadow(0 10px 16px rgba(var(--sombra-escura),.32));animation:tg-mapa-pop .45s cubic-bezier(.34,1.56,.64,1)}
 .tg-mapa-pick path{stroke:#fff;stroke-width:2.6;stroke-linejoin:round}
 .tg-mapa-svg:has(.tg-on:focus-visible) .tg-mapa-pick path{stroke:var(--color-fg);stroke-width:2.2;stroke-dasharray:4 2.5}
-@keyframes tg-mapa-pop{from{transform:scale(1);filter:drop-shadow(0 0 0 rgba(10,20,50,0))}}
+@keyframes tg-mapa-pop{from{transform:scale(1);filter:drop-shadow(0 0 0 rgba(var(--sombra-escura),0))}}
 .tg-mapa-leg{display:flex;align-items:center;gap:.6rem;font-size:.875rem;letter-spacing:.04em;color:var(--color-fg-muted)}
 .tg-mapa-leg i{width:6.5rem;height:.4rem;border-radius:999px;background:linear-gradient(90deg,var(--seq-claro),var(--seq-escuro))}
+
+/* o post-it: preso com fita; voa quando a região muda e balança quando o indicador muda */
+.tg-mapa-destaque{position:relative;display:flex;flex-direction:column;gap:.5rem;padding:1.15rem 1.15rem 1rem;border-radius:2px;
+  background:color-mix(in srgb,var(--v-yellow) 62%,var(--color-panel));box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(var(--sombra-escura),.55);
+  rotate:1.4deg;transition:left .55s cubic-bezier(.22,1,.36,1),top .55s cubic-bezier(.22,1,.36,1)}
+.tg-mapa-destaque::before{content:"";position:absolute;top:-.75rem;left:50%;width:5.5rem;height:1.5rem;translate:-50% 0;rotate:-3deg;
+  background:color-mix(in srgb,var(--v-blue) 16%,rgba(255,255,255,.7));border:1px solid rgba(255,255,255,.6)}
+.tg-mapa-destaque.tg-voa{animation:tg-postit-voa .5s cubic-bezier(.22,1,.36,1)}
+.tg-mapa-destaque.tg-mexe{animation:tg-postit-mexe .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tg-postit-voa{from{opacity:0;scale:.85;rotate:-6deg}}
+@keyframes tg-postit-mexe{30%{rotate:-1.5deg;scale:1.03}}
+.tg-mapa-onde{display:flex;flex-wrap:wrap;align-items:center;gap:.25rem .75rem}
+.tg-mapa-regiao{font:800 1.5rem/1.1 var(--font-display);letter-spacing:-.02em}
+.tg button.tg-mapa-reset{min-height:2.75rem;padding:.3rem .7rem;border:0;background:color-mix(in srgb,var(--color-panel) 55%,transparent);font-size:.9375rem;font-weight:600;color:var(--color-fg)}
+.tg button.tg-mapa-reset:hover{background:var(--color-panel)}
+/* texto sobre amarelo é sempre Tinta (as cores de tema não passam de 4.5:1 no amarelo) */
+.tg-mapa-ind-nome{font-size:.9375rem;font-weight:700;color:var(--color-fg)}
+.tg-mapa-txt{font-size:1.0625rem;font-weight:500;line-height:1.35}
+.tg-mapa-destaque .tg-iso10{max-width:15rem}
+.tg-mapa-meta{font-size:.9375rem;color:var(--color-fg)}
+.tg .tg-mapa-meta b{color:var(--color-fg);font-weight:700}
+.tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:color-mix(in srgb,var(--color-panel) 55%,transparent);font-size:.9375rem;font-weight:500;color:var(--color-fg)}
+.tg-mapa-vs[hidden]{display:none}
+.tg-mapa-vs.tg-dir{font-weight:600}
+/* a seta à mão, do post-it até a região: desenhada aos poucos quando a região muda */
+.tg-mapa-seta{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none;overflow:visible}
+.tg-mapa-seta path{fill:none;stroke:var(--v-blue-deep);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--len,0);stroke-dashoffset:0}
+.tg-mapa-seta.tg-desenha path{animation:tg-traco .6s ease-out .25s backwards}
+@keyframes tg-traco{from{stroke-dashoffset:var(--len,0)}}
+
+/* a rosa dos ventos: um instrumento pousado no mapa (disco de papel, aro duplo, estrela de oito pontas atrás);
+   os indicadores em volta, a agulha (o lápis da marca) gira até o escolhido, e o nome dele num marcador de página */
+.tg-rosa{--sec:var(--v-teal);display:flex;flex-direction:column;align-items:center;gap:.35rem;width:fit-content;margin:var(--cds-gap-md) auto 0}
+.tg-rosa-dial{--d:10.5rem;position:relative;width:var(--d);height:var(--d);margin:calc(var(--d) * .1);touch-action:none;cursor:grab;user-select:none}
+.tg-rosa-dial:active{cursor:grabbing}
+.tg-rosa-fundo{position:absolute;left:-10%;top:-10%;width:120%;height:120%;overflow:visible;filter:drop-shadow(0 8px 12px rgba(var(--sombra-escura),.16))}
+.tg-rosa-fundo .estrela{fill:color-mix(in srgb,var(--sec) 16%,transparent);stroke:color-mix(in srgb,var(--sec) 50%,transparent);stroke-width:.6;stroke-linejoin:round;transition:fill .5s ease,stroke .5s ease}
+.tg-rosa-fundo .disco{fill:color-mix(in srgb,var(--color-panel) 94%,var(--sec));stroke:var(--color-fg);stroke-width:1.1}
+.tg-rosa-fundo .aro2{fill:none;stroke:var(--color-border-line);stroke-width:.6}
+.tg-rosa-fundo .aro3{fill:none;stroke:var(--color-border-line);stroke-width:.7;stroke-dasharray:1 1.8}
+.tg-rosa-fundo .tq{stroke:var(--color-fg-muted);stroke-width:.5}
+.tg-rosa-fundo .tq.g{stroke:var(--color-fg);stroke-width:1}
+.tg-rosa-fundo .rastro{fill:none;stroke:var(--sec);stroke-width:2.6;stroke-linecap:round;opacity:.55;transition:stroke .5s ease}
+.tg-rosa-agulha{position:absolute;left:50%;top:50%;width:calc(var(--d) * .62);height:calc(var(--d) * .62);margin:calc(var(--d) * -.31) 0 0 calc(var(--d) * -.31);pointer-events:none;
+  rotate:var(--ang,0deg);transition:rotate 1.1s cubic-bezier(.3,1.65,.45,.9);filter:drop-shadow(0 3px 3px rgba(var(--sombra-escura),.25))}
+.tg-rosa-agulha .ponta{fill:var(--sec);transition:fill .5s ease}
+.tg-rosa-agulha .grafite{fill:var(--color-fg)}
+.tg-rosa-agulha .corpo{fill:var(--logo-azul)}
+.tg-rosa-agulha .friso{fill:var(--logo-ouro)}
+.tg-rosa-agulha .borracha{fill:color-mix(in srgb,var(--v-pink) 55%,var(--color-panel))}
+.tg-rosa-eixo{position:absolute;left:50%;top:50%;width:1rem;height:1rem;margin:-.5rem 0 0 -.5rem;border-radius:50%;background:var(--color-panel);border:3px solid var(--color-fg);pointer-events:none}
+.tg button.tg-rosa-ponto{position:absolute;left:calc(50% + var(--x) * var(--d) * .4);top:calc(50% + var(--y) * var(--d) * .4);translate:-50% -50%;display:grid;place-items:center;
+  width:2.75rem;height:2.75rem;min-height:0;padding:0;border:2px solid var(--sec);border-radius:50%;background:var(--color-panel);color:var(--sec-texto);cursor:pointer;
+  transition:background .3s ease,color .3s ease,scale .45s cubic-bezier(.34,1.56,.64,1)}
+.tg button.tg-rosa-ponto:hover{background:color-mix(in srgb,var(--sec) 14%,var(--color-panel))}
+.tg button.tg-rosa-ponto[aria-checked=true]{background:var(--sec);color:#fff;scale:1.12}
+.tg-rosa-ponto .tg-ic{width:1.2rem;height:1.2rem}
+.tg-rosa-rot{min-height:2.6rem;max-width:14rem;margin:0;padding:.7rem .9rem .45rem;border-radius:2px 2px 0 0;text-align:center;rotate:-1.2deg;
+  background:color-mix(in srgb,var(--sec) 15%,var(--color-panel));box-shadow:inset 0 4px 0 var(--sec),0 6px 12px -10px rgba(var(--sombra-escura),.55);
+  font:500 .875rem/1.3 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--color-fg);transition:background .5s ease}
+
+/* computador: mapa à esquerda, post-it na faixa da direita; computador largo: a rosa no canto do oceano */
+@media (min-width:48em){
+  .tg-mapa-palco{min-height:26rem}
+  .tg-mapa-fig{width:min(44rem,calc(100% - 21rem))}
+  .tg-mapa-destaque{position:absolute;z-index:3;width:19rem;left:calc(100% - 19rem - 24px);top:24px}
+  .tg-mapa-leg{position:absolute;right:clamp(1rem,2.5vw,1.75rem);bottom:clamp(1rem,2.5vw,1.5rem)}
+  /* o aviso fica no oceano, à direita do Sudeste, com a seta apontando para a região */
+  .tg-mapa-fig{position:relative}
+  .tg-anot-mapa{position:absolute;left:77%;top:70%;white-space:nowrap}
+}
+@media (min-width:75em){.tg-rosa{position:absolute;z-index:2;left:clamp(1rem,2.5vw,1.75rem);bottom:clamp(1rem,2.5vw,1.5rem);margin:0}}
+@media (max-width:74.9375em){.tg-rosa-dial{--d:min(13rem,62vw)}}
+@media (max-width:47.9375em){.tg-anot-mapa{display:none}.tg-mapa-leg{justify-content:center}.tg-mapa-destaque{rotate:.6deg;margin-top:.5rem}}
+@media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-palco,.tg-mapa-destaque,.tg-rosa-agulha,.tg-rosa-rot{transition:none}.tg-mapa-pick,.tg-mapa-destaque,.tg-mapa-seta path{animation:none!important}.tg-mapa-destaque,.tg-rosa-rot{rotate:none}}
 .tg-mapa-nota{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.75rem;font-size:var(--cds-font-size-body);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
 .tg-mapa-nota small{display:block;font-size:.875rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase}
 .tg-mapa-nota b{color:var(--color-fg);font-weight:700}
-.tg-mapa-painel{display:flex;flex-direction:column;gap:var(--cds-gap-md);min-width:0}
-.tg-mapa-onde{display:flex;flex-wrap:wrap;align-items:center;gap:.1rem .9rem}
-.tg-mapa-onde .tg-eyebrow{flex-basis:100%;font-size:.875rem;font-weight:600;letter-spacing:.1em}
-.tg-mapa-regiao{font-size:clamp(2rem,3.2vw,2.5rem);font-weight:800;letter-spacing:-.03em;line-height:1.05}
-.tg button.tg-mapa-reset{padding:.3rem .75rem;border-color:transparent;background:var(--cds-chart-grid);font-weight:500;color:var(--color-fg-muted)}
-.tg button.tg-mapa-reset:hover{color:var(--color-fg)}
-.tg-mapa-destaque{display:flex;flex-direction:column;gap:.7rem;padding:1.1rem 1.25rem;border-radius:var(--cds-radius);background:color-mix(in srgb,var(--sec) 8%,var(--color-panel));transition:background .5s ease}
-.tg-mapa-txt{font-size:clamp(1.05rem,1.6vw,1.2rem);font-weight:500;line-height:1.35;text-wrap:balance;min-height:4.1em}
-.tg .tg-mapa-txt b{display:block;font-size:1.65em;font-weight:800;letter-spacing:-.025em;line-height:1.15;color:var(--sec)}
-.tg-mapa-destaque .tg-iso10{max-width:16rem}
-.tg-mapa-meta{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
-.tg .tg-mapa-meta b{color:var(--color-fg);font-weight:700}
-.tg-mapa-vs{display:inline-flex;align-items:center;gap:.4rem;align-self:flex-start;padding:.3rem .7rem;border-radius:999px;background:var(--color-panel);font-size:var(--cds-font-size-caption);font-weight:500;color:var(--color-fg-muted)}
-.tg-mapa-vs[hidden]{display:none}
-.tg-mapa-vs.tg-dir{color:var(--color-fg);font-weight:600}
-.tg-mapa-vs .tg-arrow{color:var(--color-fg-muted)}
-.tg .tg-mapa-sub{margin:.35rem 0 -.35rem;font-size:.875rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--color-fg-muted)}
-.tg-mapa-inds{display:flex;flex-direction:column}
-.tg button.tg-mapa-ind{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:.3rem .65rem;width:100%;padding:.6rem .7rem;border:0;background:transparent;text-align:left;font-size:var(--cds-font-size-body);font-weight:500;color:var(--color-fg-muted);transition:background .15s ease,color .15s ease}
-.tg-mapa-ind .tg-ic{width:1rem;height:1rem;color:var(--sec)}
-.tg .tg-mapa-ind-v{font-weight:700;color:var(--color-fg);font-variant-numeric:tabular-nums}
-.tg-mapa-ind-bar{grid-column:2/-1;height:3px;border-radius:3px;background:var(--cds-chart-grid);overflow:hidden}
-.tg-mapa-ind-bar i{display:block;height:100%;border-radius:3px;background:var(--sec);opacity:.55;transition:width .5s ease}
-.tg button.tg-mapa-ind:hover{background:var(--cds-chart-grid);color:var(--color-fg)}
-.tg button.tg-mapa-ind[aria-pressed=true]{background:color-mix(in srgb,var(--sec) 10%,var(--color-panel));color:var(--color-fg);font-weight:600}
-.tg-mapa-ind[aria-pressed=true] .tg-mapa-ind-bar i{opacity:1}
 .tg button.tg-mapa-ir{align-self:flex-start;margin-top:.25rem;padding:.65rem 1.2rem;border:0;background:var(--sec-texto);color:#fff;font-size:var(--cds-font-size-body);font-weight:600;transition:background .5s ease}
-@media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-ind-bar i,.tg-mapa-fig,.tg-mapa-destaque{transition:none}.tg-mapa-pick{animation:none}}
-[data-reg="Sul"] .tg-mapa-val{font-size:max(12.5px,calc(14px / var(--esc,1)))}
+[data-reg="Sul"] .tg-mapa-val{font-size:calc(17px / var(--esc,1))}
+/* celular: no mapa pequeno ficam só as siglas; o número da região escolhida está no post-it, logo abaixo */
+@media (max-width:47.9375em){.tg-mapa-pick .tg-mapa-val{display:none}}
 .tg-mapa-nota span{white-space:nowrap}
-/* celular: o nome sai da caixa alta, que alargaria demais "Centro-Oeste" com os rótulos maiores */
-@media (max-width:32.5em){.tg-mapa-card{padding:.9rem}.tg-mapa-fig{padding:.9rem .35rem}.tg-mapa-nome{letter-spacing:0;text-transform:none}.tg-mapa-nota{gap:.4rem 1.25rem}}
+@media (max-width:32.5em){.tg-mapa-card{padding:.75rem}.tg-mapa-palco{padding:.75rem .5rem}.tg-mapa-nota{gap:.4rem 1.25rem}}
 
 /* "Você sabia?": o cartão usa a cor do tema do dado sorteado (--sec, definido pelo painel.js) */
 .tg-fact{--sec:var(--v-blue)}
@@ -766,15 +824,6 @@ body:has(.tg-guide[open]){overflow:hidden}
   .tg-hero-home .tg-fact{order:3;margin-block:var(--cds-gap-sm)}
   .tg-hero-home .tg-hero-text{order:4}
   .tg-hero-home .tg-fonte{order:5}
-}
-@media (max-width:53.6875em){
-  .tg-mapa-painel{display:contents}
-  .tg .tg-mapa-sub{order:-2;margin:0}
-  .tg-mapa-inds{order:-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}
-  .tg button.tg-mapa-ind{grid-template-columns:auto minmax(0,1fr);align-content:center;min-height:2.75rem;padding:.45rem .6rem;line-height:1.25;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:var(--color-panel)}
-  .tg button.tg-mapa-ind[aria-pressed=true]{border-color:var(--sec)}
-  .tg-mapa-ind .tg-mapa-ind-bar{display:none}
-  .tg .tg-mapa-ind-v{grid-column:2}
 }
 .tg-alt-citar{margin:.7rem 0 0;padding-top:.6rem;border-top:1px dashed var(--color-border-line);color:var(--color-fg);line-height:1.45;user-select:all}
 

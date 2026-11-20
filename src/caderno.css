@@ -92,7 +92,7 @@ body{background-color:var(--color-bg)}
 .tg-head .tg-take b,.tg-mapa-txt b{font-weight:800}
 /* texto sobre amarelo (marca-texto ou post-it) é sempre Tinta: as cores de tema ficam abaixo de 4.5:1 no amarelo (teal e laranja chegam a 2.9:1) */
 .tg .tg-mapa-txt b,.tg .tg-hero-home .tg-fact-txt b{color:var(--color-fg)}
-.tg .tg-mapa-txt b{display:table}
+.tg .tg-mapa-txt b{display:table;background:none;padding:0;font:800 1.45em/1.15 var(--font-display);letter-spacing:-.02em}
 
 /* ---------- botões em etiqueta: cantos chanfrados (o fundo chanfrado fica no ::before, para o contorno de foco não ser cortado) ---------- */
 .tg .tg-etq,.tg .tg-hero-home #fato-outro,.tg button.tg-mapa-ir,.tg button.tg-guide-btn,.tg button.tg-guide-volta{
@@ -195,7 +195,7 @@ body{background-color:var(--color-bg)}
 
 /* ---------- filtro: uma questão de múltipla escolha (só uma alternativa marcada) ---------- */
 .tg-filter.tg-rec{position:relative;box-shadow:var(--v-shadow)}
-.tg-rec-onde .tg-eyebrow,.tg-mapa-onde .tg-eyebrow,.tg .tg-mapa-sub,.tg-rec-fixo-tit span{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
+.tg-rec-onde .tg-eyebrow,.tg-rec-fixo-tit span{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
 .tg-rec-fixo-in{border-radius:var(--folha-raio)}
 .tg-rec-g-lab{font-family:var(--font-mono);font-weight:500;font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
 /* as questões viram itens do próprio filtro (display:contents), para os grupos (Norte, Nordeste…) entrarem logo
@@ -261,13 +261,8 @@ body{background-color:var(--color-bg)}
 @media (max-width:44.9375em){.tg-anot-filtro{display:none}}
 
 /* ---------- Início: mapa, indicadores e portas ---------- */
-.tg-mapa-fig{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:16px}
-.tg-mapa-destaque{border-radius:var(--folha-raio)}
-.tg button.tg-mapa-ind{border-radius:0;border-bottom:1px dashed var(--color-border-line)}
-.tg button.tg-mapa-ind[aria-pressed=true]{border-radius:var(--folha-raio)}
+.tg-mapa-palco{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:20px}
 .tg-mapa-leg{font-family:var(--font-mono)}
-.tg-mapa-meta{font-size:.9375rem}
-.tg-mapa-vs{border-radius:var(--folha-raio)}
 .tg-porta{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
 .tg-porta:hover{box-shadow:inset 0 3px 0 var(--sec),0 1px 0 rgba(20,30,70,.04),0 18px 36px -20px rgba(20,30,70,.35)}
 .tg-porta-tit,.tg-autor-papel,.tg-cite-lab{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}

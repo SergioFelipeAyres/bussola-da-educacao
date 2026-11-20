@@ -61,31 +61,47 @@
 
     <section class="tg-sec tg-mapa" id="mapa" aria-labelledby="mapa-titulo">
       <div class="tg-sec-head"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5l5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2z"/><path d="M9 4.5v13M15 6.5v13"/></svg>
-        <div><h2 class="tg-sec-title" id="mapa-titulo">O Brasil em 5 regiões</h2><p class="tg-sec-sub">Toque em uma região para ver seus números e compará-los com os do país.</p></div></div>
+        <div><h2 class="tg-sec-title" id="mapa-titulo">O Brasil em 5 regiões</h2><p class="tg-sec-sub">Gire a bússola para escolher o que ver e toque numa região para comparar com o país.</p></div></div>
       <article class="tg-card tg-mapa-card">
-        <div class="tg-mapa-fig">
-          <svg class="tg-mapa-svg" id="mapa-svg" viewBox="-8 -8 316 316" role="group" aria-label="Mapa do Brasil dividido em cinco regiões. Cada região é um botão."></svg>
-          <div class="tg-mapa-leg" aria-hidden="true"><span id="mapa-leg-lo">menor</span><i></i><span id="mapa-leg-hi">maior</span></div>
-          <p class="tg-mapa-nota" id="mapa-nota"></p>
-          <span class="tg-anot tg-anot-mapa" aria-hidden="true">← toque numa região!</span>
-          <div class="tg-alt" id="mapa-alt" hidden><ul id="mapa-alt-lista"></ul></div>
-        </div>
-        <div class="tg-mapa-painel">
-          <div class="tg-mapa-onde">
-            <span class="tg-eyebrow" id="mapa-eyebrow">Você está vendo</span>
-            <h3 class="tg-mapa-regiao" id="mapa-regiao" aria-live="polite">Brasil</h3>
-            <button type="button" class="tg-mapa-reset" id="mapa-reset" hidden><span aria-hidden="true">←</span> Voltar para o Brasil</button>
+        <!-- palco: o mapa grande; a região tocada sobe, e o post-it vai até ela com uma seta à mão.
+             A rosa dos ventos (o seletor do indicador) fica no canto do oceano no computador e embaixo do mapa no celular -->
+        <div class="tg-mapa-cena">
+          <div class="tg-mapa-palco" id="mapa-palco">
+            <div class="tg-mapa-fig">
+              <svg class="tg-mapa-svg" id="mapa-svg" viewBox="-8 -8 316 316" role="group" aria-label="Mapa do Brasil dividido em cinco regiões. Cada região é um botão."></svg>
+              <span class="tg-anot tg-anot-mapa" aria-hidden="true">← toque numa região!</span>
+            </div>
+            <svg class="tg-mapa-seta" id="mapa-seta" aria-hidden="true"><path id="mapa-seta-p"/></svg>
+            <div class="tg-mapa-destaque" id="mapa-postit">
+              <div class="tg-mapa-onde">
+                <h3 class="tg-mapa-regiao" id="mapa-regiao" aria-live="polite">Brasil</h3>
+                <button type="button" class="tg-mapa-reset" id="mapa-reset" hidden><span aria-hidden="true">←</span> Voltar para o Brasil</button>
+              </div>
+              <p class="tg-mapa-ind-nome" id="mapa-ind-nome"></p>
+              <p class="tg-mapa-txt dash-skeleton" id="mapa-txt">—</p>
+              <svg class="tg-iso10" id="mapa-iso" width="100%" viewBox="0 0 240 26" role="img"></svg>
+              <p class="tg-mapa-meta" id="mapa-meta"></p>
+              <p class="tg-mapa-vs" id="mapa-vs"></p>
+            </div>
+            <div class="tg-mapa-leg" aria-hidden="true"><span id="mapa-leg-lo">menor</span><i></i><span id="mapa-leg-hi">maior</span></div>
           </div>
-          <div class="tg-mapa-destaque">
-            <p class="tg-mapa-txt dash-skeleton" id="mapa-txt">—</p>
-            <svg class="tg-iso10" id="mapa-iso" width="100%" viewBox="0 0 240 26" role="img"></svg>
-            <p class="tg-mapa-meta" id="mapa-meta"></p>
-            <p class="tg-mapa-vs" id="mapa-vs"></p>
+          <div class="tg-rosa" id="mapa-rosa">
+            <div class="tg-rosa-dial" id="rosa-dial">
+              <svg class="tg-rosa-fundo" id="rosa-fundo" viewBox="-60 -60 120 120" aria-hidden="true"></svg>
+              <svg class="tg-rosa-agulha" viewBox="-50 -50 100 100" aria-hidden="true">
+                <path class="ponta" d="M0 -47 L-5.2 -33 L5.2 -33 Z"/><path class="grafite" d="M0 -47 L-1.9 -41.9 L1.9 -41.9 Z"/>
+                <rect class="corpo" x="-5.2" y="-33" width="10.4" height="46" rx="1"/><rect class="friso" x="-5.2" y="13" width="10.4" height="4"/>
+                <rect class="borracha" x="-5.2" y="17" width="10.4" height="7" rx="2.2"/>
+              </svg>
+              <span class="tg-rosa-eixo" aria-hidden="true"></span>
+              <div class="tg-mapa-inds" id="mapa-inds" role="radiogroup" aria-label="Indicador do mapa"></div>
+            </div>
+            <p class="tg-rosa-rot" id="rosa-rot" aria-hidden="true"></p>
           </div>
-          <h4 class="tg-mapa-sub" id="mapa-sub">Escolha o indicador</h4>
-          <div class="tg-mapa-inds" id="mapa-inds" role="group" aria-labelledby="mapa-sub"></div>
-          <button type="button" class="tg-mapa-ir" id="mapa-ir">Ver o painel completo <span aria-hidden="true">→</span></button>
         </div>
+        <p class="tg-mapa-nota" id="mapa-nota"></p>
+        <div class="tg-alt" id="mapa-alt" hidden><ul id="mapa-alt-lista"></ul></div>
+        <button type="button" class="tg-mapa-ir" id="mapa-ir">Ver o painel completo <span aria-hidden="true">→</span></button>
       </article>
     </section>
   </div>

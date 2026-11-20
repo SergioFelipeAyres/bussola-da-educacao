@@ -60,6 +60,14 @@ html[data-contraste] .tg-hero-home .tg-fact{background:#000;border:2px solid var
 html[data-contraste] .tg-hero-home .tg-fact::before{display:none}
 html[data-contraste] .tg-hero-home .tg-fact-meta{color:var(--color-fg-muted)}
 
+/* mapa: o post-it vira quadro de borda amarela; a agulha da rosa fica branca (o azul-noite sumiria no preto) */
+html[data-contraste] .tg-mapa-destaque{background:#000;border:2px solid var(--hc-amarelo);rotate:none}
+html[data-contraste] .tg-mapa-destaque::before{display:none}
+html[data-contraste] :is(.tg-mapa-reset,.tg-mapa-vs){background:#000;border:1px solid var(--color-border-line)}
+html[data-contraste] .tg-rosa-agulha .corpo{fill:#fff}
+html[data-contraste] .tg-rosa-fundo{filter:none}
+html[data-contraste] .tg button.tg-rosa-ponto[aria-checked=true]{color:#000}
+
 /* mapa e pictogramas: região clara pede texto preto (a Tinta, aqui, é branca); escura, branco */
 html[data-contraste] :is(.tg-mapa-reg,.tg-mapa-pick).tg-claro text{fill:#000}
 html[data-contraste] .tg-mapa-reg path{stroke:#000;stroke-width:1.4}
