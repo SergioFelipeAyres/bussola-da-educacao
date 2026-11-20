@@ -1,4 +1,9 @@
-# Bússola da Educação
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="img/marca-nome-clara.svg">
+    <img src="img/marca-nome.svg" alt="Bússola da Educação" width="409" height="64">
+  </picture>
+</h1>
 
 Painel interativo com os dados de **gestores escolares** e **escolas** da pesquisa
 **TIC Educação 2025** (NIC.br/Cetic.br), feito como produto da dissertação
@@ -34,7 +39,9 @@ src/site.css            entrada do Tailwind: paleta (@theme) e famílias de font
 src/painel.css          estilos do painel (gráficos, filtro, cartões, escala de texto)
 src/caderno.css         a linguagem visual do caderno escolar (folha, lições, marca-texto)
 src/contraste.css       modo alto contraste (baixa visão), ligado pelo botão do topo (js/contraste.js)
-img/marca.svg           a marca (original); img/favicon.svg é o ícone da aba, gerado a partir dela
+img/marca.svg           a marca (original); img/favicon.svg é o ícone da aba, gerado dela
+img/marca-nome*.svg     marca com o nome em Bricolage Grotesque convertido em contornos (o GitHub não carrega
+                        fontes), para o topo deste README; "-clara" é a do tema escuro
 css/site.css            CSS compilado a partir de src/ (vai versionado; não editar à mão)
 js/dash-shim.js         carrega os dados e redesenha a página quando o filtro muda
 js/painel.js            desenho dos gráficos

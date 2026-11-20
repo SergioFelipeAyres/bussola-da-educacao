@@ -34,7 +34,7 @@ html[data-contraste] .tg-sec[id]:not(#perfil),html[data-contraste] .tg-mapa-card
 
 /* marca: o Azul Noite sumiria no preto; vira branco, e "Educação" fica em Ouro (8:1 no preto) */
 html[data-contraste] .nav-brand b{color:var(--logo-ouro)}
-html[data-contraste] .nav-logo .marca-a{fill:#fff}
+html[data-contraste] .marca-a{fill:#fff}
 
 /* links e foco em amarelo */
 html[data-contraste] a:not([class]),html[data-contraste] .tg-fim-citar,html[data-contraste] .tg-fact-link{color:var(--hc-amarelo)}
@@ -42,7 +42,7 @@ html[data-contraste] :focus-visible{outline:3px solid var(--hc-amarelo)!importan
 html[data-contraste] ::selection{background:var(--hc-amarelo);color:#000}
 
 /* grifos: o número ou a palavra em amarelo */
-html[data-contraste] :is(.tg-hero-title span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b,.tg-perg-frase .tg-perg-grifo),
+html[data-contraste] :is(.tg-hero-title span span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b,.tg-perg-frase .tg-perg-grifo),
 html[data-contraste] .tg .tg-mapa-txt b,html[data-contraste] .tg .tg-hero-home .tg-fact-txt b{color:var(--hc-amarelo)}
 /* aba atual do menu: amarela e sublinhada */
 html[data-contraste] .nav-link[aria-current=page]{color:var(--hc-amarelo);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
@@ -78,6 +78,8 @@ html[data-contraste] :is(.tg-guide,.tg-libras-janela)::backdrop{background:rgba(
 .nav-contraste:hover{border-color:var(--color-fg)}
 .nav-contraste:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
 .nav-contraste[aria-pressed=true]{background:var(--hc-amarelo,#ffe600);border-color:var(--hc-amarelo,#ffe600);color:#000}
-/* celular: só o ícone (o nome continua para o leitor de tela), para o topo não ganhar mais uma linha */
-@media (max-width:35em){.nav-contraste{margin-left:auto;width:2.75rem;justify-content:center;padding:0}
+/* tablet e celular: só o ícone (o nome continua para o leitor de tela), para o menu caber inteiro
+   e, no celular, o topo não ganhar mais uma linha */
+@media (max-width:64em){.nav-contraste{width:2.75rem;justify-content:center;padding:0}
   .nav-contraste span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+@media (max-width:35em){.nav-contraste{margin-left:auto}}

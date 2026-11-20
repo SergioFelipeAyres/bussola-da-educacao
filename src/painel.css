@@ -295,8 +295,8 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* marca (img/marca.svg, desenhada na página): bússola com lápis em Azul Noite, pontas em Ouro. Maior que o texto,
    porque as quatro pontas deixam a bússola no meio do desenho */
 .nav-logo{width:2.4rem;height:2.4rem;flex:none}
-.nav-logo .marca-a{fill:var(--logo-azul)}
-.nav-logo .marca-b{fill:var(--logo-ouro)}
+.marca-a{fill:var(--logo-azul)}
+.marca-b{fill:var(--logo-ouro)}
 .nav-links{display:flex;gap:.2rem;overflow-x:auto;scrollbar-width:none;min-width:0}
 .nav-link{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .8rem;border-radius:999px;color:var(--color-fg-muted);text-decoration:none;font-size:var(--cds-font-size-body);white-space:nowrap}
 .nav-link:hover{color:var(--color-fg);background:var(--cds-chart-grid)}
@@ -349,7 +349,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 /* ---------- Início ---------- */
 .tg-hero{display:flex;flex-direction:column;gap:var(--cds-gap-md);padding-top:var(--cds-gap-lg)}
 .tg-hero-title{font-family:var(--font-display);font-weight:400;line-height:1;letter-spacing:-.01em}
-.tg-hero-title span{color:var(--cds-chart-categorical-1);font-weight:600}
+.tg-hero-title span span{color:var(--cds-chart-categorical-1);font-weight:600}
 .tg-hero-lead{font-family:var(--font-display);font-size:clamp(1.3rem,2.4vw,1.65rem);line-height:1.3}
 .tg-hero-text{color:var(--color-fg-muted)}
 .tg-fact{display:flex;gap:var(--cds-gap-lg);align-items:flex-start;padding:1.5rem;border-radius:calc(var(--cds-radius) * 1.4);background:var(--color-panel);border:1px solid var(--color-border-line)}
@@ -475,9 +475,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 .tg-hero-copy{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
 
 .tg-hero-home .tg-hero-text{max-width:46ch}
-@media (min-width:56.25em){.tg-hero-home{grid-template-columns:minmax(0,1.15fr) minmax(19rem,25rem)}.tg-hero-home::after{right:auto;left:40%;opacity:.32}}
+@media (min-width:68em){.tg-hero-home{grid-template-columns:minmax(0,1.15fr) minmax(19rem,25rem)}.tg-hero-home::after{right:auto;left:40%;opacity:.32}}
 .tg-hero-home .tg-fact{flex-direction:column;gap:var(--cds-gap-md);padding:clamp(1.25rem,2.5vw,1.75rem);border:0;border-radius:calc(var(--cds-radius) * 1.4);background:var(--color-panel);color:var(--color-fg);box-shadow:0 30px 60px -24px rgba(5,12,45,.6),0 2px 6px rgba(5,12,45,.15)}
-@media (min-width:56.25em) and (prefers-reduced-motion:no-preference){.tg-hero-home .tg-fact{rotate:1.2deg;transition:rotate .3s ease}.tg-hero-home .tg-fact:hover,.tg-hero-home .tg-fact:focus-within{rotate:0deg}}
+@media (min-width:68em) and (prefers-reduced-motion:no-preference){.tg-hero-home .tg-fact{rotate:1.2deg;transition:rotate .3s ease}.tg-hero-home .tg-fact:hover,.tg-hero-home .tg-fact:focus-within{rotate:0deg}}
 .tg-fact-top{display:flex;align-items:center;gap:.7rem}
 .tg-hero-home .tg-fact-ic{width:2.75rem;height:2.75rem}
 .tg-hero-home .tg-fact-ic .tg-ic{width:1.4rem;height:1.4rem}
@@ -757,8 +757,9 @@ body:has(.tg-guide[open]){overflow:hidden}
 
 /* celular, Início: o dado do post-it sobe para logo depois da frase de abertura (quem chega por um link vê o número cedo),
    e a escolha do indicador fica acima do mapa, para o leitor ver o mapa mudar ao tocar */
-@media (max-width:56.1875em){
+@media (max-width:67.9375em){
   .tg-hero-home{gap:var(--cds-gap-md)}
+  .tg-hero-home .tg-fact{max-width:34rem}
   .tg-hero-home .tg-hero-copy{display:contents}
   .tg-hero-home .tg-hero-title{order:1}
   .tg-hero-home .tg-hero-lead{order:2}

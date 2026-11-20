@@ -78,9 +78,15 @@ body{background-color:var(--color-bg)}
 /* celular: cinco abas não cabem numa linha; quebram em duas em vez de rolar escondidas para o lado */
 @media (max-width:35em){.nav-links{flex-wrap:wrap;justify-content:center;overflow-x:visible}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:10.75rem}
   .nav-link{font-size:.875rem;letter-spacing:.02em;padding:.4rem .3rem}.nav-link[aria-current=page]{background-size:calc(100% - .4rem) 100%}}
+/* tablet: marca, cinco abas e o botão de contraste não cabem numa linha; as abas descem para a segunda linha, centradas,
+   em vez de rolar escondidas para o lado. Logo acima disso, as abas só ficam mais juntas */
+@media (min-width:35.0625em) and (max-width:60em){.nav-in{flex-wrap:wrap;row-gap:.2rem;padding-top:.45rem}
+  .nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:center;overflow-x:visible;padding-bottom:.35rem}
+  .nav-contraste{margin-left:auto}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8.5rem}}
+@media (min-width:60.0625em) and (max-width:68em){.nav-link{padding-inline:.55rem}}
 
 /* ---------- marca-texto: grifo amarelo atrás da palavra (o texto continua em tinta) ---------- */
-.tg-hero-title span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
+.tg-hero-title span span,.tg-title .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{
   color:var(--color-fg);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding-inline:.08em;
   background:linear-gradient(100deg,transparent .15em,var(--marca-texto) .25em calc(100% - .15em),transparent calc(100% - .05em)) 0 68%/100% 52% no-repeat}
 .tg-head .tg-take b,.tg-mapa-txt b{font-weight:800}
@@ -122,7 +128,15 @@ body{background-color:var(--color-bg)}
 .tg-hero-home{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(2rem,4vw,3rem);align-items:center;padding-block:clamp(2rem,6vw,4.5rem) clamp(.5rem,2vw,1.5rem)}
 .tg-hero-home > *{max-width:none}
 .tg-hero-home .tg-hero-title{font-size:clamp(2.9rem,7.4vw,5.6rem);line-height:1}
-@media (min-width:56.25em){.tg-hero-home{grid-template-columns:minmax(0,1.25fr) minmax(19rem,24rem)}}
+/* a marca ao lado do nome, da altura das duas linhas (2em, com line-height 1); no celular, um pouco menor, para o nome caber */
+.tg-hero-home .tg-hero-title{display:flex;align-items:center;gap:.22em;max-width:none}
+.tg-hero-marca{flex:none;width:2.15em;height:2.15em;margin-left:-.12em}
+.tg-hero-nome{min-width:0}
+@media (max-width:35em){.tg-hero-marca{width:1.7em;height:1.7em}}
+/* duas colunas (título | post-it) só quando o título grande, com a marca, cabe ao lado do post-it; antes disso, o post-it desce */
+@media (min-width:68em){.tg-hero-home{grid-template-columns:minmax(0,1.25fr) minmax(19rem,24rem)}}
+/* logo depois de virar duas colunas, a coluna do título é estreita: o nome encolhe um pouco para caber com a marca */
+@media (min-width:68em) and (max-width:80em){.tg-hero-home .tg-hero-title{font-size:5.3vw}}
 /* "Você sabia?": um post-it amarelo preso com fita */
 .tg-hero-home .tg-fact{position:relative;overflow:visible;border:0;border-radius:2px;background:color-mix(in srgb,var(--v-yellow,#ffd166) 62%,var(--color-panel));
   box-shadow:0 1px 0 rgba(20,30,70,.06),0 22px 34px -22px rgba(var(--sombra-escura),.5)}
