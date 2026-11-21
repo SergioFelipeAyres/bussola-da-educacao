@@ -387,7 +387,11 @@ body{background-color:var(--color-bg)}
 .tg-perg-leg .lm::before,.tg-perg-leg .lm::after{content:"";position:absolute;top:-5px;width:2px;height:8px;background:var(--color-fg)}
 .tg-perg-leg .lm::before{left:0}
 .tg-perg-leg .lm::after{right:0}
-.tg-perg-leg .lr{width:2px;height:1rem;background:var(--color-fg)}
+.tg-perg-leg .lr{position:relative;width:2px;height:1rem;background:var(--color-fg)}
+/* o Brasil é o mesmo alfinete do painel: traço com um triângulo no alto */
+.tg-perg-lista .tr .ref::before,.tg-perg-leg .lr::before{content:"";position:absolute;left:50%;translate:-50% 0;width:10px;height:7px;background:var(--color-fg);clip-path:polygon(0 0,100% 0,50% 100%)}
+.tg-perg-lista .tr .ref::before{top:-6px}
+.tg-perg-leg .lr::before{top:-5px}
 /* rodapé de base e fonte, como nos cartões do painel */
 .tg-perg-base{margin:.6rem 0 0;padding-top:.7rem;border-top:1px dashed var(--color-border-line);font-size:var(--txt-mini,.875rem);line-height:1.5;color:var(--color-fg-muted)}
 .tg button.tg-perg-ir{display:inline-block;min-height:2.75rem;margin-top:.2rem;padding:.6rem 0;text-align:left;border:0;background:none;

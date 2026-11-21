@@ -64,7 +64,7 @@ Não é um portal de tabelas nem um dashboard analítico: é uma aplicação tes
 ## Product Principles
 
 1. **O leigo primeiro.** Se um leitor sem letramento em dados não entende, não está pronto, mesmo que esteja correto.
-2. **Frase antes do gráfico.** Cada visualização é ancorada por uma afirmação em linguagem simples.
+2. **Frase antes do gráfico.** Cada visualização é ancorada por uma afirmação em linguagem simples. Com um grupo escolhido, a frase diz o grupo e como ele fica perto do Brasil.
 3. **Integridade visível.** Base e margem de erro nunca somem; nada sugere uma conclusão que os dados não sustentam.
 4. **Celular é o padrão.** Tudo funciona numa coluna e ao toque.
 5. **Ninguém fica de fora.** Todo dado visual tem equivalente em texto e áudio.

@@ -16,7 +16,7 @@
   const REVEAL = '.tg-hero > *, .tg-fact, .tg-porta, .tg-indice, .tg-kpi, .tg-card, .tg-sec-head, .tg-cite, .tg-filter';
   // só os números grandes dos destaques contam; os valores dos gráficos aparecem já no valor final,
   // para nunca mostrarem, durante a contagem, um número que contradiz a frase logo acima
-  const NUMS = '.tg-kpi-num';
+  const NUMS = '.tg-kpi-n'; // o número grande do destaque (o "95" de "95 em cada 100")
   const ROWS = '.tg-bar-row, .tg-dot-row, .tg-lik-row, .tg-isorow, .tg-stack-legend > div, .tg-stack > div';
   const DUR = 650;
 

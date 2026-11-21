@@ -390,7 +390,7 @@
     const cem = precisaCem(r.pct) || !!(cat && br && precisaCem(br.pct)), n = freq(r.pct, cem);
     const txt = cat ? (t.txtG || t.txt.replace(/^(escolas|gestores escolares|gestores) /, '')) : t.txt;
     let vs = '';
-    if (cat && br) { const d = Math.round((r.pct - br.pct) * 10) / 10; vs = ' No Brasil, ' + freq(br.pct, cem) + ' (' + n1(br.pct) + '%)' + (d ? ': são ' + n1(Math.abs(d)) + (Math.abs(d) < 2 ? ' ponto ' : ' pontos ') + (d > 0 ? 'a mais' : 'a menos') + ' no grupo.' : '.'); }
+    if (cat && br) { const d = Math.round((r.pct - br.pct) * 10) / 10; vs = ' No Brasil, ' + freq(br.pct, cem) + ' (' + n1(br.pct) + '%)' + (!d ? '.' : separa(r, br) ? ', menos do que no grupo.' : separa(br, r) ? ', mais do que no grupo.' : ', parecido com o grupo.'); }
     c.innerHTML = entendi(t, cat, seg) + '<p class="tg-perg-frase">' + q + ', ' + grifo(n) + ' ' + verbo1(n, txt) + '.</p>' + iso(r.pct, t.pessoa) +
       '<ul class="tg-perg-lista">' + barra(cat ? segCurto(seg) : 'Brasil', r, cat ? br : null) + '</ul>' + legenda(!!(cat && br)) +
       '<p class="tg-perg-var">' + n1(r.pct) + '% (' + faixa(r) + ').' + vs + '</p>';
@@ -555,12 +555,13 @@
     // depois que o leitor toca uma pergunta, a lista não muda mais sozinha (uma nova medida da largura ou a chegada
     // da fonte sorteava outra lista, e a pergunta tocada sumia)
     let tocada = false, capsAlvo = CAPS, chave = '', listaCompleta = null;
+    const doGrupoSel = new Set(); // perguntas sobre o grupo escolhido no painel (marcadas na lista)
     const ctx = () => { const c = contexto ? contexto() : null; if (!c || !c.aba) return null; const [cat, seg] = (c.rec || '').split('|'); return { aba: c.aba, cat: cat && cat !== 'TOTAL' ? cat : null, seg }; };
     const chaveDe = (c) => c ? c.aba + '|' + (c.cat || '') + '|' + (c.seg || '') : '';
     const mostra = (lista) => {
       listaAtual = lista; tocada = false;
       // na janela de Escolas, só perguntas de escolas (e de Gestores, só de gestores); as do grupo escolhido entram primeiro
-      const c = ctx(); chave = chaveDe(c);
+      const c = ctx(); chave = chaveDe(c); doGrupoSel.clear();
       if (c) { const pre = c.aba === 'escolas' ? 'Escolas ·' : 'Gestores ·', so = lista.filter((x) => x.cap.startsWith(pre)); if (so.length) lista = so; }
       capsAlvo = CAPS.filter((cp) => lista.some((x) => x.cap === cp));
       // sorteia MOSTRA perguntas, misturando os tipos (COTA), no máximo 2 por cor de capítulo
@@ -579,7 +580,7 @@
       // 0) com um grupo escolhido no painel: até 2 perguntas sobre ele (ou comparando esse tipo de grupo)
       if (c && c.cat) {
         const doGrupo = todas.filter((x) => x.cat === c.cat && (x.seg === c.seg || x.tipo === 'compara') && cabeTema(x));
-        for (const x of doGrupo.filter((y) => y.seg === c.seg).concat(doGrupo.filter((y) => y.tipo === 'compara'))) if (sorte.length < 2 && !sorte.includes(x) && cabeTema(x)) pega(x);
+        for (const x of doGrupo.filter((y) => y.seg === c.seg).concat(doGrupo.filter((y) => y.tipo === 'compara'))) if (sorte.length < 2 && !sorte.includes(x) && cabeTema(x)) { pega(x); doGrupoSel.add(x); }
       }
       const caps = embaralha(capsAlvo).sort((a, b) => curtasDe(a) - curtasDe(b));
       for (const cp of caps) { if (sorte.some((y) => y.cap === cp)) continue; const x = todas.find((y) => y.cap === cp && cabeTema(y)); if (x) pega(x); }
@@ -609,7 +610,7 @@
     const desenha = (ordem, final) => {
       ordemAtual = ordem;
       ex.replaceChildren(...ordem.map((q) => {
-        const li = el('li'), b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = q.txt; b.setAttribute('aria-pressed', 'false'); li.dataset.tema = q.tema; li.dataset.cap = q.cap; if (q.txt.length > LONGA) li.dataset.longa = '';
+        const li = el('li'), b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = q.txt; b.setAttribute('aria-pressed', 'false'); li.dataset.tema = q.tema; li.dataset.cap = q.cap; if (q.txt.length > LONGA) li.dataset.longa = ''; if (doGrupoSel.has(q)) li.dataset.grupo = '';
         if (q.sec) b.style.setProperty('--sec', 'var(--v-' + q.sec + ')');
         b.addEventListener('click', () => {
           tocada = true;
@@ -624,11 +625,15 @@
     // então vale em qualquer largura; refeito quando a largura muda (e quando a janela de Escolas/Gestores abre)
     // uma a uma, na ordem: a pergunta que cairia na 4ª linha sai, e uma mais curta depois dela ainda pode caber
     const corta = (final) => {
+      // depois do toque, o que está à vista fica como está (a resposta abre a barra de rolagem da janela,
+      // a largura muda e a lista se refazia, trocando perguntas debaixo do dedo)
+      if (tocada) return;
       const lis = [...ex.children]; lis.forEach((li) => { li.hidden = false; });
       if (!ex.offsetWidth) return; // escondida (janela fechada): mede quando aparecer
       const linhasAte = (k) => new Set(lis.slice(0, k + 1).filter((li) => !li.hidden).map((li) => Math.round(li.getBoundingClientRect().bottom))).size; // a lista alinha pela base (align-items:flex-end)
       // caixa estreita (celular): as longas ficam de fora, porque quebrariam em várias linhas
-      if (ex.offsetWidth < LARGA) lis.forEach((li) => { if ('longa' in li.dataset) li.hidden = true; });
+      // (uma pergunta do grupo escolhido no painel fica, mesmo longa: as do grupo costumam ser as mais longas)
+      if (ex.offsetWidth < LARGA) { let umDoGrupo = true; lis.forEach((li) => { if (!('longa' in li.dataset)) return; if (umDoGrupo && 'grupo' in li.dataset) { umDoGrupo = false; return; } li.hidden = true; }); }
       lis.forEach((li, k) => { if (!li.hidden && !li.querySelector('[aria-pressed="true"]') && linhasAte(k) > LINHAS) li.hidden = true; }); // a tocada nunca some
       // o que ficou visível precisa ter pelo menos MIN_TEMAS temas diferentes (ou todas diferentes, se couberem menos)
       // e, numa caixa larga (computador), no máximo 1 linha com menos de 3 perguntas; se não, sorteia de novo (com limite de tentativas)

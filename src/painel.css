@@ -125,6 +125,16 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-ref::before{top:-6px}
 .tg-refkey::before{top:-5px}
 .tg-bar-row:has(.tg-ref){gap:.55rem}
+/* destaques: "95 em cada 100", com o número grande e "em cada 100" menor ao lado */
+.tg-kpi-pre,.tg-kpi-un{font-size:max(.95rem,.42em);font-weight:700;letter-spacing:0}
+.tg-kpi-un{margin-left:.15em}
+@media (max-width:35em){.tg-kpi .tg-iso10{display:none}} /* no celular, as figuras de 12px não comunicam: fica o número */
+/* Compare grupos: o grupo escolhido no filtro, marcado entre os outros */
+.tg-dot-meu{background:color-mix(in srgb,var(--sec) 9%,transparent);border-radius:4px;box-shadow:0 0 0 .3rem color-mix(in srgb,var(--sec) 9%,transparent)}
+.tg-dot-meu .tg-dot-lab{font-weight:800;color:var(--color-fg)}
+.tg-dot-tag{display:block;font:500 var(--txt-mini,.875rem)/1.2 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
+/* Perguntar: a barra de rolagem da janela não muda a largura da lista ao aparecer */
+.tg-perg-janela,.tg-perg-janela .tg-guide-body{scrollbar-gutter:stable}
 /* margem grande dita em palavras, logo abaixo do gráfico */
 .tg-moe-note{margin:0;padding:.45rem .7rem;background:var(--cds-chart-grid);border-radius:6px;font-size:var(--cds-font-size-caption);line-height:1.4;color:var(--color-fg-muted)}
 .tg-moe-note b{color:var(--color-fg)}
