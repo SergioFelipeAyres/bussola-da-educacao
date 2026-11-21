@@ -62,7 +62,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg button:hover{border-color:var(--color-fg-muted)}
 .tg select:focus-visible,.tg button:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
 .tg-filter-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);flex-basis:100%}
-.tg-refkey{display:inline-block;width:2px;height:.9em;background:var(--color-fg);vertical-align:-1px;margin-inline:.25rem}
+.tg-refkey{position:relative;display:inline-block;width:2px;height:.9em;background:var(--color-fg);vertical-align:-1px;margin-inline:.35rem}
 .tg-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13.5rem),1fr));gap:var(--cds-gap-md)}
 .tg-kpi{display:flex;flex-direction:column;gap:var(--cds-gap-xs);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
 .tg-kpi-label{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
@@ -118,6 +118,16 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
 .tg-moe{position:absolute;top:-.15rem;bottom:-.15rem;border-radius:3px;background:var(--color-fg);opacity:.16}
 .tg-ref{position:absolute;top:-.3rem;bottom:-.3rem;width:2px;margin-left:-1px;background:var(--color-fg);border-radius:1px}
+/* Brasil = alfinete: o traço vertical ganha um triângulo apontando para baixo, em cima do trilho. A margem de erro é
+   horizontal com pontinhas retas; com margem grande, a barra de erro passava por cima do traço e as duas marcas,
+   ambas em Tinta (e ambas brancas no alto contraste), se confundiam. Uma forma que só o Brasil tem resolve nos dois modos */
+.tg-ref::before,.tg-refkey::before{content:"";position:absolute;left:50%;translate:-50% 0;width:10px;height:7px;background:var(--color-fg);clip-path:polygon(0 0,100% 0,50% 100%)}
+.tg-ref::before{top:-6px}
+.tg-refkey::before{top:-5px}
+.tg-bar-row:has(.tg-ref){gap:.55rem}
+/* margem grande dita em palavras, logo abaixo do gráfico */
+.tg-moe-note{margin:0;padding:.45rem .7rem;background:var(--cds-chart-grid);border-radius:6px;font-size:var(--cds-font-size-caption);line-height:1.4;color:var(--color-fg-muted)}
+.tg-moe-note b{color:var(--color-fg)}
 .tg-val{font-variant-numeric:tabular-nums;font-size:var(--cds-font-size-body);font-weight:var(--cds-font-weight-medium);min-width:3.6rem;text-align:right}
 .tg-bar-row:hover .tg-track{outline:1px solid var(--cds-chart-axis);outline-offset:2px}
 .tg-stack-wrap{display:flex;flex-direction:column;gap:var(--cds-gap-sm)}
@@ -203,7 +213,7 @@ body:has(.tg-guide[open]){overflow:hidden}
 }
 .tg-learn .tg-lesson:last-child{padding-bottom:0}
 .tg-nw{white-space:nowrap}
-.tg-cmp-zero{margin-top:var(--cds-gap-xs);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-cmp-zero{margin:var(--cds-gap-sm) 0 var(--cds-gap-xs);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 .tg-lesson-vis .tg-iso10{max-width:100%}
 .tg-lesson-eq{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;font-size:1.05rem}
 .tg-lesson-eq b{color:var(--cds-chart-categorical-1);font-weight:700}
@@ -665,6 +675,16 @@ html[data-contraste] .tg-shot-brand b{color:var(--logo-ouro)}
 .tg-rec-fixo{position:fixed;left:0;right:0;top:var(--nav-h,3.6rem);z-index:15;padding:.5rem max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
 @media (min-width:56.25em){.tg-rec-fixo{padding-inline:max(2.5rem,env(safe-area-inset-left,0px))}}
 .tg-rec-fixo[hidden]{display:none}
+/* em "Compare grupos": "Comparando: Região" no lugar do grupo do filtro, sem "Mudar" (o filtro não vale ali) */
+.tg-fixo-cmpv,.tg-fixo-cmp :is(.tg-rec-fixo-tit span,#rec-titulo2,.tg-rec-mudar2){display:none!important}
+.tg-fixo-cmp .tg-fixo-cmpv{display:inline!important}
+/* barra do topo recolhida ao descer (js/painel.js, só quando ela ocupa mais de uma linha): sobe para fora da tela,
+   e a barra "Você está vendo" ocupa o lugar dela. O foco do teclado dentro da barra a traz de volta */
+.nav{transition:translate .25s var(--tg-ease,ease-out)}
+.tg-rec-fixo{transition:top .25s var(--tg-ease,ease-out)}
+html.nav-recolhida .nav:not(:focus-within){translate:0 -100%}
+html.nav-recolhida:not(:has(.nav:focus-within)) .tg-rec-fixo{top:0}
+@media (prefers-reduced-motion:reduce){.nav,.tg-rec-fixo{transition:none}}
 .tg-rec-fixo-in{--sec:var(--v-blue);max-width:76rem;margin-inline:auto;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem 1rem;padding:.5rem .9rem .55rem;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background:color-mix(in srgb,var(--color-panel) 94%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 28px -12px rgba(20,30,70,.35);pointer-events:auto;animation:tg-fixo-in .25s ease-out}
 @keyframes tg-fixo-in{from{opacity:0;transform:translateY(-.5rem)}}
 .tg .tg-rec-fixo-tit{display:flex;align-items:baseline;gap:.4rem;margin:0;min-width:0;font-size:.95rem;white-space:nowrap}

@@ -259,7 +259,7 @@
       const tem = (cat, seg) => t.ranking ? t.itens.some(([, ind, g, resp = 'Sim']) => valor(rows, ind, g, resp, cat, seg)) : !!linha(rows, t.ind, t.grupo || '', t.resp || 'Sim', cat, seg);
       if (tem()) lista.push({ txt: textoDe(t), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'brasil', faz: () => responde(t, null, null) });
       for (const cat of tipos(t)) for (const seg of segsDe(rows, cat))
-        if (tem(cat, seg)) lista.push({ txt: textoDe(t, cat, seg), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'grupo', faz: () => responde(t, cat, seg) });
+        if (tem(cat, seg)) lista.push({ txt: textoDe(t, cat, seg), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'grupo', cat, seg, faz: () => responde(t, cat, seg) });
       // 4) cada item de um ranking que tem frase própria (focoTxt): "Quantas escolas usam WhatsApp?", nos grupos e comparado
       if (t.ranking && t.focoTxt) t.itens.forEach(([l, ind, g, resp = 'Sim'], i) => {
         const ft = t.focoTxt(l); if (!ft || /não sabem|outra função/.test(l)) return;
@@ -271,9 +271,9 @@
         if (t.focoQ) return; // a base é outra (ex.: só quem usa IA): fica só a pergunta do Brasil
         for (const cat of tipos(t)) {
           const segs = segsDe(rows, cat).filter((seg) => temI(cat, seg));
-          segs.forEach((seg) => lista.push(Object.assign({ txt: txtI(cat, seg), tipo: 'grupo', faz: () => responde(t, cat, seg, i) }, base)));
+          segs.forEach((seg) => lista.push(Object.assign({ txt: txtI(cat, seg), tipo: 'grupo', cat, seg, faz: () => responde(t, cat, seg, i) }, base)));
           if (!jaNoCompare && segs.filter((seg) => !/^Públicas/.test(seg)).length >= 2)
-            lista.push(Object.assign({ txt: textoCompara((t.ds === 'escolas' ? 'escolas que ' : 'gestores que ') + ft, cat), tipo: 'compara', faz: () => compara(t, cat, '', '', null, i) }, base));
+            lista.push(Object.assign({ txt: textoCompara((t.ds === 'escolas' ? 'escolas que ' : 'gestores que ') + ft, cat), tipo: 'compara', cat, faz: () => compara(t, cat, '', '', null, i) }, base));
         }
       });
     }
@@ -281,7 +281,7 @@
       const t = temaDaMedida(m), rows = t && R[t.ds]; if (!rows) continue;
       for (const cat of tipos(t)) {
         const n = segsDe(rows, cat).filter((s) => !/^Públicas/.test(s) && valor(rows, t.ind, t.grupo || '', t.resp || 'Sim', cat, s)).length;
-        if (n >= 2) lista.push({ txt: textoCompara(m.label, cat), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'compara', faz: () => compara(t, cat, '', '') });
+        if (n >= 2) lista.push({ txt: textoCompara(m.label, cat), sec: t.sec, tema: t.nome, cap: capDe(t), tipo: 'compara', cat, faz: () => compara(t, cat, '', '') });
       }
     }
     const vistos = new Set(); return lista.filter((q) => !vistos.has(q.txt) && vistos.add(q.txt));
@@ -536,7 +536,8 @@
 
   // ---------- a caixa (a mesma no Início e na janela): só perguntas prontas, sem texto livre ----------
   let n = 0;
-  const caixa = (alvo, titulo) => {
+  // contexto (só na janela de Escolas e Gestores): a aba e o grupo escolhidos no painel, para as perguntas começarem por eles
+  const caixa = (alvo, titulo, contexto) => {
     const id = 'perg-' + (++n);
     const box = el('div', 'tg-perg-caixa'); box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', id + '-tit');
     box.innerHTML = '<p class="tg-perg-tit" id="' + id + '-tit">' + titulo + '</p>' +
@@ -551,8 +552,17 @@
     };
     // perguntas como marcadores de página (os do "Ir para"), na cor do capítulo do tema que cada uma pergunta
     let listaAtual = null, ordemAtual = [], melhor = null, tentativas = 0;
+    // depois que o leitor toca uma pergunta, a lista não muda mais sozinha (uma nova medida da largura ou a chegada
+    // da fonte sorteava outra lista, e a pergunta tocada sumia)
+    let tocada = false, capsAlvo = CAPS, chave = '', listaCompleta = null;
+    const ctx = () => { const c = contexto ? contexto() : null; if (!c || !c.aba) return null; const [cat, seg] = (c.rec || '').split('|'); return { aba: c.aba, cat: cat && cat !== 'TOTAL' ? cat : null, seg }; };
+    const chaveDe = (c) => c ? c.aba + '|' + (c.cat || '') + '|' + (c.seg || '') : '';
     const mostra = (lista) => {
-      listaAtual = lista;
+      listaAtual = lista; tocada = false;
+      // na janela de Escolas, só perguntas de escolas (e de Gestores, só de gestores); as do grupo escolhido entram primeiro
+      const c = ctx(); chave = chaveDe(c);
+      if (c) { const pre = c.aba === 'escolas' ? 'Escolas ·' : 'Gestores ·', so = lista.filter((x) => x.cap.startsWith(pre)); if (so.length) lista = so; }
+      capsAlvo = CAPS.filter((cp) => lista.some((x) => x.cap === cp));
       // sorteia MOSTRA perguntas, misturando os tipos (COTA), no máximo 2 por cor de capítulo
       // e no máximo POR_TEMA do mesmo tema, e evita duas cores iguais lado a lado
       // e no máximo MAX_LONGAS perguntas longas (mais de LONGA caracteres), para os tamanhos variarem sem encher a caixa
@@ -566,8 +576,13 @@
       // 1) uma pergunta de cada capítulo. Os capítulos com menos perguntas curtas escolhem primeiro,
       //    para as poucas longas permitidas irem para quem não tem opção curta (ex.: Tecnologia na gestão)
       const curtasDe = (c) => todas.filter((x) => x.cap === c && x.txt.length <= LONGA).length;
-      const caps = embaralha(CAPS).sort((a, b) => curtasDe(a) - curtasDe(b));
-      for (const c of caps) { const x = todas.find((y) => y.cap === c && cabeTema(y)); if (x) pega(x); }
+      // 0) com um grupo escolhido no painel: até 2 perguntas sobre ele (ou comparando esse tipo de grupo)
+      if (c && c.cat) {
+        const doGrupo = todas.filter((x) => x.cat === c.cat && (x.seg === c.seg || x.tipo === 'compara') && cabeTema(x));
+        for (const x of doGrupo.filter((y) => y.seg === c.seg).concat(doGrupo.filter((y) => y.tipo === 'compara'))) if (sorte.length < 2 && !sorte.includes(x) && cabeTema(x)) pega(x);
+      }
+      const caps = embaralha(capsAlvo).sort((a, b) => curtasDe(a) - curtasDe(b));
+      for (const cp of caps) { if (sorte.some((y) => y.cap === cp)) continue; const x = todas.find((y) => y.cap === cp && cabeTema(y)); if (x) pega(x); }
       const doCap = sorte.slice();
       // 2) o resto, misturando os tipos (COTA) e no máximo 2 por cor
       for (const x of todas) if (sorte.length < MOSTRA && !sorte.includes(x) && cota[x.tipo] > 0 && (conta[x.sec] || 0) < 2 && cabeTema(x)) pega(x);
@@ -597,6 +612,7 @@
         const li = el('li'), b = el('button', 'tg-perg-chip'); b.type = 'button'; b.textContent = q.txt; b.setAttribute('aria-pressed', 'false'); li.dataset.tema = q.tema; li.dataset.cap = q.cap; if (q.txt.length > LONGA) li.dataset.longa = '';
         if (q.sec) b.style.setProperty('--sec', 'var(--v-' + q.sec + ')');
         b.addEventListener('click', () => {
+          tocada = true;
           ex.querySelectorAll('.tg-perg-chip').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
           faz(q);
         });
@@ -613,16 +629,16 @@
       const linhasAte = (k) => new Set(lis.slice(0, k + 1).filter((li) => !li.hidden).map((li) => Math.round(li.getBoundingClientRect().bottom))).size; // a lista alinha pela base (align-items:flex-end)
       // caixa estreita (celular): as longas ficam de fora, porque quebrariam em várias linhas
       if (ex.offsetWidth < LARGA) lis.forEach((li) => { if ('longa' in li.dataset) li.hidden = true; });
-      lis.forEach((li, k) => { if (!li.hidden && linhasAte(k) > LINHAS) li.hidden = true; });
+      lis.forEach((li, k) => { if (!li.hidden && !li.querySelector('[aria-pressed="true"]') && linhasAte(k) > LINHAS) li.hidden = true; }); // a tocada nunca some
       // o que ficou visível precisa ter pelo menos MIN_TEMAS temas diferentes (ou todas diferentes, se couberem menos)
       // e, numa caixa larga (computador), no máximo 1 linha com menos de 3 perguntas; se não, sorteia de novo (com limite de tentativas)
       // e todos os capítulos à vista (no celular, onde cabem menos, todas de capítulos diferentes)
       const vis = lis.filter((li) => !li.hidden), temas = new Set(vis.map((li) => li.dataset.tema)), caps = new Set(vis.map((li) => li.dataset.cap));
       const porLinha = {}; vis.forEach((li) => { const b = Math.round(li.getBoundingClientRect().bottom); porLinha[b] = (porLinha[b] || 0) + 1; });
       const ralas = ex.offsetWidth >= LARGA ? Object.values(porLinha).filter((n) => n < 3).length : 0;
-      const precisaCaps = Math.min(CAPS.length, vis.length), precisaTemas = Math.min(MIN_TEMAS, vis.length);
+      const precisaCaps = Math.min(capsAlvo.length, vis.length), precisaTemas = Math.min(MIN_TEMAS, vis.length);
       const ok = caps.size >= precisaCaps && temas.size >= precisaTemas && ralas <= 1;
-      if (ok || final || !listaAtual) { tentativas = 0; melhor = null; return; }
+      if (ok || final || tocada || !listaAtual) { tentativas = 0; melhor = null; return; }
       // nem sempre dá para cumprir tudo (caixa mais estreita): guarda o melhor sorteio, nesta ordem de prioridade:
       // todos os capítulos, depois os temas, depois as linhas cheias, depois mais perguntas
       const nota = Math.min(caps.size, precisaCaps) * 1000 + Math.min(temas.size, precisaTemas) * 100 - Math.min(ralas, 3) * 10 + vis.length;
@@ -638,10 +654,14 @@
     prontas().then((lista) => {
       const curtas = lista.filter((q) => q.txt.length <= MAX_CARS);
       if (!curtas.length) { ex.replaceChildren(el('li', 'tg-perg-var', 'Não foi possível carregar as perguntas. Verifique a conexão e recarregue a página.')); return; }
-      mostra(curtas);
+      listaCompleta = curtas; mostra(curtas);
     });
     alvo.append(box, saida);
-    return { focus: () => (ex.querySelector('.tg-perg-chip') || ex).focus() };
+    return {
+      focus: () => (ex.querySelector('.tg-perg-chip') || ex).focus(),
+      // ao abrir a janela: se o leitor mudou de aba ou de grupo desde o último sorteio, sorteia de novo (e limpa a resposta antiga)
+      atualiza: () => { if (listaAtual && chaveDe(ctx()) !== chave) { saida.replaceChildren(); mostra(listaCompleta); } }
+    };
   };
   const embaralha = (a) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 
@@ -655,12 +675,12 @@
     const j = el('dialog', 'tg-guide tg-perg-janela'); j.id = 'pergunte-janela'; j.setAttribute('aria-labelledby', 'pergunte-janela-tit');
     j.innerHTML = '<div class="tg-guide-top"><h2 class="tg-guide-title" id="pergunte-janela-tit">Pergunte à Bússola</h2><button type="button" class="tg-guide-x" aria-label="Fechar"><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="tg-guide-body"></div>';
     guia.after(j);
-    const inp = caixa(j.querySelector('.tg-guide-body'), 'O que você quer saber?');
+    const inp = caixa(j.querySelector('.tg-guide-body'), 'O que você quer saber?', () => ({ aba: document.querySelector('.nav-link[aria-current=page]')?.dataset.view, rec: window.dash && window.dash.params().recorte }));
     j.querySelector('.tg-guide-x').addEventListener('click', () => j.close());
     j.addEventListener('click', (e) => { if (e.target === j) j.close(); });
     const b = el('button', 'tg-guide-btn tg-perg-btn', '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>Perguntar');
     b.type = 'button'; b.setAttribute('aria-haspopup', 'dialog'); b.setAttribute('aria-controls', j.id);
-    b.addEventListener('click', () => { j.showModal(); inp.focus(); });
+    b.addEventListener('click', () => { inp.atualiza(); j.showModal(); inp.focus(); });
     // "Como ler" e "Perguntar" lado a lado (quebram para a linha de baixo se não couberem)
     const par = el('div', 'tg-head-botoes'); guiaBtn.before(par); par.append(guiaBtn, b);
   };

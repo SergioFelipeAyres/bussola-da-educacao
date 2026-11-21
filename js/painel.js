@@ -445,6 +445,7 @@
   };
 
   // ---------- bars ----------
+  const MOE_GRANDE = 10; // pontos percentuais, para cada lado
   // max: mostra só as primeiras barras e um botão para ver as outras (listas longas cansam o leitor)
   const bars = (el, items, rec, anim, max) => {
     if (!items.length) return emptyMsg(el, NODATA);
@@ -476,6 +477,15 @@
         wrap.querySelectorAll('.tg-bar-extra').forEach((r) => { r.hidden = !ab; });
       });
       wrap.append(b);
+    }
+    // margem grande dita em palavras: acima de 10 pontos para cada lado, o número é pouco preciso, e a linha com
+    // pontinhas fica longa a ponto de esconder a leitura. Cartões que já avisam isso na nota não repetem
+    const grandes = items.filter((it) => it.row.moe >= MOE_GRANDE).length, card = el.closest('.tg-card');
+    if (grandes && !(card && /margens de erro são grandes/.test(card.querySelector('.tg-card-note')?.textContent || ''))) {
+      const n = document.createElement('p'); n.className = 'tg-moe-note';
+      n.innerHTML = '<b>Números pouco precisos.</b> ';
+      n.append((grandes === items.length ? 'Nestas barras' : grandes === 1 ? 'Em uma destas barras' : 'Em ' + grandes + ' destas barras') + ', a margem de erro passa de ' + MOE_GRANDE + ' pontos para cada lado: o número real pode estar bem acima ou bem abaixo do mostrado.');
+      wrap.append(n);
     }
     if (rec !== TOTAL) { const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.innerHTML = '<span><span class="tg-refkey"></span>Brasil</span><span><span class="tg-sw tg-sw-moe"></span>Margem de erro</span>'; wrap.append(lg); }
     el.replaceChildren(wrap);
@@ -1077,9 +1087,25 @@
       // o foco não pode ficar preso numa barra que sumiu
       if (!mostrar && fixo.contains(document.activeElement)) { const b = filtro.querySelector('#rec-dims [aria-checked=true]') || filtro.querySelector('#rec-dims [role=radio]'); if (b) b.focus({ preventScroll: true }); }
     }
-    if (mostrar) document.documentElement.style.setProperty('--fixo-h', fixo.offsetHeight + 'px');
+    if (mostrar) {
+      // em "Compare grupos" o filtro do topo não vale: a barra diz o que está sendo comparado, e "Mudar" sai
+      const cmp = document.getElementById('comparar'), q = cmp && !cmp.hidden && cmp.getBoundingClientRect();
+      const comparando = !!q && q.top < innerHeight * 0.5 && q.bottom > navH + fixo.offsetHeight;
+      fixo.classList.toggle('tg-fixo-cmp', comparando);
+      if (comparando) document.getElementById('cmp-titulo2').textContent = 'Comparando: ' + (cc.selectedOptions[0] ? cc.selectedOptions[0].textContent : 'grupos');
+      document.documentElement.style.setProperty('--fixo-h', fixo.offsetHeight + 'px');
+    }
   };
-  window.addEventListener('scroll', () => { if (!fixoRaf) fixoRaf = requestAnimationFrame(() => { fixoRaf = 0; fixaFiltro(); }); }, { passive: true });
+  // barra do topo alta (celular, tablet ou "Letra maior": mais de uma linha) some ao descer e volta ao subir,
+  // para o dado ter a tela; a barra "Você está vendo" sobe para o lugar dela. Volta também com o foco do teclado (CSS).
+  let ultY = window.scrollY;
+  const recolheNav = () => {
+    const y = window.scrollY, dy = y - ultY, alta = navEl.offsetHeight > 80;
+    if (Math.abs(dy) < 6 && y > 0) return;
+    ultY = y;
+    document.documentElement.classList.toggle('nav-recolhida', alta && dy > 0 && y > navEl.offsetHeight * 2);
+  };
+  window.addEventListener('scroll', () => { if (!fixoRaf) fixoRaf = requestAnimationFrame(() => { fixoRaf = 0; recolheNav(); fixaFiltro(); }); }, { passive: true });
   window.addEventListener('resize', fixaFiltro);
   const recInfo = document.getElementById('rec-info'), recInfoTxt = document.getElementById('rec-info-txt');
   recInfo.addEventListener('click', () => { const ab = recInfo.getAttribute('aria-expanded') !== 'true'; recInfo.setAttribute('aria-expanded', ab ? 'true' : 'false'); recInfoTxt.hidden = !ab; });
@@ -1498,10 +1524,11 @@
     }
     const lg = document.createElement('div'); lg.className = 'tg-legend'; lg.style.marginTop = 'var(--cds-gap-sm)';
     lg.innerHTML = '<span><span class="tg-sw" style="background:var(--sec);border-radius:50%"></span>ponto = estimativa</span><span><span class="tg-sw" style="background:var(--sec);opacity:.45;width:1.1rem;height:4px;border-radius:2px"></span>faixa = margem de erro</span><span><span class="tg-refkey"></span>linha = Brasil</span>';
-    if (rows.some((x) => noMoe(x.row))) { const s = document.createElement('span'); s.textContent = '* sem margem de erro estimada'; lg.append(s); }
+    if (rows.some((x) => noMoe(x.row))) { const s = document.createElement('span'); s.textContent = '* sem margem de erro: o número vale só para quem respondeu à pesquisa'; lg.append(s); }
     w.append(lg);
     // a escala não começa no zero: dito por extenso, para ninguém ler a distância como proporção
-    if (ticks[0] > 0) { const z = document.createElement('p'); z.className = 'tg-cmp-zero'; z.textContent = 'A escala começa em ' + ticks[0] + '%, não em zero, para mostrar as diferenças entre os grupos.'; w.append(z); }
+    // fica logo acima do eixo, onde o leitor olha os números da escala
+    if (ticks[0] > 0) { const z = document.createElement('p'); z.className = 'tg-cmp-zero'; z.textContent = 'Atenção: a escala começa em ' + ticks[0] + '%, não em zero, para mostrar as diferenças entre os grupos.'; w.insertBefore(z, ax); }
     // frase antes do gráfico: o maior e o menor grupo, e o Brasil como referência
     const ord = rows.slice().sort((a, b) => b.row.pct - a.row.pct), alto = ord[0], baixo = ord[ord.length - 1];
     const quemCurto = (s) => cat === 'REGIÃO' ? 'o ' + segName(s) : 'o grupo “' + segName(s) + '”';
@@ -1509,14 +1536,15 @@
     // "a maior parcela" só quando a margem do 1º não toca a do 2º (e o mesmo para "a menor");
     // senão a frase dá só a faixa. O * acompanha o número que não tem margem estimada
     // sem margem estimada, o número vale só para a amostra: dito junto, para não ser citado como certeza
-    const fq = (x) => negrito(freqTxt(x.row.pct, false) + (noMoe(x.row) ? ' na amostra*' : ''));
+    const fq = (x) => negrito(freqTxt(x.row.pct, false) + (noMoe(x.row) ? '*' : ''));
+    const perto = (a, b) => ['Os outros grupos ficam perto uns dos outros, entre ', fq(a), ' (' + segName(a.s) + ') e ', fq(b), ' (' + segName(b.s) + '), e não dá para dizer qual vem na frente.'];
     if (ord.length > 1 && alto.row.pct !== baixo.row.pct) fixaBase(cemCmp, () => {
       const topo = separa(alto.row, ord[1].row), fundo = separa(ord[ord.length - 2].row, baixo.row);
       if (topo && fundo) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' tem a maior parcela (', fq(alto), ') e ' + quemCurto(baixo.s) + ', a menor (', fq(baixo), ').');
       // só uma ponta se destaca: ela é dita; a sobreposição vale só para os outros grupos
-      else if (topo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' tem a maior parcela (', fq(alto), '). Entre os outros grupos, que vão até ', fq(baixo), ' (' + segName(baixo.s) + '), as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
-      else if (fundo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(baixo.s) + ' tem a menor parcela (', fq(baixo), '). Entre os outros grupos, que chegam a ', fq(alto), ' (' + segName(alto.s) + '), as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
-      else frase.append('Em “' + m.label + '”, os grupos vão de ', fq(baixo), ' (' + segName(baixo.s) + ') a ', fq(alto), ' (' + segName(alto.s) + '), mas as margens de erro se sobrepõem: a ordem entre eles pode ser outra.');
+      else if (topo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(alto.s) + ' fica à frente, com ', fq(alto), '. ', ...perto(baixo, ord[1]));
+      else if (fundo && ord.length > 2) frase.append('Em “' + m.label + '”, ' + quemCurto(baixo.s) + ' fica atrás, com ', fq(baixo), '. ', ...perto(ord[ord.length - 2], alto));
+      else frase.append('Em “' + m.label + '”, os grupos ficam perto uns dos outros, entre ', fq(baixo), ' (' + segName(baixo.s) + ') e ', fq(alto), ' (' + segName(alto.s) + '), e não dá para dizer qual vem na frente.');
       frase.append(' No Brasil, ', negrito(freqTxt(br.pct, false)), '.');
     });
     el.replaceChildren(...(frase.childNodes.length ? [frase] : []), w);

@@ -91,3 +91,23 @@
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', monta); else monta();
 })();
+
+/*
+ * Botão do VLibras (widget do governo federal) no canto de baixo, à direita.
+ * O widget o desenha fixo no meio da altura da tela, à direita, e ali ele cobria os valores das barras
+ * no celular. Ele vive num shadow DOM aberto (#vlibras-access-wrapper), onde o CSS da página não chega:
+ * quando o botão aparece, entra uma regra dentro dele. Se o widget mudar e o elemento não existir, nada acontece.
+ */
+(() => {
+  const CSS = '#vlibras-access{top:auto!important;bottom:calc(16px + env(safe-area-inset-bottom,0px))!important}';
+  const ajusta = () => {
+    const raiz = document.getElementById('vlibras-access-wrapper')?.shadowRoot;
+    if (!raiz || raiz.querySelector('style[data-bussola]')) return !!raiz;
+    const s = document.createElement('style'); s.dataset.bussola = ''; s.textContent = CSS; raiz.append(s);
+    return true;
+  };
+  if (ajusta()) return;
+  const mo = new MutationObserver(() => { if (ajusta()) mo.disconnect(); });
+  mo.observe(document.body, { childList: true });
+  setTimeout(() => mo.disconnect(), 30000); // o widget não veio (sem rede): para de esperar
+})();
