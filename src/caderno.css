@@ -369,8 +369,10 @@ body{background-color:var(--color-bg)}
 /* barras: as mesmas do painel (trilho fino, traço de marca-texto, margem de erro e traço do Brasil) */
 .tg-perg-lista{display:flex;flex-direction:column;gap:.55rem;max-width:30rem;margin:.9rem 0 0;padding:0;list-style:none}
 /* o valor vem logo depois do nome do grupo, e não no fim do trilho: lá ele ficava em cima do alfinete do Brasil e parecia ser dele */
-.tg-perg-lista li{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:.2rem .6rem;align-items:baseline;font-size:var(--cds-font-size-caption)}
-.tg-perg-lista .v{font-weight:600;font-variant-numeric:tabular-nums}
+.tg-perg-lista li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2rem .6rem;font-size:var(--cds-font-size-caption)}
+.tg-perg-lista li > span:first-child{flex:0 1 auto;min-width:0} /* nome longo quebra a linha, e o valor fica ao lado dele, dentro do cartão */
+.tg-perg-lista .v{flex:none;font-weight:600;font-variant-numeric:tabular-nums}
+.tg-perg-lista .tr{flex-basis:100%}
 .tg-perg-lista .tr{grid-column:1/-1;position:relative;height:1rem;background:linear-gradient(var(--color-border-line),var(--color-border-line)) 0 100%/100% 1px no-repeat}
 .tg-perg-lista .tr .f{position:absolute;left:0;top:2px;bottom:3px;background:var(--sec,var(--v-blue));opacity:.85;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%)}
 .tg-perg-lista .tr .moe{position:absolute;top:50%;height:0;margin-top:-1px;border-top:2px solid var(--color-fg)}
@@ -401,3 +403,11 @@ body{background-color:var(--color-bg)}
 .tg button.tg-perg-btn{--etq-bg:var(--v-blue)}
 .tg-perg-janela .tg-perg-caixa{padding:0;border:0;box-shadow:none}
 .tg-perg-janela .tg-guide-body{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
+/* "Outras perguntas": sorteia uma lista nova; botão de texto, como o "Mais tipos de grupo" do filtro, com 44px de altura */
+.tg-perg-caixa button.tg-perg-outras{display:inline-flex;align-items:center;gap:.4rem;min-height:2.75rem;margin:.55rem 0 -.35rem -.1rem;padding:.35rem .1rem;border:0;background:none;cursor:pointer;
+  font:700 var(--cds-font-size-body)/1.2 var(--font-sans);color:var(--v-blue);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tg-perg-caixa button.tg-perg-outras:hover{text-decoration-thickness:2px}
+.tg-perg-caixa button.tg-perg-outras:active .tg-ic{rotate:-90deg}
+.tg-perg-outras .tg-ic{width:1.1rem;height:1.1rem;transition:rotate .3s cubic-bezier(.22,1,.36,1)}
+.tg-perg-outras[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.tg-perg-outras .tg-ic{transition:none}}

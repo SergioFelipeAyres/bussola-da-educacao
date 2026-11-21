@@ -546,9 +546,10 @@
     const id = 'perg-' + (++n);
     const box = el('div', 'tg-perg-caixa'); box.setAttribute('role', 'group'); box.setAttribute('aria-labelledby', id + '-tit');
     box.innerHTML = '<p class="tg-perg-tit" id="' + id + '-tit">' + titulo + '</p>' +
-      '<p class="tg-perg-dica">Toque em uma pergunta para ver a resposta da pesquisa.</p><ul class="tg-perg-ex"></ul>';
+      '<p class="tg-perg-dica">Toque em uma pergunta para ver a resposta da pesquisa.</p><ul class="tg-perg-ex"></ul>' +
+      '<button type="button" class="tg-perg-outras" hidden><svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg>Outras perguntas</button>';
     const saida = el('div', 'tg-perg-saida'); saida.setAttribute('aria-live', 'polite');
-    const ex = box.querySelector('.tg-perg-ex');
+    const ex = box.querySelector('.tg-perg-ex'), outras = box.querySelector('.tg-perg-outras');
     const faz = async (q) => {
       const vez = saida.dataset.vez = String(++vezes); pergunta.ultima = ''; // nada da última pergunta escrita interfere
       const res = await q.faz();
@@ -665,6 +666,16 @@
       const curtas = lista.filter((q) => q.txt.length <= MAX_CARS);
       if (!curtas.length) { ex.replaceChildren(el('li', 'tg-perg-var', 'Não foi possível carregar as perguntas. Verifique a conexão e recarregue a página.')); return; }
       listaCompleta = curtas; mostra(curtas);
+      outras.hidden = false;
+    });
+    // "Outras perguntas": sorteia uma lista nova com as mesmas regras, sem repetir as que estavam à vista.
+    // A resposta já aberta continua na tela; o foco fica no botão, para tocar de novo
+    outras.addEventListener('click', () => {
+      if (!listaCompleta) return;
+      const vistas = new Set([...ex.children].filter((li) => !li.hidden).map((li) => li.firstChild && li.firstChild.textContent));
+      const novas = listaCompleta.filter((q) => !vistas.has(q.txt));
+      tentativas = 0; melhor = null;
+      mostra(novas.length > 40 ? novas : listaCompleta);
     });
     alvo.append(box, saida);
     return {

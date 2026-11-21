@@ -133,3 +133,4 @@ html[data-letra]{font-size:125%}
    para o nome do grupo caber em até duas linhas em vez de três */
 @media (max-width:35em){html[data-letra] .tg .tg-rec-mudar2{padding-inline:.6rem}
   html[data-letra] .tg-rec-mudar2 span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
+html[data-contraste] .tg-perg-caixa button.tg-perg-outras{color:var(--hc-amarelo)}
