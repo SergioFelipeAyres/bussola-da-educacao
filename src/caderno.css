@@ -62,7 +62,7 @@ body{background-color:var(--color-bg)}
 .tg-fim{position:relative}
 .tg-fim::before{height:1px;background:var(--color-border-line)}
 .tg-sec::after{content:"Lição " counter(licao,decimal-leading-zero);content:"Lição " counter(licao,decimal-leading-zero) / "";position:absolute;pointer-events:none;left:0;top:calc(-1.5rem - .55rem);padding-right:.8rem;
-  background:var(--color-panel);font:500 .875rem/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
+  background:var(--color-panel);font:500 var(--txt-mini,.875rem)/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
 .tg-portas{--sec:var(--color-fg-muted)}
 .tg-shot .tg-sec::before,.tg-shot .tg-sec::after{display:none}
 
@@ -122,7 +122,7 @@ body{background-color:var(--color-bg)}
 .tg-head .tg-take{color:var(--color-fg);font-size:clamp(1.0625rem,1.6vw,1.3rem);max-width:min(100%,46ch)}
 .tg .tg-head .tg-retry{border:1px solid var(--color-border-line);background:var(--color-panel);color:var(--v-blue)}
 .tg .tg-head .tg-retry:focus-visible{outline:2px solid var(--color-fg);outline-offset:2px}
-.tg-fonte{display:inline-flex;align-items:center;gap:.6rem;width:fit-content;margin-top:.35rem;font-family:var(--font-mono);font-size:.875rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-fonte{display:inline-flex;align-items:center;gap:.6rem;width:fit-content;margin-top:.35rem;font-family:var(--font-mono);font-size:var(--txt-mini,.875rem);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-fonte::before{content:"";width:1.75rem;height:1px;background:currentColor}
 
 /* ---------- Início: capa em duas colunas, com o post-it ---------- */
@@ -167,9 +167,9 @@ body{background-color:var(--color-bg)}
 .tg-sec .tg-card{box-shadow:var(--v-shadow)}
 .tg-card.tg-chegada{box-shadow:0 0 0 3px color-mix(in srgb,var(--sec) 55%,transparent),var(--v-shadow)}
 .tg-card-title{font-family:var(--font-display);font-size:1.3125rem;font-weight:700;letter-spacing:-.005em}
-.tg-base{font-size:.875rem;line-height:1.5;border-top-style:dashed}
+.tg-base{font-size:var(--txt-mini,.875rem);line-height:1.5;border-top-style:dashed}
 /* eixo em mono (régua); legendas das barras empilhadas e de concordância são frases, na fonte do texto */
-.tg-tick{font-family:var(--font-mono);font-size:.875rem}
+.tg-tick{font-family:var(--font-mono);font-size:var(--txt-mini,.875rem)}
 .tg-lik-cap,.tg-stack-cap{font-size:.9375rem}
 
 /* barras: traço de marca-texto sobre um trilho fino e liso (marca os 100%); nada de linha tracejada, para o dado ficar sozinho */
@@ -198,7 +198,7 @@ body{background-color:var(--color-bg)}
 .tg-filter.tg-rec{position:relative;box-shadow:var(--v-shadow)}
 .tg-rec-onde .tg-eyebrow,.tg-rec-fixo-tit span{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
 .tg-rec-fixo-in{border-radius:var(--folha-raio)}
-.tg-rec-g-lab{font-family:var(--font-mono);font-weight:500;font-size:.875rem;letter-spacing:.06em;text-transform:uppercase}
+.tg-rec-g-lab{font-family:var(--font-mono);font-weight:500;font-size:var(--txt-mini,.875rem);letter-spacing:.06em;text-transform:uppercase}
 /* as questões viram itens do próprio filtro (display:contents), para os grupos (Norte, Nordeste…) entrarem logo
    abaixo da questão da alternativa escolhida; a ordem vem do painel.js (style.order) */
 #filtro{counter-reset:questao alternativa}
@@ -212,7 +212,7 @@ body{background-color:var(--color-bg)}
 #rec-dims .tg-rec-g-lab::before{content:counter(questao) ".";content:counter(questao) "." / "";display:inline-block;width:1.6rem;font:800 1rem var(--font-display);letter-spacing:0;color:var(--color-fg-muted)}
 #rec-dims.tg-agrupado button{white-space:normal;max-width:100%;text-align:left;counter-increment:alternativa;display:inline-flex;align-items:center;gap:.5rem;margin:0;padding:.35rem .5rem .35rem .2rem;border:0;background:transparent;font-weight:500;color:var(--color-fg)}
 #rec-dims.tg-agrupado button::before{content:counter(alternativa,lower-alpha);content:counter(alternativa,lower-alpha) / "";display:grid;place-items:center;flex:none;width:1.5rem;height:1.5rem;border-radius:50%;
-  border:1.5px solid var(--color-fg-muted);font:500 .875rem/1 var(--font-mono);color:var(--color-fg-muted);transition:background .15s ease,border-color .15s ease,color .15s ease}
+  border:1.5px solid var(--color-fg-muted);font:500 var(--txt-mini,.875rem)/1 var(--font-mono);color:var(--color-fg-muted);transition:background .15s ease,border-color .15s ease,color .15s ease}
 #rec-dims.tg-agrupado button:hover{background:transparent}
 #rec-dims.tg-agrupado button:hover::before{border-color:var(--color-fg);color:var(--color-fg)}
 #rec-dims.tg-agrupado button[aria-checked=true]{background:transparent;font-weight:700}
@@ -235,7 +235,7 @@ body{background-color:var(--color-bg)}
 
 /* ---------- "Ir para": marcadores de página na cor de cada capítulo ---------- */
 .tg-indice{gap:.55rem;align-items:flex-end;margin-top:-1.25rem;margin-bottom:.75rem;border:0}
-.tg-indice-lab{padding:0 .5rem .55rem 0;font-family:var(--font-mono);font-size:.875rem;font-weight:500;letter-spacing:.05em;text-transform:uppercase}
+.tg-indice-lab{padding:0 .5rem .55rem 0;font-family:var(--font-mono);font-size:var(--txt-mini,.875rem);font-weight:500;letter-spacing:.05em;text-transform:uppercase}
 .tg-indice a{min-height:2.75rem;padding:.75rem 1rem .5rem;border:0;border-radius:2px 2px 0 0;font-weight:700;
   background:color-mix(in srgb,var(--sec) 15%,var(--color-panel));box-shadow:inset 0 5px 0 var(--sec),0 6px 12px -10px rgba(20,30,70,.55)}
 .tg-indice a::before{display:none}
@@ -300,7 +300,7 @@ body{background-color:var(--color-bg)}
 .tg button.tg-libras:hover{border-color:var(--sec-texto,var(--v-blue))}
 .tg button.tg-libras:focus-visible{outline:2px solid var(--sec,var(--v-blue));outline-offset:2px}
 .tg .tg-libras .tg-ic{width:1.15rem;height:1.15rem;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;color:currentColor}
-.tg-libras small{font:500 .875rem var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-libras small{font:500 var(--txt-mini,.875rem) var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:var(--color-fg-muted)}
 /* prévia (?libras=previa): o lugar do botão aparece, tracejado, enquanto o vídeo não existe */
 .tg button.tg-libras.tg-libras-embreve{border-style:dashed;color:var(--color-fg-muted);cursor:default}
 .tg-sec-botoes{display:flex;align-items:center;gap:.5rem;margin-left:auto}
@@ -323,7 +323,7 @@ body{background-color:var(--color-bg)}
 .tg-libras-player{background:#000;aspect-ratio:16/9}
 .tg-libras-player video,.tg-libras-player iframe{display:block;width:100%;height:100%;border:0}
 /* teclas citadas no texto (seção Acessibilidade) */
-.tg kbd{display:inline-block;padding:.05rem .4rem;border:1px solid var(--color-border-line);border-bottom-width:2px;border-radius:4px;background:var(--color-panel);font:500 .875rem/1.4 var(--font-mono);color:var(--color-fg)}
+.tg kbd{display:inline-block;padding:.05rem .4rem;border:1px solid var(--color-border-line);border-bottom-width:2px;border-radius:4px;background:var(--color-panel);font:500 var(--txt-mini,.875rem)/1.4 var(--font-mono);color:var(--color-fg)}
 /* cabeça da lição: quando não cabe (celular, letra grande), "Ver em Libras" e "Recolher" descem para a linha de baixo,
    alinhados à direita, em vez de empurrar a página para o lado */
 .tg-sec-head{flex-wrap:wrap;row-gap:.5rem}
@@ -354,7 +354,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-res.tg-perg-nao{box-shadow:inset 0 4px 0 var(--color-fg-muted),var(--v-shadow)}
 /* "Entendi: Região: Nordeste", como o "Você está vendo" do filtro; o tema vira o título do cartão */
 .tg-perg-entendi{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;margin:.35rem 0 .2rem}
-.tg-perg-lab{font:500 .875rem/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-perg-lab{font:500 var(--txt-mini,.875rem)/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
 .tg-perg-grupo{font-weight:700;color:var(--color-fg)}
 .tg-perg-tema{margin:0 0 .55rem;font:700 1.3125rem/1.3 var(--font-display);color:var(--color-fg);text-wrap:balance}
 .tg-perg-frase{max-width:62ch;font-size:1.1875rem;line-height:1.4;text-wrap:pretty}
@@ -387,7 +387,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-leg .lm::after{right:0}
 .tg-perg-leg .lr{width:2px;height:1rem;background:var(--color-fg)}
 /* rodapé de base e fonte, como nos cartões do painel */
-.tg-perg-base{margin:.6rem 0 0;padding-top:.7rem;border-top:1px dashed var(--color-border-line);font-size:.875rem;line-height:1.5;color:var(--color-fg-muted)}
+.tg-perg-base{margin:.6rem 0 0;padding-top:.7rem;border-top:1px dashed var(--color-border-line);font-size:var(--txt-mini,.875rem);line-height:1.5;color:var(--color-fg-muted)}
 .tg button.tg-perg-ir{display:inline-block;min-height:2.75rem;margin-top:.2rem;padding:.6rem 0;text-align:left;border:0;background:none;
   color:var(--sec-texto,var(--v-blue));font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;cursor:pointer}
 .tg button.tg-perg-ir:hover{text-decoration-thickness:2px}

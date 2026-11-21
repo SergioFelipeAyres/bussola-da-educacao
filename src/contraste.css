@@ -4,7 +4,10 @@
    Segue o padrão dos sites do governo (e-MAG): fundo preto, texto branco, links e destaques em amarelo.
    As cores dos capítulos continuam, em versões claras (acima de 7:1 contra o preto), para os
    gráficos e as perguntas manterem o código de cores. Pautas, quadriculado e sombras saem.
-   Só troca cores: o desenho é o mesmo.
+   O desenho é o mesmo, com três ajustes para baixa visão (fim do arquivo): sem animações decorativas,
+   letra mínima de 16 px e texto um pouco mais encorpado e espaçado.
+   O tamanho geral NÃO muda aqui: isso é o botão "Letra maior", separado, para não somar com o zoom
+   que a pessoa já usa.
    ===================================================================== */
 html[data-contraste]{
   --hc-amarelo:#ffe600;
@@ -79,7 +82,34 @@ html[data-contraste] .tg button.tg-perg-chip[aria-pressed=true]{outline:2px soli
 html[data-contraste] :is(.tg-guide,.tg-libras-janela){border:2px solid var(--color-fg)}
 html[data-contraste] :is(.tg-guide,.tg-libras-janela)::backdrop{background:rgba(0,0,0,.8)}
 
-/* ---------- o botão "Alto contraste" (sempre visível no topo, nos dois modos) ---------- */
+/* ---------- baixa visão: movimento ----------
+   Com lupa de tela a pessoa vê só um pedaço da página: um bloco que entra se mexendo pode estar
+   invisível ali, e a rolagem suave tira a lupa do lugar. Por isso, no alto contraste, nada se move
+   sozinho: as mudanças de estado (botão marcado, seção aberta) acontecem na hora.
+   As setas que giram para indicar aberto/fechado e a agulha da rosa continuam girando, porque
+   a posição delas é informação; só a transição some. */
+html[data-contraste]{scroll-behavior:auto!important}
+html[data-contraste] *,html[data-contraste] ::before,html[data-contraste] ::after{animation:none!important;transition:none!important}
+html[data-contraste] .tg-reveal{opacity:1!important;transform:none!important}
+/* inclinados (post-its, etiquetas do índice, perguntas prontas, anotações à mão): retos, porque texto
+   girado e ampliado é mais difícil de ler */
+html[data-contraste] :is(.tg-indice a,.tg button.tg-perg-chip,.tg-anot,.tg-rosa-rot,.tg-mapa-destaque,.tg-hero-home .tg-fact){rotate:none!important}
+
+/* ---------- baixa visão: letra ----------
+   Nenhum texto abaixo de 16 px (o padrão do site é 14 px nos rótulos e 15 px nas legendas), sem mexer
+   no que já é grande. Branco no preto "espalha" para quem tem astigmatismo: o texto corrido ganha um
+   pouco de peso e de entrelinha. */
+html[data-contraste]{--txt-mini:1rem;--cds-font-size-caption:1rem}
+html[data-contraste] body{font-weight:500;line-height:1.6}
+html[data-contraste] :is(.tg-take,.tg-say,.tg-lesson-frase,.tg-lesson-mais p,.tg-hero-text,.tg-sec-sub,.tg-card-note,.tg-base){line-height:1.6}
+
+/* ---------- "Letra maior" ----------
+   O site inteiro 25% maior (tudo é medido em rem), como o "A+" dos sites do governo. Vale nos dois
+   modos de cor e soma com o zoom do navegador, então é a pessoa quem escolhe. */
+html[data-letra]{font-size:125%}
+
+/* ---------- os botões "Letra maior" e "Alto contraste" (sempre visíveis no topo, nos dois modos) ---------- */
+.nav-ajustes{flex:none;display:flex;align-items:center;gap:.4rem}
 .nav-contraste{flex:none;display:inline-flex;align-items:center;gap:.45rem;min-height:2.75rem;padding:.4rem .8rem;border:1px solid var(--color-border-line);border-radius:999px;
   background:var(--color-panel);color:var(--color-fg);font:500 .875rem/1 var(--font-mono);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
 .nav-contraste svg{width:1.25rem;height:1.25rem;flex:none}
@@ -90,4 +120,4 @@ html[data-contraste] :is(.tg-guide,.tg-libras-janela)::backdrop{background:rgba(
    e, no celular, o topo não ganhar mais uma linha */
 @media (max-width:64em){.nav-contraste{width:2.75rem;justify-content:center;padding:0}
   .nav-contraste span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}
-@media (max-width:35em){.nav-contraste{margin-left:auto}}
+@media (max-width:35em){.nav-ajustes{margin-left:auto}}

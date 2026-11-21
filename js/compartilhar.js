@@ -7,7 +7,13 @@
 (() => {
   const LIB = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js';
   const root = document.getElementById('painel');
-  const LOGO = '<svg class="nav-logo" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6"/><path fill-rule="evenodd" d="M12 3.5a8.5 8.5 0 1 0 0 17a8.5 8.5 0 1 0 0-17zm0 1.7a6.8 6.8 0 1 1 0 13.6a6.8 6.8 0 1 1 0-13.6z"/><path d="M16.6 7.4l-3.2 6-2.8-2.8z"/><path d="M7.4 16.6l3.2-6 2.8 2.8z" opacity=".55"/></svg>';
+  // a marca vem da barra de navegação (bússola em Azul Noite e Ouro), para a imagem sair igual ao site
+  const logo = () => {
+    const l = document.querySelector('.nav-brand .nav-logo');
+    if (!l) return '';
+    const c = l.cloneNode(true); c.setAttribute('class', 'tg-shot-logo');
+    return c.outerHTML;
+  };
   const ICON_SHARE = '<svg class="tg-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="M8.2 10.8l7.6-4M8.2 13.2l7.6 4"/></svg>';
   const IC = {
     share: '<path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7.5h14V12"/>',
@@ -50,7 +56,7 @@
       const val = cs.getPropertyValue(name).trim(); if (val) shot.style.setProperty(name, val);
     });
     const head = document.createElement('div'); head.className = 'tg-shot-head';
-    head.innerHTML = '<span class="tg-shot-brand">' + LOGO + '<span>Bússola da <b>Educação</b></span></span>';
+    head.innerHTML = '<span class="tg-shot-brand">' + logo() + '<span>Bússola da <b>Educação</b></span></span>';
     const rec = recorteOf(card);
     if (rec) { const r = document.createElement('span'); r.className = 'tg-shot-rec'; r.textContent = 'Grupo: ' + rec; head.append(r); }
     const clone = card.cloneNode(true);

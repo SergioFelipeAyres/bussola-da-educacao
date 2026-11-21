@@ -5,10 +5,13 @@
  * 2. Números dos destaques contando do valor antigo ao novo quando o filtro muda. Na chegada, o número já
  *    aparece no valor final: um print ou um link compartilhado nunca mostra um número no meio da contagem.
  * 3. Linhas de gráfico recebem --i (posição) para entrarem uma depois da outra.
- * Nada disso roda com "reduzir movimento" ativado no sistema.
+ * Nada disso roda com "reduzir movimento" ativado no sistema nem no alto contraste (pensado para baixa
+ * visão: com lupa de tela, um bloco que entra se mexendo pode estar invisível no pedaço que a pessoa vê).
+ * Se o alto contraste for ligado depois, o CSS mostra tudo parado e a contagem dos números para.
  */
 (() => {
-  if (!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const altoContraste = () => document.documentElement.dataset.contraste === 'alto';
+  if (!window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches || altoContraste() || !('IntersectionObserver' in window)) return;
   const root = document.getElementById('painel');
   const REVEAL = '.tg-hero > *, .tg-fact, .tg-porta, .tg-indice, .tg-kpi, .tg-card, .tg-sec-head, .tg-cite, .tg-filter';
   // só os números grandes dos destaques contam; os valores dos gráficos aparecem já no valor final,
@@ -89,7 +92,7 @@
         if (txt === num.__last || txt === num.__final) continue;
         const old = num.__final ? parse(num.__final) : null;
         num.__final = txt; num.__last = null;
-        if (old && inRevealed(num) && parse(txt)) count(num, old.val);
+        if (old && inRevealed(num) && parse(txt) && !altoContraste()) count(num, old.val);
         continue;
       }
       for (const a of m.addedNodes) {

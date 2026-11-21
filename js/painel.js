@@ -1,5 +1,7 @@
 /* Painel TIC Educação 2025 — desenho dos gráficos. Depende de dash-shim.js. */
 (() => {
+  // sem rolagem suave nem post-it voando com "reduzir movimento" no sistema ou no alto contraste (baixa visão, lupa de tela)
+  const reduzMovimento = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.contraste === 'alto';
   // Escala linear de [lo, hi] para [0, 100] com domínio arredondado ("nice") e marcas redondas,
   // no mesmo algoritmo do d3-scale/d3-array (tickIncrement, nice, ticks); substitui o d3 inteiro,
   // que era carregado só para isto.
@@ -817,13 +819,13 @@
   document.getElementById('rec-mudar2')?.addEventListener('click', () => {
     const mudar = document.getElementById('rec-mudar');
     if (mudar.offsetParent && mudar.getAttribute('aria-expanded') !== 'true') mudar.click();
-    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduz = reduzMovimento();
     document.getElementById('filtro').scrollIntoView({ behavior: reduz ? 'auto' : 'smooth', block: 'start' });
     const b = document.querySelector('#rec-dims [aria-checked=true]'); if (b) b.focus({ preventScroll: true });
   });
   // "Topo", no filtro fixo: volta ao início da aba sem passar pelo roteamento por âncora
   document.getElementById('ir-topo')?.addEventListener('click', () => {
-    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduz = reduzMovimento();
     window.scrollTo({ top: 0, behavior: reduz ? 'auto' : 'smooth' });
     document.getElementById('conteudo').focus({ preventScroll: true });
   });
@@ -1018,7 +1020,7 @@
       drawRecorte(v, rec);
       // os grupos aparecem logo abaixo; se ficaram fora da tela (celular), rola até eles
       const op = document.getElementById("rec-opts"), r = op.getBoundingClientRect();
-      if (dimAberta && !op.hidden && r.bottom > innerHeight) op.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      if (dimAberta && !op.hidden && r.bottom > innerHeight) op.scrollIntoView({ block: "nearest", behavior: reduzMovimento() ? "auto" : "smooth" });
     };
     const escolheGrupo = (s) => {
       dimAberta = null;
@@ -1618,7 +1620,7 @@
   function posicionaPostit() {
     const anima = mapaAnima; mapaAnima = null;
     const pr = mapaPalco.getBoundingClientRect(); if (!pr.width) return;
-    const reduz = matchMedia('(prefers-reduced-motion: reduce)').matches, solto = getComputedStyle(postit).position === 'absolute';
+    const reduz = reduzMovimento(), solto = getComputedStyle(postit).position === 'absolute';
     const regP = mapaReg && mapaSvg.querySelector('.tg-mapa-reg.tg-on path'), b = regP && regP.getBoundingClientRect();
     const pad = 24, pw = postit.offsetWidth, ph = postit.offsetHeight;
     let x = 0, y = 0;
