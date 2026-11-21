@@ -127,7 +127,7 @@ body{margin:0;background:var(--color-bg);color:var(--color-fg);font-family:var(-
 .tg-bar-row:has(.tg-ref){gap:.55rem}
 /* destaques: "95 em cada 100", com o número grande e "em cada 100" menor ao lado */
 .tg-kpi-pre,.tg-kpi-un{font-size:max(.95rem,.42em);font-weight:700;letter-spacing:0}
-.tg-kpi-un{margin-left:.15em}
+.tg-kpi-un{margin-left:.15em;white-space:nowrap} /* "em cada 100" nunca quebra no meio: o "100" sozinho parecia outro número */
 @media (max-width:35em){.tg-kpi .tg-iso10{display:none}} /* no celular, as figuras de 12px não comunicam: fica o número */
 /* Compare grupos: o grupo escolhido no filtro, marcado entre os outros */
 .tg-dot-meu{background:color-mix(in srgb,var(--sec) 9%,transparent);border-radius:4px;box-shadow:0 0 0 .3rem color-mix(in srgb,var(--sec) 9%,transparent)}
@@ -627,6 +627,9 @@ html[data-contraste] .tg-shot-brand b{color:var(--logo-ouro)}
 @media (min-width:75em){.tg-rosa{position:absolute;z-index:2;left:clamp(1rem,2.5vw,1.75rem);bottom:clamp(1rem,2.5vw,1.5rem);margin:0}}
 @media (max-width:74.9375em){.tg-rosa-dial{--d:min(13rem,62vw)}}
 @media (max-width:47.9375em){.tg-anot-mapa{display:none}.tg-mapa-leg{justify-content:center}.tg-mapa-destaque{rotate:.6deg;margin-top:.5rem}}
+/* celular: a rosa (a escolha do indicador) vem antes do mapa, para o leitor ver o mapa e o post-it mudarem logo abaixo
+   do dedo; o post-it tem a altura do dado atual (a altura fixa do computador deixava um vazio amarelo grande) */
+@media (max-width:47.9375em){.tg-mapa-cena{display:flex;flex-direction:column}.tg-rosa{order:-1;margin:0 auto var(--cds-gap-md)}.tg-mapa-destaque{min-height:0!important}}
 @media (prefers-reduced-motion:reduce){.tg-mapa-reg path,.tg-mapa-palco,.tg-mapa-destaque,.tg-rosa-agulha,.tg-rosa-rot{transition:none}.tg-mapa-pick,.tg-mapa-destaque,.tg-mapa-seta path{animation:none!important}.tg-mapa-destaque,.tg-rosa-rot{rotate:none}}
 .tg-mapa-nota{display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.75rem;font-size:var(--cds-font-size-body);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
 .tg-mapa-nota small{display:block;font-size:var(--txt-mini,.875rem);font-weight:600;letter-spacing:.09em;text-transform:uppercase}
@@ -736,22 +739,6 @@ html.nav-recolhida:not(:has(.nav:focus-within)) .tg-rec-fixo{top:0}
 .tg .tg-topo{display:inline-flex;align-items:center;gap:.3rem;margin-left:auto;padding:.35rem .7rem .35rem .55rem;font-size:.9375rem;font-weight:600;color:var(--color-fg-muted)}
 .tg .tg-topo:hover{color:var(--color-fg)}
 .tg-topo .tg-ic{width:1rem;height:1rem}
-
-/* portas do fim do Início: um dado real de cada público e o caminho para o painel */
-.tg-portas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-lg)}
-.tg-porta{display:flex;flex-direction:column;gap:.6rem;padding:clamp(1.25rem,2.5vw,1.75rem);border:1px solid color-mix(in srgb,var(--sec) 22%,var(--color-panel));border-radius:calc(var(--cds-radius) * 1.25);background:linear-gradient(160deg,color-mix(in srgb,var(--sec) 9%,var(--color-panel)),var(--color-panel) 70%);color:var(--color-fg);text-decoration:none;box-shadow:var(--v-shadow);transition:transform .2s var(--tg-ease,ease-out),box-shadow .2s ease}
-.tg-porta:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(20,30,70,.06),0 18px 36px -18px rgba(20,30,70,.3)}
-.tg-porta:focus-visible{outline:2px solid var(--color-fg);outline-offset:3px}
-.tg-porta-tit{font-size:var(--cds-font-size-caption);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto)}
-.tg-porta-txt{font-size:clamp(1.3rem,2.4vw,1.65rem);font-weight:500;line-height:1.3;text-wrap:balance;min-height:2.6em}
-.tg-porta-txt b{display:block;font-size:1.25em;font-weight:800;letter-spacing:-.02em;color:var(--sec-texto)}
-.tg-porta .tg-iso10{max-width:17rem}
-.tg-porta-sub{color:var(--color-fg-muted);font-size:var(--cds-font-size-body)}
-.tg-porta-ir{margin-top:auto;padding-top:.4rem;font-weight:700;color:var(--sec-texto)}
-.tg-porta:hover .tg-porta-ir{text-decoration:underline;text-underline-offset:3px}
-.tg-portas-nota{color:var(--color-fg-muted)}
-.tg-portas-nota a{color:var(--sec-texto,var(--v-blue));font-weight:600;text-underline-offset:3px}
-@media (prefers-reduced-motion:reduce){.tg-porta{transition:none}.tg-porta:hover{transform:none}}
 
 /* filtro principal em blocos rotulados ("Onde fica a escola", "Tipo de escola", "Quem dirige"): tudo à vista, sem rolagem lateral */
 .tg-rec-dims.tg-agrupado{flex-wrap:wrap;align-items:flex-end;gap:.6rem 1.75rem;overflow:visible;border-bottom:0}
@@ -864,6 +851,7 @@ html.nav-recolhida:not(:has(.nav:focus-within)) .tg-rec-fixo{top:0}
   .tg-hero-home .tg-fact{order:3;margin-block:var(--cds-gap-sm)}
   .tg-hero-home .tg-hero-text{order:4}
   .tg-hero-home .tg-fonte{order:5}
+  .tg-hero-home .tg-libras-capa{order:6} /* "Ver em Libras" abaixo da etiqueta de fonte, como no computador (antes ficava acima do título) */
 }
 .tg-alt-citar{margin:.7rem 0 0;padding-top:.6rem;border-top:1px dashed var(--color-border-line);color:var(--color-fg);line-height:1.45;user-select:all}
 
@@ -876,3 +864,7 @@ html.nav-recolhida:not(:has(.nav:focus-within)) .tg-rec-fixo{top:0}
 .tg .tg-share{width:2.75rem;height:2.75rem;top:.45rem;right:.45rem}
 .tg select{min-height:2.75rem}
 .tg .tg-fact-link,.tg .tg-fim-citar{display:inline-flex;align-items:center;min-height:2.75rem}
+
+/* celular: o botão do VLibras fica fixo no canto de baixo, à direita (js/libras.js). As linhas de barra reservam
+   uma faixa à direita, para o valor de nenhuma barra parar embaixo dele quando o leitor para de rolar */
+@media (max-width:35em){.tg-bar-row{padding-right:1.25rem}}

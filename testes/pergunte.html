@@ -181,14 +181,15 @@ const CASOS = [
           const its = segs.map((seg) => ({ seg, r: valor(rows, ind, g, resp, cat, seg) })).filter((x) => x.r).sort((a, b) => b.r.pct - a.r.pct);
           const erro = [];
           const tema = d.querySelector('.tg-perg-tema');
-          if (!tema || tema.textContent !== t.nome) erro.push('tema errado');
+          // o título é o tema, ou o tema e o item citado ("Comunicação: WhatsApp")
+          if (!tema || !(tema.textContent === t.nome || tema.textContent.startsWith(t.nome + ': '))) erro.push('tema errado');
           else if (its.length > 1) {
             if (!c) erro.push('não comparou');
             else {
               const ponta = menos ? its.slice().reverse() : its, [a, b] = ponta, empate = menos ? !separa(b.r, a.r) : !separa(a.r, b.r);
               if (c.dataset.cat !== cat) erro.push('tipo comparado: ' + c.dataset.cat);
               if (c.dataset.ponta !== a.seg) erro.push('apontou ' + c.dataset.ponta + ', devia ser ' + a.seg);
-              if ((c.dataset.empate === '1') !== empate) erro.push(empate ? 'devia dizer que as margens se sobrepõem' : 'disse empate sem haver');
+              if ((c.dataset.empate === '1') !== empate) erro.push(empate ? 'devia dizer que a diferença cabe na margem' : 'disse empate sem haver');
             }
           }
           if (/undefined|NaN/.test(txt)) erro.push('texto com undefined/NaN');

@@ -57,7 +57,8 @@
   const precisaCem = (v) => v != null && (v >= 90 || v < 10);
   const seguro = (fn) => { try { return fn(); } catch (e) { return null; } };
   const fixaBase = (cem, fn) => { const ant = baseCem; baseCem = cem; try { return fn(); } finally { baseCem = ant; } };
-  const comBase = (vals, fn) => fixaBase(vals.some(precisaCem), fn);
+  let forcaCem = false; // lead() refaz a frase toda em "em cada 100" quando a comparação com o Brasil pede
+  const comBase = (vals, fn) => fixaBase(forcaCem || vals.some(precisaCem), fn);
   const BASES = new Map();
   const freqTxt = (v, ini = true) => {
     if (v >= 99.5 && v < 100) return (ini ? 'Quase' : 'quase') + ' 100 em cada 100';
@@ -534,31 +535,45 @@
   const lead = (id, partes, cmp) => {
     const el = document.getElementById(id);
     if (!el || !partes || el.querySelector('.tg-empty, .tg-fail')) return;
-    // partes como função: é montada na mesma base que o gráfico do cartão usou
-    if (typeof partes === 'function') partes = BASES.has(id) ? fixaBase(BASES.get(id), partes) : partes();
+    // partes como função: é montada na mesma base que o gráfico do cartão usou (e pode ser refeita em 100, abaixo)
+    const fn = typeof partes === 'function' ? partes : null;
+    if (fn) partes = BASES.has(id) ? fixaBase(BASES.get(id), fn) : fn();
     if (!partes) return;
     if (recLead !== TOTAL && partes.length) {
-      partes = partes.slice();
       const t = recTitulo(recLead, CUR);
-      // frase que já começa com "Entre quem…": o grupo vai como nome, para não repetir "Entre"
-      if (typeof partes[0] === 'string' && /^Entre /.test(partes[0])) partes.unshift('No grupo “' + t + '”, ');
-      else partes.unshift('Entre ' + (/^(Escolas|Gestoras)/.test(t) ? 'as ' : 'os ') + t.charAt(0).toLowerCase() + t.slice(1) + ', ');
-      partes[1] = inicioMin(partes[1]);
-      // sem o sujeito repetido: "cerca de 6 em cada 10 escolas com internet" → "cerca de 6 em cada 10 com internet"
-      if (typeof partes[1] !== 'string' && typeof partes[2] === 'string') partes[2] = partes[2].replace(CUR === 'escolas' ? /^ escolas\b/ : /^ gestores\b/, '');
+      const prefixa = (ps) => {
+        partes = ps.slice();
+        // frase que já começa com "Entre quem…": o grupo vai como nome, para não repetir "Entre"
+        if (typeof partes[0] === 'string' && /^Entre /.test(partes[0])) partes.unshift('No grupo “' + t + '”, ');
+        else partes.unshift('Entre ' + (/^(Escolas|Gestoras)/.test(t) ? 'as ' : 'os ') + t.charAt(0).toLowerCase() + t.slice(1) + ', ');
+        partes[1] = inicioMin(partes[1]);
+        // sem o sujeito repetido: "cerca de 6 em cada 10 escolas com internet" → "cerca de 6 em cada 10 com internet"
+        if (typeof partes[1] !== 'string' && typeof partes[2] === 'string') partes[2] = partes[2].replace(CUR === 'escolas' ? /^ escolas\b/ : /^ gestores\b/, '');
+      };
+      prefixa(partes);
       const f = cmp && (typeof cmp === 'function' ? cmp : cmp.f);
       const row = f && seguro(() => f(recLead)), br = f && seguro(() => f(TOTAL));
       if (row && br && row.pct != null && br.pct != null) {
         const txt = partes.map((x) => (typeof x === 'string' ? x : x.textContent)).join(''), m = /em cada (100|10)\b/.exec(txt);
-        const cem = m ? m[1] === '100' : precisaCem(row.pct) || precisaCem(br.pct);
+        let cem = m ? m[1] === '100' : precisaCem(row.pct) || precisaCem(br.pct);
         const quanto = separa(row, br) ? 'mais do que no Brasil' : separa(br, row) ? 'menos do que no Brasil' : 'parecido com o Brasil';
         const sobre = cmp.sobre ? cmp.sobre + ', ' : '';
         const Q = (s) => (sobre ? s : s.charAt(0).toUpperCase() + s.slice(1));
-        // os dois números vão "em cada 100" quando, arredondados na base da frase, contradiriam a palavra
-        // ("parecido" com números diferentes, "mais" ou "menos" com números iguais) ou quando o Brasil pede 100 e a frase está em 10
-        const rT = fixaBase(cem, () => freqTxt(row.pct, false)), bT = fixaBase(cem, () => freqTxt(br.pct, false));
-        const contradiz = quanto === 'parecido com o Brasil' ? rT.replace(/^cerca de /, '') !== bT.replace(/^cerca de /, '') : rT.replace(/^cerca de /, '') === bT.replace(/^cerca de /, '');
-        if (contradiz || (!cem && precisaCem(br.pct))) fixaBase(true, () => partes.push(' ' + sobre + Q(quanto) + ': neste grupo, ' + freqTxt(row.pct, false) + '; no Brasil, ' + freqTxt(br.pct, false) + '.'));
+        // os números da comparação contradiriam a palavra quando, arredondados na base da frase,
+        // "parecido" tem números diferentes ou "mais"/"menos" tem números iguais
+        let rT, bT;
+        const mede = () => { rT = fixaBase(cem, () => freqTxt(row.pct, false)); bT = fixaBase(cem, () => freqTxt(br.pct, false)); };
+        const contradiz = () => quanto === 'parecido com o Brasil' ? rT.replace(/^cerca de /, '') !== bT.replace(/^cerca de /, '') : rT.replace(/^cerca de /, '') === bT.replace(/^cerca de /, '');
+        mede();
+        // a frase está em "em cada 10" e a comparação pede 100: a frase inteira é refeita em 100, para não misturar as duas contas
+        if (!cem && fn && (contradiz() || precisaCem(br.pct))) {
+          forcaCem = true; let p2 = null;
+          try { p2 = seguro(() => fixaBase(true, fn)); } finally { forcaCem = false; }
+          if (p2 && p2.length) { prefixa(p2); cem = true; mede(); }
+        }
+        // "parecido" com números diferentes: a diferença cabe na margem de erro, e a frase diz isso
+        if (contradiz() && quanto === 'parecido com o Brasil') partes.push(' ' + sobre + Q('parecido com o Brasil, considerando a margem de erro') + ' (' + bT + ').');
+        else if (contradiz() || (!cem && precisaCem(br.pct))) fixaBase(true, () => partes.push(' ' + sobre + Q(quanto) + ': neste grupo, ' + freqTxt(row.pct, false) + '; no Brasil, ' + freqTxt(br.pct, false) + '.'));
         else partes.push(' ' + sobre + Q(quanto) + ' (' + bT + ').');
       }
     }
@@ -1093,7 +1108,7 @@
     pedido.style.order = ordem + 1; recOpts.style.order = ordem + 2;
     // com um grupo escolhido, o rótulo diz de que tipo ele é ("Região:"); durante a escolha, pede o grupo
     pedido.hidden = dim === 'TOTAL';
-    pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:') : dim === 'TOTAL' ? '' : (DIM[dim] || dim) + ':';
+    pedido.textContent = dimAberta ? (PEDIDO[dimAberta] || 'Escolha o grupo:').replace(/^Escolha/, 'Agora escolha') /* o tipo marcado ainda não muda os números: falta este passo */ : dim === 'TOTAL' ? '' : (DIM[dim] || dim) + ':';
     pedido.classList.toggle('tg-pedindo', !!dimAberta);
     // "Escolas que vão até": explica anos iniciais, anos finais e Educação Profissional enquanto esse tipo de grupo está aberto ou escolhido
     const dica = document.getElementById('rec-dica-nivel');
@@ -1286,12 +1301,12 @@
     })();
     (() => {
       const esp = get('A4', 'Especialização ou pós-graduação', 'Sim', rec), mes = get('A4', 'Mestrado', 'Sim', rec);
-      if (esp) lead('ch-formacao', comBase([seguro(() => esp.pct), seguro(() => mes.pct)], () => [negrito(freqTxt(esp.pct)), ' gestores ' + vb(esp.pct, 'têm', 'tem') + ' especialização ou pós-graduação' +
+      if (esp) lead('ch-formacao', () => comBase([seguro(() => esp.pct), seguro(() => mes.pct)], () => [negrito(freqTxt(esp.pct)), ' gestores ' + vb(esp.pct, 'têm', 'tem') + ' especialização ou pós-graduação' +
         (mes ? '; ' + freqTxt(mes.pct, false) + ' ' + vb(mes.pct, 'têm', 'tem') + ' mestrado.' : '.')]));
     })();
     (() => {
       const ate2 = soma('D2', ['Há menos de um ano', 'Entre 1 e 2 anos'], rec), mais10 = get('D2', '', 'Há mais de 10 anos', rec);
-      if (ate2 != null) lead('ch-tempo', comBase([seguro(() => ate2), seguro(() => mais10.pct)], () => [negrito(freqTxt(ate2)), ' gestores ' + vb(ate2, 'estão', 'está') + ' na direção da escola há até 2 anos' +
+      if (ate2 != null) lead('ch-tempo', () => comBase([seguro(() => ate2), seguro(() => mais10.pct)], () => [negrito(freqTxt(ate2)), ' gestores ' + vb(ate2, 'estão', 'está') + ' na direção da escola há até 2 anos' +
         (mais10 ? '; ' + freqTxt(mais10.pct, false) + ', há mais de 10 anos.' : '.')]));
     })();
     (() => {
@@ -1303,7 +1318,7 @@
       const its = Object.keys(D8).map((g) => ({ g, c: get('D8', g, 'Concorda', rec) })).filter((x) => x.c).sort((a, b) => b.c.pct - a.c.pct);
       if (its.length < 2) return;
       const p = its[0], u = its[its.length - 1];
-      lead('ch-percepcao', comBase([seguro(() => p.c.pct), seguro(() => u.c.pct)], () => ['Há mais concordância com ', negrito('“' + D8[p.g] + '”'), ' (' + freqTxt(p.c.pct, false) + ' gestores) e menos com ',
+      lead('ch-percepcao', () => comBase([seguro(() => p.c.pct), seguro(() => u.c.pct)], () => ['Há mais concordância com ', negrito('“' + D8[p.g] + '”'), ' (' + freqTxt(p.c.pct, false) + ' gestores) e menos com ',
         negrito('“' + D8[u.g] + '”'), ' (' + freqTxt(u.c.pct, false) + ').']));
     })();
     maisCitado('ch-ia-usos', listFrom('D9B', Object.keys(D9B), 'Sim', rec, D9B, true), 'Entre quem usa IA, o uso mais citado é ', 'Entre quem usa IA, os usos mais citados são ');
@@ -1421,7 +1436,7 @@
       // a manchete da capa já diz "têm internet, mas só … oferecem aos alunos": aqui a frase conta o degrau que mais cai,
       // entre ter computador e internet e oferecê-los aos alunos
       const a6 = get('A6', '', 'Sim', rec), a8 = get('A8', '', 'Sim', rec);
-      if (a6 && a8 && !extremo(a6) && !extremo(a8) && a8.pct < a6.pct) lead('ch-camadas', comBase(baseCamadas, () => ['A maior perda está em chegar aos alunos: ', negrito(freqTxt(a6.pct, false)), ' têm computador e internet, mas só ', negrito(freqTxt(a8.pct, false)), ' oferecem os dois para os alunos usarem.']),
+      if (a6 && a8 && !extremo(a6) && !extremo(a8) && a8.pct < a6.pct) lead('ch-camadas', () => comBase(baseCamadas, () => ['A maior perda está em chegar aos alunos: ', negrito(freqTxt(a6.pct, false)), ' têm computador e internet, mas só ', negrito(freqTxt(a8.pct, false)), ' oferecem os dois para os alunos usarem.']),
         { f: (r) => get('A8', '', 'Sim', r), sobre: 'Para os alunos' });
     })();
     (() => {
@@ -1437,8 +1452,9 @@
     })();
     (() => {
       const ate50 = soma('A3_1', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], rec), ns = get('A3_1', '', 'Não sabe', rec);
-      if (ate50 != null) lead('ch-velocidade', comBase([seguro(() => ate50), seguro(() => ns.pct)], () => [negrito(freqTxt(ate50)), ' escolas com internet ' + vb(ate50, 'têm', 'tem') + ' velocidade de até 50 Mbps' +
-        (ns && ns.pct >= 5 ? '; ' + freqTxt(ns.pct, false) + ' não ' + vb(ns.pct, 'sabem', 'sabe') + ' informar a velocidade.' : '.')]), { f: (r) => somaRow('A3_1', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], r), sobre: 'Até 50 Mbps' });
+      // com um grupo escolhido, a frase fica com um achado só (a comparação com o Brasil vem logo depois)
+      if (ate50 != null) lead('ch-velocidade', () => comBase([seguro(() => ate50), seguro(() => ns.pct)], () => [negrito(freqTxt(ate50)), ' escolas com internet ' + vb(ate50, 'têm', 'tem') + ' velocidade de até 50 Mbps' +
+        (ns && ns.pct >= 5 && rec === TOTAL ? '; ' + freqTxt(ns.pct, false) + ' não ' + vb(ns.pct, 'sabem', 'sabe') + ' informar a velocidade.' : '.')]), { f: (r) => somaRow('A3_1', ['Até 10 Mbps', 'De 11 Mbps a 50 Mbps'], r) });
     })();
     maisCitado('ch-sem-internet', listFrom('A20', Object.keys(A20L), 'Sim', rec, A20L, true).filter((x) => x.full !== 'Outros motivos'),
       'O motivo mais citado pelas escolas sem internet é ', 'Os motivos mais citados pelas escolas sem internet são ', (a) => (r) => get('A20', a.full, 'Sim', r));
@@ -1458,7 +1474,7 @@
       // se o 1º e o 2º ficam dentro da margem um do outro, a frase cita os dois em vez de escolher um
       const b = its[1], empate = b && b !== u && !separa(a.row, b.row);
       const tipos = empate ? (a.full === 'Tablet' || b.full === 'Tablet' ? minus(a.label) + ' e ' + minus(b.label) : 'computador portátil e de mesa') : minus(a.label);
-      lead('ch-computadores', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + tipos +
+      lead('ch-computadores', () => comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas com computador ' + vb(a.row.pct, 'têm', 'tem') + ' ' + tipos +
         (empate ? ', em proporções parecidas' : '') + (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]), empate ? null : { f: (r) => get('B2', a.full, 'Sim', r), sobre: a.label });
     })();
     (() => {
@@ -1472,12 +1488,12 @@
       const its = [['B17', 'Equipamentos audiovisuais'], ['B14', 'Smart TV ou conversor'], ['B15', 'Material para aulas de robótica'], ['B18', 'Material para atividades maker'], ['B16', 'Celulares para alunos e professores']]
         .map(([ind, label]) => ({ ind, label, row: get(ind, '', 'Sim', rec) })).filter((x) => x.row).sort((a, b) => b.row.pct - a.row.pct);
       const a = its[0], u = its[its.length - 1]; if (!a) return;
-      lead('ch-recursos', comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
+      lead('ch-recursos', () => comBase([seguro(() => a.row.pct), seguro(() => u.row.pct)], () => [negrito(freqTxt(a.row.pct)), ' escolas ' + vb(a.row.pct, 'têm', 'tem') + ' ' + minus(a.label) +
         (u !== a ? '; ' + freqTxt(u.row.pct, false) + ' ' + vb(u.row.pct, 'têm', 'tem') + ' ' + minus(u.label) + '.' : '.')]), { f: (r) => get(a.ind, '', 'Sim', r), sobre: a.label });
     })();
     (() => {
       const ate10 = soma('B4C', ['Até 5 alunos', 'De 5,1 a 10 alunos'], rec), sem = get('B4C', '', 'Não possui computador disponível para uso dos alunos', rec);
-      if (ate10 != null) lead('ch-alunos-pc', comBase([seguro(() => ate10), seguro(() => sem.pct)], () => [negrito(freqTxt(ate10)), ' escolas ' + vb(ate10, 'têm', 'tem') + ' até 10 alunos por computador' +
+      if (ate10 != null) lead('ch-alunos-pc', () => comBase([seguro(() => ate10), seguro(() => sem.pct)], () => [negrito(freqTxt(ate10)), ' escolas ' + vb(ate10, 'têm', 'tem') + ' até 10 alunos por computador' +
         (sem ? '; ' + freqTxt(sem.pct, false) + ' não ' + vb(sem.pct, 'têm', 'tem') + ' computador para os alunos.' : '.')]), { f: (r) => somaRow('B4C', ['Até 5 alunos', 'De 5,1 a 10 alunos'], r), sobre: 'Até 10 alunos por computador' });
     })();
     (() => {
@@ -1486,7 +1502,7 @@
     })();
     (() => {
       const cam = get('E3', '', 'Sim', rec), fac = get('E4B', '', 'Sim', rec);
-      if (cam) lead('ch-vigilancia', comBase([seguro(() => cam.pct), seguro(() => fac.pct)], () => [negrito(freqTxt(cam.pct)), ' escolas ' + vb(cam.pct, 'têm', 'tem') + ' câmeras de vídeo' +
+      if (cam) lead('ch-vigilancia', () => comBase([seguro(() => cam.pct), seguro(() => fac.pct)], () => [negrito(freqTxt(cam.pct)), ' escolas ' + vb(cam.pct, 'têm', 'tem') + ' câmeras de vídeo' +
         (fac ? ', e ' + freqTxt(fac.pct, false) + ' ' + vb(fac.pct, 'usam', 'usa') + ' reconhecimento facial.' : '.')]), { f: (r) => get('E3', '', 'Sim', r), sobre: 'Câmeras de vídeo' });
     })();
     (() => {
@@ -1906,22 +1922,6 @@
   // a fonte do site muda a medida das linhas: mede de novo quando ela termina de carregar
   if (document.fonts) document.fonts.ready.then(() => { fatoW = 0; mapaW = 0; if (view === 'inicio') { igualaFato(); igualaMapa(); } });
 
-  // fim do Início: duas portas (Escolas e Gestores), cada uma com um dado real e seu pictograma
-  const drawPortas = () => {
-    const portas = [
-      ['escolas', 'A8', 'porta-escolas', SCHOOL, (r) => [freqTxt(r.pct), ' escolas ' + vb(r.pct, 'oferecem', 'oferece') + ' computador e internet aos alunos.']],
-      ['gestores', 'D9A', 'porta-gestores', P, (r) => [freqTxt(r.pct), ' gestores já usam IA na gestão.']]
-    ];
-    for (const [ds, ind, id, shape, frase] of portas) {
-      const el = document.getElementById(id); if (!el) continue;
-      const st = dash.data(ds).status;
-      if (st !== 'ok') { if (isErro(st)) { el.classList.remove('dash-skeleton'); el.textContent = ''; } continue; }
-      const r = get(ind, '', 'Sim', TOTAL, ds); if (!r) continue;
-      const [b, t] = frase(r);
-      el.classList.remove('dash-skeleton'); el.replaceChildren(negrito(b), document.createTextNode(t));
-      iso10(document.getElementById(id + '-iso'), r.pct, 'var(--sec)', id, shape);
-    }
-  };
   // fim das abas de dados: a outra aba, com um dado real, e o caminho para citar
   const drawFim = () => {
     const outra = view === 'escolas' ? 'gestores' : 'escolas', a = document.getElementById('fim-outra');
@@ -1935,7 +1935,6 @@
   };
   const drawHome = () => {
     drawFact();
-    drawPortas();
     drawMapa();
     igualaFato();
     igualaMapa();
@@ -2102,11 +2101,12 @@
       markRow(num, row);
       iso10(svg, row.pct, k.dataset.color || dash.colors[0], view + 'k' + i, view === 'escolas' ? SCHOOL : P);
       // a faixa vem logo depois do número do grupo (é dele); o Brasil vai numa linha à parte, mais discreta
+      // e na mesma conta do número grande ("No Brasil: cerca de 95 em cada 100"), para o leitor comparar sem converter
       cmp.replaceChildren();
       if (definitional(row) && extremo(row)) cmp.append(row.pct >= 50 ? 'Todas as escolas deste grupo, por definição' : 'Nenhuma escola deste grupo, por definição');
       else {
         cmp.append(pct(row.pct) + (row.moe ? ' (pode variar ' + faixa(row) + ')' : ''));
-        if (recEff !== TOTAL && br) { const s = document.createElement('span'); s.className = 'tg-kpi-br'; s.textContent = 'No Brasil: ' + pct(br.pct); cmp.append(s); }
+        if (recEff !== TOTAL && br) { const s = document.createElement('span'); s.className = 'tg-kpi-br'; s.textContent = 'No Brasil: ' + (mm ? fixaBase(mm[3] === ' em cada 100', () => freqTxt(br.pct, false)).replace(/(\d+) em cada (\d+)$/, '$1\u00a0em\u00a0cada\u00a0$2') : pct(br.pct)); cmp.append(s); }
       }
     });
     });

@@ -63,7 +63,6 @@ body{background-color:var(--color-bg)}
 .tg-fim::before{height:1px;background:var(--color-border-line)}
 .tg-sec::after{content:"Lição " counter(licao,decimal-leading-zero);content:"Lição " counter(licao,decimal-leading-zero) / "";position:absolute;pointer-events:none;left:0;top:calc(-1.5rem - .55rem);padding-right:.8rem;
   background:var(--color-panel);font:500 var(--txt-mini,.875rem)/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--sec-texto,var(--color-fg-muted))}
-.tg-portas{--sec:var(--color-fg-muted)}
 .tg-shot .tg-sec::before,.tg-shot .tg-sec::after{display:none}
 
 /* ---------- navegação: o link ativo vem grifado ---------- */
@@ -161,11 +160,11 @@ body{background-color:var(--color-bg)}
 .tg-sec-sub{max-width:62ch;margin-top:.3rem}
 /* a pauta não passa por trás do título e da frase da lição: o texto fica sobre papel limpo, como corretivo */
 .tg-sec-head .tg-sec-title,.tg-sec-head .tg-sec-sub{width:fit-content;background:var(--color-panel);box-shadow:0 0 0 .3rem var(--color-panel)}
-@media (max-width:35em){.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}}
+@media (max-width:35em){.tg-sec-head{align-items:flex-start}.tg-sec-head .tg-ic{width:2.4rem;height:2.4rem;padding:.55rem}} /* no celular, a pastilha fica ao lado do título, não do meio da descrição */
 
 /* ---------- cartões: folhas soltas sobre o caderno ---------- */
-.tg-card,.tg-filter,.tg-cite,.tg-fact,.tg-porta,.tg-fim-outra{border-color:var(--color-border-line)}
-.tg-card,.tg-filter,.tg-cite,.tg-porta,.tg-fim-outra{border-radius:var(--folha-raio)}
+.tg-card,.tg-filter,.tg-cite,.tg-fact,.tg-fim-outra{border-color:var(--color-border-line)}
+.tg-card,.tg-filter,.tg-cite,.tg-fim-outra{border-radius:var(--folha-raio)}
 .tg-sec .tg-card{box-shadow:var(--v-shadow)}
 .tg-card.tg-chegada{box-shadow:0 0 0 3px color-mix(in srgb,var(--sec) 55%,transparent),var(--v-shadow)}
 .tg-card-title{font-family:var(--font-display);font-size:1.3125rem;font-weight:700;letter-spacing:-.005em}
@@ -263,12 +262,10 @@ body{background-color:var(--color-bg)}
 .tg-anot-filtro{position:absolute;right:0;top:-2.6rem}
 @media (max-width:44.9375em){.tg-anot-filtro{display:none}}
 
-/* ---------- Início: mapa, indicadores e portas ---------- */
+/* ---------- Início: mapa e indicadores ---------- */
 .tg-mapa-palco{border-radius:var(--folha-raio);background:var(--quadriculado),color-mix(in srgb,var(--sec) 4%,var(--color-bg));--q:20px}
 .tg-mapa-leg{font-family:var(--font-mono)}
-.tg-porta{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
-.tg-porta:hover{box-shadow:inset 0 3px 0 var(--sec),0 1px 0 rgba(20,30,70,.04),0 18px 36px -20px rgba(20,30,70,.35)}
-.tg-porta-tit,.tg-autor-papel,.tg-cite-lab{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
+.tg-autor-papel,.tg-cite-lab{font-family:var(--font-mono);font-weight:500;letter-spacing:.05em}
 .tg-fim-outra{background:var(--color-panel);box-shadow:inset 0 3px 0 var(--sec),var(--v-shadow)}
 
 /* ---------- Sobre ---------- */
@@ -338,7 +335,7 @@ body{background-color:var(--color-bg)}
 .tg-perg{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
 .tg-perg .tg-perg-caixa{padding:1.15rem;border:1px solid var(--color-border-line);border-radius:var(--folha-raio);background:var(--color-panel);box-shadow:var(--v-shadow)}
 .tg-perg-tit{display:block;margin-bottom:.25rem;font:800 1.3125rem/1.25 var(--font-display);letter-spacing:-.01em;color:var(--color-fg);text-wrap:balance}
-.tg-perg-dica{margin:0 0 .8rem;max-width:62ch;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.tg-perg-dica{margin:0 0 1.1rem;max-width:62ch;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
 /* perguntas prontas (não há texto livre): marcadores de página na cor do capítulo (o --sec vem do tema, em pergunte.js), levemente tortos */
 .tg-perg-ex{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.7rem .6rem;margin:0;padding:0;list-style:none}
 .tg button.tg-perg-chip{--sec:var(--v-blue);min-height:2.75rem;padding:.75rem .9rem .5rem;border:0;border-radius:2px 2px 0 0;
@@ -356,7 +353,7 @@ body{background-color:var(--color-bg)}
 .tg-perg-res.tg-perg-nao{box-shadow:inset 0 4px 0 var(--color-fg-muted),var(--v-shadow)}
 /* "Entendi: Região: Nordeste", como o "Você está vendo" do filtro; o tema vira o título do cartão */
 .tg-perg-entendi{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;margin:.35rem 0 .2rem}
-.tg-perg-lab{font:500 var(--txt-mini,.875rem)/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--color-fg-muted)}
+.tg-perg-lab{font-size:var(--cds-font-size-caption);line-height:1.4;color:var(--color-fg-muted)} /* "Você perguntou sobre:" em letra de texto, não de máquina de escrever */
 .tg-perg-grupo{font-weight:700;color:var(--color-fg)}
 .tg-perg-tema{margin:0 0 .55rem;font:700 1.3125rem/1.3 var(--font-display);color:var(--color-fg);text-wrap:balance}
 .tg-perg-frase{max-width:62ch;font-size:1.1875rem;line-height:1.4;text-wrap:pretty}
@@ -371,8 +368,9 @@ body{background-color:var(--color-bg)}
 .tg-perg-nao ul{margin:.6rem 0 0;padding-left:1.2rem;columns:2 14rem;font-size:var(--cds-font-size-caption)}
 /* barras: as mesmas do painel (trilho fino, traço de marca-texto, margem de erro e traço do Brasil) */
 .tg-perg-lista{display:flex;flex-direction:column;gap:.55rem;max-width:30rem;margin:.9rem 0 0;padding:0;list-style:none}
-.tg-perg-lista li{display:grid;grid-template-columns:minmax(0,1fr) 3.6rem;gap:.2rem .75rem;align-items:center;font-size:var(--cds-font-size-caption)}
-.tg-perg-lista .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+/* o valor vem logo depois do nome do grupo, e não no fim do trilho: lá ele ficava em cima do alfinete do Brasil e parecia ser dele */
+.tg-perg-lista li{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:.2rem .6rem;align-items:baseline;font-size:var(--cds-font-size-caption)}
+.tg-perg-lista .v{font-weight:600;font-variant-numeric:tabular-nums}
 .tg-perg-lista .tr{grid-column:1/-1;position:relative;height:1rem;background:linear-gradient(var(--color-border-line),var(--color-border-line)) 0 100%/100% 1px no-repeat}
 .tg-perg-lista .tr .f{position:absolute;left:0;top:2px;bottom:3px;background:var(--sec,var(--v-blue));opacity:.85;clip-path:polygon(0 18%,100% 0,99.4% 84%,.6% 100%)}
 .tg-perg-lista .tr .moe{position:absolute;top:50%;height:0;margin-top:-1px;border-top:2px solid var(--color-fg)}

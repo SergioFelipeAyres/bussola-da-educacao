@@ -76,7 +76,7 @@ html[data-contraste] :is(.tg-mapa-reg,.tg-mapa-pick).tg-claro text{fill:#000}
 html[data-contraste] .tg-mapa-reg path{stroke:#000;stroke-width:1.4}
 
 /* cartões e marcadores: borda visível em vez de sombra */
-html[data-contraste] :is(.tg-card,.tg-kpi,.tg-filter,.tg-perg-caixa,.tg-perg-res,.tg-porta,.tg-fim-outra){border:1px solid var(--color-border-line)}
+html[data-contraste] :is(.tg-card,.tg-kpi,.tg-filter,.tg-perg-caixa,.tg-perg-res,.tg-fim-outra){border:1px solid var(--color-border-line)}
 html[data-contraste] .tg :is(.tg-indice a,button.tg-perg-chip){box-shadow:inset 0 5px 0 var(--sec);outline:1px solid color-mix(in srgb,var(--sec) 70%,#000)}
 html[data-contraste] .tg button.tg-perg-chip[aria-pressed=true]{outline:2px solid var(--hc-amarelo)}
 html[data-contraste] :is(.tg-guide,.tg-libras-janela){border:2px solid var(--color-fg)}
@@ -110,6 +110,8 @@ html[data-letra]{font-size:125%}
 /* o nome na capa do Início já é grande (46px no celular): crescer mais não ajuda a ler e faz "Educação",
    uma palavra só, passar da tela. No celular ele fica em até 12,5% da largura */
 @media (max-width:35em){html[data-letra] .tg-hero-home .tg-hero-title{font-size:min(2.9rem,12.5vw)}}
+/* Letra maior no celular: destaques em uma coluna, para o número e o "em cada 100" caberem lado a lado */
+@media (max-width:35em){html[data-letra] .tg-kpis{grid-template-columns:minmax(0,1fr)}}
 
 /* ---------- os botões "Letra maior" e "Alto contraste" (sempre visíveis no topo, nos dois modos) ---------- */
 .nav-ajustes{flex:none;display:flex;align-items:center;gap:.4rem}
@@ -127,3 +129,7 @@ html[data-letra]{font-size:125%}
   /* marca e botões numa linha só: se faltar espaço, o nome quebra em duas linhas ao lado da bússola,
      como na capa, em vez de os botões descerem para uma linha própria */
   .nav-brand{max-width:calc(100% - 6.5rem);white-space:normal;line-height:1.05}}
+/* Letra maior no celular: na barra fixa, "Mudar" fica só com o ícone (o nome falado continua "Mudar"),
+   para o nome do grupo caber em até duas linhas em vez de três */
+@media (max-width:35em){html[data-letra] .tg .tg-rec-mudar2{padding-inline:.6rem}
+  html[data-letra] .tg-rec-mudar2 span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}}

@@ -248,10 +248,10 @@ No Tailwind (`src/site.css`), `--font-sans`, `--font-display` e `--font-mono` s�
 - **Headline** (800; clamp(2.1rem, 4.6vw, 3.5rem); 1.08; -0.02em): títulos das capas de Escolas, Gestores e Sobre, com no máximo 19ch; o fim do título ("conectadas e equipadas", "como usa a tecnologia") vem grifado.
 - **Title** (800; clamp(1.6rem, 2.8vw, 2.1rem); 1.1; -0.03em): títulos de seção, ao lado da pastilha de ícone na cor do tema (sem sublinhado).
 - **Number** (800; clamp(2rem, 3.2vw, 2.5rem); 1.1; algarismos tabulares): números-chave dos destaques, na cor do tema.
-- **Lead** (600 a 800; clamp(1.3rem, 2.4vw, 1.65rem); 1.3): frases de destaque fora dos gráficos: a linha fina da capa do Início, o texto do post-it "Você sabia?", o grupo escolhido no filtro ("Brasil (todas as escolas)") e o dado das portas do Início.
+- **Lead** (600 a 800; clamp(1.3rem, 2.4vw, 1.65rem); 1.3): frases de destaque fora dos gráficos: a linha fina da capa do Início, o texto do post-it "Você sabia?", o grupo escolhido no filtro ("Brasil (todas as escolas)").
 - **Statement** (400, com negrito 600; 1.1875rem (19px); 1.4): a frase em linguagem simples que abre cada gráfico ("7 em cada 10…"), com no máximo 62ch, logo abaixo do título do cartão; a nota sobre as cores vem depois dela, encostada no gráfico (título → frase → nota → gráfico).
 - **Body** (400; 1.0625rem (17px); 1.5): texto corrente, rótulos de barra e controles. Textos longos ficam em 62ch no máximo.
-- **Label** (Atkinson Hyperlegible Mono 500; 0.875rem (14px); 0.05em; caixa alta): navegação, "Você está vendo", rótulos dos blocos do filtro, "Ir para", nome das portas e a etiqueta de fonte da capa. A linha de base e fonte de cada cartão, a margem de erro dos destaques e o rodapé são frases: ficam em Caption (Atkinson Next, 0.875 a 0.9375rem, Tinta Suave).
+- **Label** (Atkinson Hyperlegible Mono 500; 0.875rem (14px); 0.05em; caixa alta): navegação, "Você está vendo", rótulos dos blocos do filtro, "Ir para" e a etiqueta de fonte da capa. A linha de base e fonte de cada cartão, a margem de erro dos destaques e o rodapé são frases: ficam em Caption (Atkinson Next, 0.875 a 0.9375rem, Tinta Suave).
 
 ### Named Rules
 **The Frase Primeiro Rule.** Em todo cartão de gráfico, a afirmação em Statement vem antes da figura. Um gráfico sem frase não está pronto. A frase é montada com os dados do recorte (`lead()` em `js/painel.js`) e diz o número em "N em cada 10"; "o mais citado" só aparece quando as faixas da margem de erro do 1º e do 2º não se tocam, senão a frase cita os dois ou diz a faixa ("vai de … a …"). Numa frase com dois números, os dois usam a mesma base (`comBase`): "95 em cada 100 … mas só 62 em cada 100", nunca "95 em cada 100 … 6 em cada 10". O painel não usa "metade": 50% é "5 em cada 10". Com um grupo escolhido, a frase começa por ele ("Entre as escolas da região Nordeste, …"), para quem chega por um link não ler o número de um grupo como se fosse do Brasil, e termina comparando o número principal com o Brasil: "Mais do que no Brasil", "Menos do que no Brasil" (só quando as faixas da margem não se tocam) ou "Parecido com o Brasil", com o número do Brasil na mesma base da frase. Numa frase com dois números, a comparação diz de qual fala ("Até 10 alunos por computador, menos do que no Brasil (…)"); quando os números arredondados contradiriam a palavra ("parecido" com números diferentes), os dois vão em "cada 100" ("neste grupo, cerca de 15 em cada 100; no Brasil, cerca de 13 em cada 100"). Frases sem um número principal (faixa "vai de … a …", empate entre os dois primeiros) só ganham o grupo. O primeiro cartão de Escolas não repete a manchete da capa: conta o degrau que mais cai ("A maior perda está em chegar aos alunos").
@@ -286,15 +286,15 @@ Números em colunas de tabela e de lista seguem alinhados à direita (`tabular-n
 - **Compare grupos:** os indicadores ficam agrupados pelo capítulo do painel (`optgroup`); o grupo escolhido no filtro fica marcado entre os outros (fundo do tema a 9%, nome em 800 e "você está vendo" em Label); a diferença para o Brasil vem na voz do site ("cerca de 18 em cada 100 a menos que o Brasil"), nunca em "pontos".
 - **Fim das abas de dados:** depois de "Compare grupos", um bloco leva à outra aba com um dado real ("Agora veja quem dirige as escolas") e a "Como citar".
 - **Chegada:** ao ir para um cartão pelo endereço (Ver no painel, link compartilhado), ele ganha um anel na cor do capítulo por um instante.
-- **Fim do Início:** duas portas lado a lado (colunas de no mínimo 22rem), que viram uma coluna no celular.
+- **Fim do Início:** o mapa fecha a página com "Ver o painel completo"; as outras abas ficam no menu. As portas para Escolas e Gestores saíram.
 
 ## Elevation & Depth
 
 Profundidade baixa, de folhas soltas sobre o caderno aberto na mesa: a folha pautada tem uma sombra longa e suave sobre a mesa; cartões brancos têm uma linha de 1px e uma sombra curta tingida de azul-marinho. Só o post-it "Você sabia?" e os marcadores do "Ir para" saem do plano.
 
 ### Shadow Vocabulary
-- **Ambiente** (`box-shadow: 0 1px 0 rgba(20,30,70,.04), 0 8px 24px -18px rgba(20,30,70,.28)`): cartões, destaques, filtro, portas e citação.
-- **Filete de capítulo** (`box-shadow: inset 0 3px 0 var(--sec), <ambiente>`): só nas portas do Início e no bloco do fim das abas, que levam a outra página.
+- **Ambiente** (`box-shadow: 0 1px 0 rgba(20,30,70,.04), 0 8px 24px -18px rgba(20,30,70,.28)`): cartões, destaques, filtro e citação.
+- **Filete de capítulo** (`box-shadow: inset 0 3px 0 var(--sec), <ambiente>`): só no bloco do fim das abas, que levam a outra página.
 - **Capa:** sem sombra nem fundo; a capa está direto na folha pautada.
 - **Post-it** (`box-shadow: 0 22px 34px -22px rgba(5,12,45,.5)`): o "Você sabia?", inclinado 1.6° com movimento permitido, com uma fita translúcida no topo.
 - **Marcador** (`box-shadow: inset 0 5px 0 var(--sec), 0 6px 12px -10px rgba(20,30,70,.55)`): os links do "Ir para", levemente tortos.
@@ -307,7 +307,7 @@ Profundidade baixa, de folhas soltas sobre o caderno aberto na mesa: a folha pau
 
 ## Shapes
 
-Formas de papelaria: 2px para o post-it, os marcadores (fita) e os exemplos da caixa de perguntas; 4px só nas teclas desenhadas do guia (`kbd`); 3px para as folhas (cartões, destaques, filtro, citação, portas); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito.
+Formas de papelaria: 2px para o post-it, os marcadores (fita) e os exemplos da caixa de perguntas; 4px só nas teclas desenhadas do guia (`kbd`); 3px para as folhas (cartões, destaques, filtro, citação); 6px para botões, chips, pastilhas, "Para pensar", guia; pílula (999px) só nos trilhos das barras do mapa; botões principais em etiqueta, com os cantos superior esquerdo e inferior direito chanfrados em 9px (o chanfro vai num `::before`, para o contorno de foco não ser cortado). Bordas de 1px em Linha. Avisos e notas são caixas tingidas inteiras, nunca uma borda lateral colorida. A folha pautada é a textura do sistema; o quadriculado fica só no mapa e nos desenhos do guia. As alternativas do filtro são bolinhas de 1.5rem com a letra em mono (a, b, c…), como num gabarito.
 
 ## Components
 
@@ -371,7 +371,7 @@ Usa as peças do resto do site, para não parecer uma busca à parte. A caixa é
 A resposta é um cartão do painel (faixa interna de 4px na cor do capítulo e sombra ambiente): "Entendi:" em Label com o grupo em 700 ("Região: Nordeste", "Brasil", "Comparar: Região"), como o "Você está vendo" do filtro; o tema como título do cartão (Bricolage 700, 1.3125rem); a frase em Statement com o número grifado de marca-texto, como os números da capa; a fileira de 10 pictogramas; as barras do painel, com margem de erro e traço do Brasil, e uma legenda dos dois sinais; o percentual com a faixa em Caption; "Ver no painel →" sublinhado; e o rodapé de base e fonte sobre um fio tracejado. Ranking e comparação usam as mesmas barras. Em Escolas e Gestores, "Perguntar" é uma etiqueta em Azul Bússola ao lado de "Como ler este painel", e a caixa abre na janela do guia.
 
 ### Ver em Libras
-Botão no tom de texto do tema, borda de 1px em Linha, raio de 6px, ícone de mão em traço de 1.7px e "Ver em Libras" em 700. Fica na cabeça de cada seção (antes de "Recolher"; no celular só o ícone, com nome para o leitor de tela), no topo do guia "Como ler" e abaixo da etiqueta de fonte da capa do Início e do Sobre. Abre uma janela com o vídeo (arquivo do site, YouTube ou Vimeo) em 16:9, na mesma família da janela do guia. Aparece sempre: sem vídeo, fica tracejado, em Tinta Suave, marcado "em breve", e não abre nada (`aria-disabled`). O botão azul flutuante do VLibras é do próprio widget e não segue o sistema; o site só o leva para o canto de baixo, à direita (16px da borda), porque no meio da altura ele cobria os valores das barras no celular (regra injetada no shadow DOM do widget, em `js/libras.js`).
+Botão no tom de texto do tema, borda de 1px em Linha, raio de 6px, ícone de mão em traço de 1.7px e "Ver em Libras" em 700. Fica na cabeça de cada seção (antes de "Recolher"; no celular só o ícone, com nome para o leitor de tela), no topo do guia "Como ler" e abaixo da etiqueta de fonte da capa do Início e do Sobre. Abre uma janela com o vídeo (arquivo do site, YouTube ou Vimeo) em 16:9, na mesma família da janela do guia. Aparece sempre: sem vídeo, fica tracejado, em Tinta Suave, marcado "em breve", e não abre nada (`aria-disabled`). O botão azul flutuante do VLibras é do próprio widget e não segue o sistema; o site só o leva para o canto de baixo, à direita (16px da borda), porque no meio da altura ele cobria os valores das barras no celular (regra injetada no shadow DOM do widget, em `js/libras.js`). No celular, as linhas de barra reservam 1.25rem à direita, para o valor de nenhuma barra parar embaixo dele.
 
 ### Para pensar
 Nota de margem no fim de cada seção de Escolas e Gestores, quieta: borda tracejada de 1px na cor do tema a 55%, fundo branco, raio de 6px, padding de .9rem 1.1rem; lápis de contorno no tom de texto do tema, sem pastilha; "Para pensar" em Bricolage 800 no tom de texto do tema e a pergunta em Tinta, até 70ch. É uma nota (`role="note"`), não um título, e some com a seção recolhida.
@@ -387,9 +387,6 @@ Célula da linha de destaques, sem filete, com rótulo em Tinta 600, o número n
 
 ### Índice de seções
 Linha "Ir para" logo depois dos destaques de Escolas e Gestores: rótulo em Label e um marcador de página adesivo por seção, com fundo do tema a 15% sobre branco, faixa de 5px na cor do tema no topo, cantos superiores de 2px e inclinação alternada de -1.2° e 0.9° (sem inclinação com movimento reduzido); no hover, fundo a 26%. As âncoras usam o roteamento do painel. No filtro fixo, o botão "Topo" leva de volta ao início da aba.
-
-### Portas do Início
-Fim da página inicial: duas portas (Escolas em teal, Gestores em roxo), cada uma inteira clicável, com o nome do público em Label, um dado real em frase (número em 800 no tom de texto do tema), o pictograma de 10 figuras, uma linha do que há no painel e "Ver o painel… →". Abaixo, uma linha leva ao guia "Como ler o painel".
 
 ### Notas e avisos
 Caixa em Trilho com raio de 6px e padding de 0.45rem 0.7rem, texto 0.9375rem em Tinta Suave, sem borda lateral. Usada na nota "sem margem de erro estimada" (o asterisco no valor fica em Tinta, negrito) e na explicação de "Um recorte por vez".
