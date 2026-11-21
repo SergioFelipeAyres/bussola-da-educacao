@@ -102,6 +102,24 @@
         ],
         "createdAt": "2026-11-17T17:18:29.990Z",
         "reason": "Falso positivo: o detector lê o 2px (raio fita, que está na escala) junto com o HTML da legenda"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "#ffe600",
+        "createdAt": "2026-11-21T14:39:24.454Z",
+        "reason": "Claude: amarelo do alto contraste (padrão e-MAG), descrito em DESIGN.md > Alto contraste"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgba(0,0,0,.8)",
+        "createdAt": "2026-11-21T14:39:24.761Z",
+        "reason": "Claude: fundo das janelas no alto contraste, descrito em DESIGN.md > Alto contraste"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(6, 35, 77)",
+        "createdAt": "2026-11-21T14:39:24.997Z",
+        "reason": "Claude: Azul Noite da marca (#06234D), descrito em DESIGN.md > Navigation"
       }
     ]
   }

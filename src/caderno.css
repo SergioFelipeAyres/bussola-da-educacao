@@ -76,14 +76,16 @@ body{background-color:var(--color-bg)}
 .nav-link[aria-current=page]{color:var(--color-fg);box-shadow:none;font-weight:500;
   background:linear-gradient(transparent 52%,var(--marca-texto) 52% 90%,transparent 90%) center/calc(100% - 1rem) 100% no-repeat}
 /* celular: cinco abas não cabem numa linha; quebram em duas em vez de rolar escondidas para o lado */
-@media (max-width:35em){.nav-links{flex-wrap:wrap;justify-content:center;overflow-x:visible}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:10.75rem}
+@container nav (max-width:35em){.nav-links{flex-wrap:wrap;justify-content:center;overflow-x:visible}
   .nav-link{font-size:.875rem;letter-spacing:.02em;padding:.4rem .3rem}.nav-link[aria-current=page]{background-size:calc(100% - .4rem) 100%}}
-/* tablet: marca, cinco abas e o botão de contraste não cabem numa linha; as abas descem para a segunda linha, centradas,
+@media (max-width:35em){.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:10.75rem}}
+/* tablet: marca, cinco abas e os botões de leitura não cabem numa linha; as abas descem para a segunda linha, centradas,
    em vez de rolar escondidas para o lado. Logo acima disso, as abas só ficam mais juntas */
-@media (min-width:35.0625em) and (max-width:60em){.nav-in{flex-wrap:wrap;row-gap:.2rem;padding-top:.45rem}
+@container nav (min-width:35.0625em) and (max-width:60em){.nav-in{flex-wrap:wrap;row-gap:.2rem;padding-top:.45rem}
   .nav-links{order:3;flex-basis:100%;margin-left:0;justify-content:center;overflow-x:visible;padding-bottom:.35rem}
-  .nav-contraste{margin-left:auto}.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8.5rem}}
-@media (min-width:60.0625em) and (max-width:68em){.nav-link{padding-inline:.55rem}}
+  .nav-ajustes{margin-left:auto}}
+@media (min-width:35.0625em) and (max-width:60em){.tg-sec,.tg-kpis,.tg-card{scroll-margin-top:8.5rem}}
+@container nav (min-width:60.0625em) and (max-width:68em){.nav-link{padding-inline:.55rem}}
 
 /* ---------- marca-texto: grifo amarelo atrás da palavra (o texto continua em tinta) ---------- */
 .tg-hero-title span span,.tg-title .tg-marca,.tg-hero-text .tg-marca,.tg-head .tg-take b,.tg-mapa-txt b{

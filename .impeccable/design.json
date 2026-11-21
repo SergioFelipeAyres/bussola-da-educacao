@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-17T17:17:51.818Z",
+  "generatedAt": "2026-11-21T14:30:44.717Z",
   "title": "Design System: Bússola da Educação",
   "extensions": {
     "colorMeta": {
@@ -391,6 +391,11 @@
         "name": "troca-de-tema",
         "value": "0.4s ease",
         "purpose": "Cor do ícone e dos pictogramas do post-it \"Você sabia?\" ao sortear outro dado."
+      },
+      {
+        "name": "sem-movimento",
+        "value": "animation:none; transition:none",
+        "purpose": "Com prefers-reduced-motion e no alto contraste (lupa de tela): nada se mexe sozinho; mudanças de estado acontecem na hora. Em JS, consultar reduzMovimento()."
       }
     ],
     "breakpoints": [
@@ -425,6 +430,10 @@
       {
         "name": "grid-3col",
         "value": "73rem"
+      },
+      {
+        "name": "ajustes-icone",
+        "value": "1024px (64em)"
       }
     ]
   },
@@ -444,6 +453,14 @@
       "description": "Links em mono caixa alta; o ativo fica em Tinta, grifado de marca-texto amarelo.",
       "html": "<nav class=\"ds-nav\"><a href=\"#\">Início</a><a href=\"#\" aria-current=\"page\">Escolas</a><a href=\"#\">Gestores</a><a href=\"#\">Sobre</a></nav>",
       "css": ".ds-nav{display:flex;gap:.25rem;padding:.75rem 1rem;background:color-mix(in srgb,#f4f6fb 92%,transparent);border-bottom:1px solid #e2e3ea}.ds-nav a{padding:.5rem .8rem;font:500 .875rem 'Atkinson Hyperlegible Mono',ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase;color:#5d6170;text-decoration:none}.ds-nav a:hover{color:#1b1d24}.ds-nav a[aria-current=page]{color:#1b1d24;background:linear-gradient(transparent 52%,color-mix(in srgb,#ffd166 92%,#fff) 52% 90%,transparent 90%) center/calc(100% - 1rem) 100% no-repeat}.ds-nav a:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}"
+    },
+    {
+      "name": "Ajustes de leitura (Letra maior e Alto contraste)",
+      "kind": "button",
+      "refersTo": "ajustes-leitura",
+      "description": "Duas pílulas no canto da navegação, com aria-pressed; ligada, a pílula fica amarela com texto preto. Até 64em, só o ícone.",
+      "html": "<div class=\"ds-ajustes\"><button type=\"button\" class=\"ds-ajuste\" aria-pressed=\"true\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M2.5 19L7 7.5 11.5 19M4.2 15h5.6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M12.5 19L17 4l4.5 15M14.4 13.5h5.2\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><span>Letra maior</span></button><button type=\"button\" class=\"ds-ajuste\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M12 3a9 9 0 0 0 0 18z\" fill=\"currentColor\"/></svg><span>Alto contraste</span></button></div>",
+      "css": ".ds-ajustes{display:flex;align-items:center;gap:.4rem}.ds-ajuste{display:inline-flex;align-items:center;gap:.45rem;min-height:2.75rem;padding:.4rem .8rem;border:1px solid #e2e3ea;border-radius:999px;background:#fff;color:#1b1d24;font:500 .875rem/1 'Atkinson Hyperlegible Mono',ui-monospace,monospace;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}.ds-ajuste svg{width:1.25rem;height:1.25rem;flex:none}.ds-ajuste:hover{border-color:#1b1d24}.ds-ajuste:focus-visible{outline:2px solid #1b1d24;outline-offset:2px}.ds-ajuste[aria-pressed=true]{background:#ffe600;border-color:#ffe600;color:#000}"
     },
     {
       "name": "Filtro como questão de múltipla escolha",
@@ -521,7 +538,7 @@
       "Folhas brancas com cantos de 3px e sombra baixa; botões principais em etiqueta chanfrada.",
       "Bricolage Grotesque para títulos, manchetes e números (800); Atkinson Hyperlegible Next para o texto corrido; Atkinson Hyperlegible Mono só para rótulos de medida.",
       "Pictogramas Isotype, barras como traços de marca-texto sobre um trilho fino, e margem de erro sempre desenhada como barra de erro. Dentro dos cartões de gráfico o caderno se cala: o dado fica sozinho em cena, e a papelaria fica na moldura, nos títulos e nas notas. Entre os cartões de gráfico (Escolas e Gestores), a pauta quase some: o papel a 92% passa por cima dela, da margem rosa até a borda da folha.",
-      "Movimento que revela os dados em sequência e respeita `prefers-reduced-motion`."
+      "Movimento que revela os dados em sequência e some com `prefers-reduced-motion` e no alto contraste."
     ],
     "rules": [
       {
@@ -532,6 +549,11 @@
       {
         "name": "The Tom de Texto Rule",
         "body": "A cor pura do capítulo (`--sec`) é para preenchimentos, ícones, filetes e números grandes. Todo texto pequeno na cor do capítulo e todo fundo de botão com texto branco usam `--sec-texto`, a mesma cor 15% mais escura em oklab (`color-mix(in oklab, var(--sec) 85%, #000)`), que fica acima de 4.9:1 no branco, no papel e nos fundos tingidos. Teal e laranja puros não passam em 4.5:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Daltonismo Rule",
+        "body": "Duas cores de capítulo nunca podem se confundir nos três tipos principais de daltonismo (protanopia, deuteranopia e tritanopia). A conferência simula cada tipo (matrizes de Machado et al., 2009, severidade total) e mede a diferença entre os pares em CIEDE2000. O Azul Bússola, que é a marca, fica fixo; as outras cores se ajustam a ele. Como o daltonismo vermelho-verde apaga justamente o que separa azul de roxo, a separação entre os dois vem da claridade: o Roxo Regras é bem mais escuro que o azul. Em novembro de 2026, a pior diferença do roxo contra o azul passou de 0,6 (deuteranopia, cores idênticas) para 13,6. Pares que ainda ficam próximos num dos tipos (rosa × grafite na protanopia, laranja × rosa na tritanopia) aparecem sempre com o nome do capítulo escrito ao lado (navegação, legenda, destaques): a cor nunca é o único jeito de saber o capítulo (WCAG 1.4.1).",
         "section": "colors"
       },
       {
@@ -556,7 +578,12 @@
       },
       {
         "name": "The Piso de 14px Rule",
-        "body": "Nenhum texto visível fica abaixo de 14px (0.875rem). Única exceção de escrita: os rótulos dentro do mapa são escritos nas unidades do desenho, com `max(10.5px, calc(14px / var(--esc)))`, em que `--esc` é a escala do mapa na tela (o painel.js mede a cada desenho); assim ficam com 14px ou mais em qualquer largura, de 320px ao desktop. No celular o nome da região sai da caixa alta, para caber. Vale para tudo: notas, legendas, rótulos em mono, base e margem de erro, rodapé, a barra de filtro fixa e o guia \"Como ler\", que só aparecem depois. Todos os tamanhos são em rem, exceto os rótulos do mapa. O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Os tamanhos em rem acompanham o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.",
+        "body": "Nenhum texto visível fica abaixo de 14px (0.875rem). Todo texto de 14px fora da navegação é escrito com a variável `--txt-mini` (`var(--txt-mini,.875rem)`), para o alto contraste subir o piso para 16px num lugar só; texto novo nesse tamanho usa a variável, nunca `.875rem` solto. Os rótulos dentro do mapa são escritos nas unidades do desenho, com `calc(var(--txt-mini,.875rem) / var(--esc))` (o número da região escolhida, `calc(20px / var(--esc))`), em que `--esc` é a escala do mapa na tela (o painel.js mede a cada desenho); assim ficam com 14px na tela em qualquer largura, de 320px ao desktop, sem crescer com o mapa. No celular, o número fica só no post-it. No mapa estreito (menos de 420px), o nome da região vira sigla (N, NE, CO, SE, S), para os rótulos não se encostarem. Vale para tudo: notas, legendas, rótulos em mono, base e margem de erro, rodapé, a barra de filtro fixa e o guia \"Como ler\", que só aparecem depois. Todos os tamanhos são em rem, exceto o número da região no mapa. O texto corrido tem 17px, as notas e legendas 15px (`--cds-font-size-caption`), o título do cartão 21px e a frase de cada gráfico 19px. Os tamanhos em rem acompanham o tamanho de letra e o zoom escolhidos pelo leitor. O público inclui pessoas idosas e com baixa visão: na dúvida, o texto sobe, nunca desce.",
+        "section": "typography"
+      },
+      {
+        "name": "The Margem Esquerda Rule",
+        "body": "Texto corrido fica sempre alinhado à esquerda, nunca justificado (`text-align: justify` não entra no site), seguindo o critério 1.4.8 (Apresentação Visual) das WCAG, que pede texto não justificado. O motivo são dois públicos que a Bússola quer alcançar:",
         "section": "typography"
       },
       {
@@ -566,33 +593,34 @@
       },
       {
         "name": "The Sombra Tingida Rule",
-        "body": "Sombras são sempre azul-marinho translúcido, nunca preto puro, para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.",
+        "body": "Sombras são sempre azul-marinho translúcido, nunca preto puro (o preto só entra dentro de `color-mix`, para escurecer uma cor: o tom de texto do tema `--sec-texto`, a cor do tema a 85% com preto, e o hover das etiquetas, a 82%; e no fundo do player de vídeo em Libras), para continuar na família do papel azulado: rgba(20,30,70,…) nas sombras ambiente e, nas mais fortes (cartão flutuante, botão e janela do guia), `rgba(var(--sombra-escura),…)`, com `--sombra-escura: 5,12,45`.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "Do defina `--sec` em cada nova seção e deixe fio da lição, ícone, número, destaque do gráfico e \"Para pensar\" herdarem dela.",
-      "Do abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a fonte em Caption 0.875rem Tinta Suave, sobre um fio tracejado. \"Ler em texto\" termina com uma frase pronta para citar (frase do cartão, grupo, fonte e tabela).",
-      "Do mostre no máximo 5 barras de início numa lista longa; as outras ficam atrás de \"Ver os outros N\".",
-      "Do desenhe a margem de erro em toda barra e comparação, e comece as barras no zero.",
-      "Do use Bricolage Grotesque em 800 para títulos e números, Atkinson Hyperlegible Next no texto, Atkinson Hyperlegible Mono só para rótulos de medida, e algarismos tabulares em todo valor.",
-      "Do use sombras azul-marinho translúcidas e curtas, cantos de 3px nas folhas e 6px nos controles, etiqueta chanfrada nos botões principais.",
-      "Do coloque toda animação dentro de `prefers-reduced-motion: no-preference` e garanta que impressão e imagem de compartilhamento saiam completas.",
-      "Do mantenha contraste WCAG 2.2 AA: texto corrido em Tinta ou Tinta Suave sobre a folha; Amarelo Norte só como marca-texto ou post-it, sempre com texto em Tinta por cima; texto pequeno na cor do capítulo sempre em `--sec-texto`.",
-      "Do termine cada nova seção de Escolas e Gestores com um \"Para pensar\": uma pergunta aberta, sem números, que leve o leitor à escola que ele conhece.",
-      "Do compile o CSS com `npm run css` depois de mudar `src/*.css` ou classes do Tailwind no HTML; `css/site.css` vai versionado."
+      "**Do** defina `--sec` em cada nova seção e deixe fio da lição, ícone, número, destaque do gráfico e \"Para pensar\" herdarem dela.",
+      "**Do** abra cada gráfico com uma frase em linguagem simples e feche cada cartão com a base e a fonte em Caption 0.875rem Tinta Suave, sobre um fio tracejado. \"Ler em texto\" termina com uma frase pronta para citar (frase do cartão, grupo, fonte e tabela).",
+      "**Do** mostre no máximo 5 barras de início numa lista longa; as outras ficam atrás de \"Ver os outros N\".",
+      "**Do** desenhe a margem de erro em toda barra e comparação, e comece as barras no zero.",
+      "**Do** use Bricolage Grotesque em 800 para títulos e números, Atkinson Hyperlegible Next no texto, Atkinson Hyperlegible Mono só para rótulos de medida, e algarismos tabulares em todo valor.",
+      "**Do** use sombras azul-marinho translúcidas e curtas, cantos de 3px nas folhas e 6px nos controles, etiqueta chanfrada nos botões principais.",
+      "**Do** coloque toda animação dentro de `prefers-reduced-motion: no-preference`, consulte `reduzMovimento()` (que também vale para o alto contraste) antes de animar por JavaScript, e garanta que impressão e imagem de compartilhamento saiam completas.",
+      "**Do** escreva texto de 14px com `var(--txt-mini,.875rem)`, para o alto contraste conseguir subir o piso para 16px.",
+      "**Do** mantenha contraste WCAG 2.2 AA: texto corrido em Tinta ou Tinta Suave sobre a folha; Amarelo Norte só como marca-texto ou post-it, sempre com texto em Tinta por cima; texto pequeno na cor do capítulo sempre em `--sec-texto`.",
+      "**Do** termine cada nova seção de Escolas e Gestores com um \"Para pensar\": uma pergunta aberta, sem números, que leve o leitor à escola que ele conhece.",
+      "**Do** compile o CSS com `npm run css` depois de mudar `src/*.css` ou classes do Tailwind no HTML; `css/site.css` vai versionado."
     ],
     "donts": [
-      "Don't faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.",
-      "Don't use vermelho, laranja de alerta ou ícones de perigo para dramatizar um número. As setas verde e vermelha só indicam direção.",
-      "Don't use duas cores de tema na mesma seção, nem a cor de um capítulo em outro.",
-      "Don't rotule diferenças entre grupos como \"reais\" ou \"empates\", nem dê cores diferentes aos grupos comparados.",
-      "Don't use Amarelo Norte como cor de texto.",
-      "Don't use carimbo ou selo: parecem validação oficial dos dados.",
-      "Don't use anotações à mão para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.",
-      "Don't use sombras pretas puras, degradês de fundo nas capas nem sobretítulos acima dos títulos.",
-      "Don't use mono em frases para o leitor: ela é escrita de régua, não voz.",
-      "Don't marque avisos, notas ou cartões com borda lateral colorida; o acento de capítulo é o fio da lição."
+      "**Don't** faça o painel parecer um relatório acadêmico: nada de tabelas densas como forma principal, notação estatística crua (IC, p, σ) ou texto miúdo como protagonista.",
+      "**Don't** use vermelho, laranja de alerta ou ícones de perigo para dramatizar um número. As setas verde e vermelha só indicam direção.",
+      "**Don't** use duas cores de tema na mesma seção, nem a cor de um capítulo em outro.",
+      "**Don't** rotule diferenças entre grupos como \"reais\" ou \"empates\", nem dê cores diferentes aos grupos comparados.",
+      "**Don't** use Amarelo Norte como cor de texto.",
+      "**Don't** use carimbo ou selo: parecem validação oficial dos dados.",
+      "**Don't** use anotações à mão para dizer algo que o leitor precise saber: são enfeite, com `aria-hidden`.",
+      "**Don't** use sombras pretas puras, degradês de fundo nas capas nem sobretítulos acima dos títulos.",
+      "**Don't** use mono em frases para o leitor: ela é escrita de régua, não voz.",
+      "**Don't** marque avisos, notas ou cartões com borda lateral colorida; o acento de capítulo é o fio da lição."
     ]
   }
 }
