@@ -26,7 +26,7 @@ Disponível em: https://bussoladaeducacao.com.br/.
   os termos de uso do Cetic.br. Ao usar os números, cite a pesquisa (veja "Como citar", na página Sobre).
 - **O nome "Bússola da Educação" e o logo** identificam este projeto e não podem ser usados em outros
   projetos, nem em versões modificadas, de um jeito que pareça que são o projeto original.
-- **As fotos** do autor e da orientadora (`img/autor.webp`, `img/orientadora.jpg`): todos os direitos reservados.
+- **A foto** do autor (`img/autor.webp`): todos os direitos reservados.
 - **Fontes** (Atkinson Hyperlegible, Bricolage Grotesque, Caveat), carregadas do Google Fonts: licença
   SIL Open Font License, de cada autor.
 - **VLibras**, widget do governo federal carregado de vlibras.gov.br: termos próprios.
