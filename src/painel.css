@@ -423,6 +423,9 @@ html[data-contraste] .tg-shot-brand b{color:var(--logo-ouro)}
 .tg-cols4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:var(--cds-gap-lg)}
 .tg-grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr));gap:var(--cds-gap-md)}
 .tg-grid21{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--cds-gap-md)}
+/* dois cartões empilhados numa mesma célula da grade (Sobre: Autoria + Orientação) */
+.tg-pilha{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
+.tg-pilha>.tg-card{flex:1}
 @media (min-width:56.25em){.tg-grid21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}
 .tg-cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:var(--cds-gap-lg) var(--cds-gap-xl)}
 
